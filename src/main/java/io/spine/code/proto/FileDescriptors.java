@@ -25,11 +25,12 @@
  */
 package io.spine.code.proto;
 
-import com.google.common.flogger.FluentLogger;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.io.Resource;
+import io.spine.logging.Logger;
+import io.spine.logging.LoggingFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,15 +45,19 @@ import static com.google.common.collect.Streams.stream;
 import static io.spine.io.IoPreconditions.checkExists;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.util.Predicates2.distinctBy;
+import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
+import static kotlin.jvm.JvmClassMappingKt.getKotlinClass;
 
 /**
  * A utility class which allows to obtain Protobuf file descriptors.
  */
 public final class FileDescriptors {
 
-    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+    // https://github.com/SpineEventEngine/logging/issues/33
+    private static final Logger<?> logger =
+            LoggingFactory.getLogger(getKotlinClass(FileDescriptors.class));
 
     /**
      * Extension of the descriptor set files.
@@ -84,12 +89,6 @@ public final class FileDescriptors {
         return parseAndFilter(descriptorSetFile, descriptor -> true);
     }
 
-    @SuppressWarnings({"PMD.MethodNamingConventions", // to make it more visible.
-            "FloggerSplitLogStatement"}) // see https://github.com/SpineEventEngine/base/issues/612
-    private static FluentLogger.Api _debug() {
-        return logger.atFine();
-    }
-
     /**
      * Returns descriptors of `.proto` files described in the descriptor set file
      * which match the filter predicate.
@@ -104,9 +103,9 @@ public final class FileDescriptors {
     private static List<FileDescriptorProto>
     parseAndFilter(File descriptorSet, Predicate<FileDescriptorProto> filter) {
         checkExists(descriptorSet);
-        _debug().log("Looking up for the proto files matching predicate `%s` under `%s`.",
-                     filter,
-                     descriptorSet);
+        logger.atDebug().log(() -> format(
+                "Looking up for the proto files matching predicate `%s` under `%s`.",
+                filter, descriptorSet));
 
         List<FileDescriptorProto> files;
         try (var fis = new FileInputStream(descriptorSet)) {
@@ -119,7 +118,7 @@ public final class FileDescriptors {
                     e, "Cannot get proto file descriptors. Path: `%s`.", descriptorSet
             );
         }
-        _debug().log("Found %d files.", files.size());
+        logger.atDebug().log(() -> format("Found %d files.", files.size()));
         return files;
     }
 
