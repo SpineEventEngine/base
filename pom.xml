@@ -10,7 +10,7 @@ all modules and does not describe the project structure per-subproject.
  -->
 <groupId>io.spine</groupId>
 <artifactId>base</artifactId>
-<version>2.0.0-SNAPSHOT.187</version>
+<version>2.0.0-SNAPSHOT.188</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -26,31 +26,31 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.guava</groupId>
     <artifactId>guava</artifactId>
-    <version>32.1.1-jre</version>
+    <version>32.1.2-jre</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>com.google.protobuf</groupId>
     <artifactId>protobuf-java</artifactId>
-    <version>3.23.4</version>
+    <version>3.24.1</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>com.google.protobuf</groupId>
     <artifactId>protobuf-java-util</artifactId>
-    <version>3.23.4</version>
+    <version>3.24.1</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>com.google.protobuf</groupId>
     <artifactId>protobuf-kotlin</artifactId>
-    <version>3.23.4</version>
+    <version>3.24.1</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-logging</artifactId>
-    <version>2.0.0-SNAPSHOT.202</version>
+    <version>2.0.0-SNAPSHOT.206</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -68,13 +68,13 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-logging-backend</artifactId>
-    <version>2.0.0-SNAPSHOT.202</version>
+    <version>2.0.0-SNAPSHOT.206</version>
     <scope>runtime</scope>
   </dependency>
   <dependency>
     <groupId>com.google.guava</groupId>
     <artifactId>guava-testlib</artifactId>
-    <version>32.1.1-jre</version>
+    <version>32.1.2-jre</version>
     <scope>test</scope>
   </dependency>
   <dependency>
@@ -98,7 +98,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-logging-smoke-test</artifactId>
-    <version>2.0.0-SNAPSHOT.202</version>
+    <version>2.0.0-SNAPSHOT.206</version>
     <scope>test</scope>
   </dependency>
   <dependency>
@@ -152,18 +152,18 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.errorprone</groupId>
     <artifactId>error_prone_annotations</artifactId>
-    <version>2.20.0</version>
+    <version>2.21.1</version>
     <scope>provided</scope>
   </dependency>
   <dependency>
     <groupId>com.google.errorprone</groupId>
     <artifactId>error_prone_core</artifactId>
-    <version>2.20.0</version>
+    <version>2.21.1</version>
   </dependency>
   <dependency>
     <groupId>com.google.errorprone</groupId>
     <artifactId>error_prone_type_annotations</artifactId>
-    <version>2.20.0</version>
+    <version>2.21.1</version>
     <scope>provided</scope>
   </dependency>
   <dependency>
@@ -174,7 +174,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.protobuf</groupId>
     <artifactId>protoc</artifactId>
-    <version>3.23.4</version>
+    <version>3.24.1</version>
   </dependency>
   <dependency>
     <groupId>com.puppycrawl.tools</groupId>
@@ -205,7 +205,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>org.checkerframework</groupId>
     <artifactId>checker-qual</artifactId>
-    <version>3.36.0</version>
+    <version>3.37.0</version>
     <scope>provided</scope>
   </dependency>
   <dependency>
@@ -221,37 +221,37 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>org.jetbrains.dokka</groupId>
     <artifactId>dokka-analysis</artifactId>
-    <version>1.8.10</version>
+    <version>1.8.20</version>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.dokka</groupId>
     <artifactId>dokka-base</artifactId>
-    <version>1.8.10</version>
+    <version>1.8.20</version>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.dokka</groupId>
     <artifactId>dokka-core</artifactId>
-    <version>1.8.10</version>
+    <version>1.8.20</version>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.dokka</groupId>
     <artifactId>gfm-plugin</artifactId>
-    <version>1.8.10</version>
+    <version>1.8.20</version>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.dokka</groupId>
     <artifactId>javadoc-plugin</artifactId>
-    <version>1.8.10</version>
+    <version>1.8.20</version>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.dokka</groupId>
     <artifactId>jekyll-plugin</artifactId>
-    <version>1.8.10</version>
+    <version>1.8.20</version>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.dokka</groupId>
     <artifactId>kotlin-as-java-plugin</artifactId>
-    <version>1.8.10</version>
+    <version>1.8.20</version>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.kotlin</groupId>
