@@ -42,6 +42,7 @@ import static kotlin.jvm.JvmClassMappingKt.getKotlinClass;
  */
 public final class Delete {
 
+    // https://github.com/SpineEventEngine/logging/issues/33
     private static final Logger<?> logger = LoggingFactory.getLogger(getKotlinClass(Delete.class));
 
     /** Prevents instantiation of this utility class. */

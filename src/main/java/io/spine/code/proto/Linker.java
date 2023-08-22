@@ -53,6 +53,7 @@ import static kotlin.jvm.JvmClassMappingKt.getKotlinClass;
  */
 final class Linker {
 
+    // https://github.com/SpineEventEngine/logging/issues/33
     private static final Logger<?> logger = LoggingFactory.getLogger(getKotlinClass(Linker.class));
 
     private static final FileDescriptor[] NO_DEPENDENCIES = {};

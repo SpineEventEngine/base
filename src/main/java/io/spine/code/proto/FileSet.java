@@ -66,6 +66,7 @@ import static kotlin.jvm.JvmClassMappingKt.getKotlinClass;
  */
 public final class FileSet {
 
+    // https://github.com/SpineEventEngine/logging/issues/33
     private static final Logger<?> logger = LoggingFactory.getLogger(getKotlinClass(FileSet.class));
 
     private static final FileDescriptor[] EMPTY = {};
