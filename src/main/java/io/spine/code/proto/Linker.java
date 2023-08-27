@@ -46,7 +46,6 @@ import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
-import static kotlin.jvm.JvmClassMappingKt.getKotlinClass;
 
 /**
  * Builds a set of {@link FileDescriptor}s from a list of {@link FileDescriptorProto}.
@@ -54,7 +53,7 @@ import static kotlin.jvm.JvmClassMappingKt.getKotlinClass;
 final class Linker {
 
     // https://github.com/SpineEventEngine/logging/issues/33
-    private static final Logger<?> logger = LoggingFactory.getLogger(getKotlinClass(Linker.class));
+    private static final Logger<?> logger = LoggingFactory.forEnclosingClass();
 
     private static final FileDescriptor[] NO_DEPENDENCIES = {};
 

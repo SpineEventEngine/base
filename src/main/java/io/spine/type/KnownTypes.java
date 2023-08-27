@@ -57,7 +57,6 @@ import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
-import static kotlin.jvm.JvmClassMappingKt.getKotlinClass;
 
 /**
  * All Protobuf types known to the application.
@@ -312,8 +311,7 @@ public class KnownTypes implements Serializable {
     public static final class Holder {
 
         // https://github.com/SpineEventEngine/logging/issues/33
-        private static final Logger<?> logger =
-                LoggingFactory.getLogger(getKotlinClass(Holder.class));
+        private static final Logger<?> logger = LoggingFactory.forEnclosingClass();
 
         /** The lock to synchronize the write access to the {@code KnownTypes} instance. */
         private static final Lock lock = new ReentrantLock(false);

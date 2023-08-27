@@ -35,7 +35,6 @@ import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
-import static kotlin.jvm.JvmClassMappingKt.getKotlinClass;
 
 /**
  * Utilities for delete operations on a file system.
@@ -43,7 +42,7 @@ import static kotlin.jvm.JvmClassMappingKt.getKotlinClass;
 public final class Delete {
 
     // https://github.com/SpineEventEngine/logging/issues/33
-    private static final Logger<?> logger = LoggingFactory.getLogger(getKotlinClass(Delete.class));
+    private static final Logger<?> logger = LoggingFactory.forEnclosingClass();
 
     /** Prevents instantiation of this utility class. */
     private Delete() {

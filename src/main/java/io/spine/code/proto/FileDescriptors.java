@@ -48,7 +48,6 @@ import static io.spine.util.Predicates2.distinctBy;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-import static kotlin.jvm.JvmClassMappingKt.getKotlinClass;
 
 /**
  * A utility class which allows to obtain Protobuf file descriptors.
@@ -56,8 +55,7 @@ import static kotlin.jvm.JvmClassMappingKt.getKotlinClass;
 public final class FileDescriptors {
 
     // https://github.com/SpineEventEngine/logging/issues/33
-    private static final Logger<?> logger =
-            LoggingFactory.getLogger(getKotlinClass(FileDescriptors.class));
+    private static final Logger<?> logger = LoggingFactory.forEnclosingClass();
 
     /**
      * Extension of the descriptor set files.
