@@ -310,7 +310,6 @@ public class KnownTypes implements Serializable {
     @Internal
     public static final class Holder {
 
-        // https://github.com/SpineEventEngine/logging/issues/33
         private static final Logger<?> logger = LoggingFactory.forEnclosingClass();
 
         /** The lock to synchronize the write access to the {@code KnownTypes} instance. */

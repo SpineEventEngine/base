@@ -52,7 +52,6 @@ import static java.util.stream.Collectors.toList;
  */
 final class Linker {
 
-    // https://github.com/SpineEventEngine/logging/issues/33
     private static final Logger<?> logger = LoggingFactory.forEnclosingClass();
 
     private static final FileDescriptor[] NO_DEPENDENCIES = {};

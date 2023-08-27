@@ -65,7 +65,6 @@ import static java.util.stream.Collectors.toSet;
  */
 public final class FileSet {
 
-    // https://github.com/SpineEventEngine/logging/issues/33
     private static final Logger<?> logger = LoggingFactory.forEnclosingClass();
 
     private static final FileDescriptor[] EMPTY = {};

@@ -41,7 +41,6 @@ import static java.lang.String.format;
  */
 public final class Delete {
 
-    // https://github.com/SpineEventEngine/logging/issues/33
     private static final Logger<?> logger = LoggingFactory.forEnclosingClass();
 
     /** Prevents instantiation of this utility class. */
