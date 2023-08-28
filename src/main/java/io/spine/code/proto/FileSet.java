@@ -59,15 +59,13 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
-import static kotlin.jvm.JvmClassMappingKt.getKotlinClass;
 
 /**
  * A set of proto files represented by their {@linkplain FileDescriptor descriptors}.
  */
 public final class FileSet {
 
-    // https://github.com/SpineEventEngine/logging/issues/33
-    private static final Logger<?> logger = LoggingFactory.getLogger(getKotlinClass(FileSet.class));
+    private static final Logger<?> logger = LoggingFactory.forEnclosingClass();
 
     private static final FileDescriptor[] EMPTY = {};
 
