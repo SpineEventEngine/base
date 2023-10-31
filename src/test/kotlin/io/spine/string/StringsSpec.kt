@@ -87,4 +87,9 @@ class StringsSpec {
         lines shouldStartWith "    a"
         lines shouldContain Separator.nl()
     }
+
+    @Test
+    fun `join iterable with backticks`() {
+        listOf("a", "b", "c").joinBackticked() shouldBe "`a`, `b`, `c`"
+    }
 }
