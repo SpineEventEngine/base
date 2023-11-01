@@ -29,6 +29,24 @@
 package io.spine.string
 
 /**
+ * Joins these strings into a `CamelCase` string.
+ *
+ * The string will start with the first capital letter if possible.
+ *
+ * Each element is capitalized and joined in the order of appearance in this `Iterable`.
+ * The elements are never changed except for the first char.
+ */
+public fun Iterable<String>.camelCase(): String =
+    filter { it.isNotBlank() }.joinToString(separator = "") { it.titleCase() }
+
+/**
+ * A diagnostic extension allowing to print an `Iterable` into a string enclosing
+ * the elements with backticks and separating them with commas.
+ */
+public fun <T> Iterable<T>.joinBackticked(): String =
+    joinToString(separator = "`, `", prefix = "`", postfix = "`")
+
+/**
  * Obtains the same string but with the first capital letter.
  *
  * If the first char of the string cannot be capitalized (e.g. is not a letter, is already
@@ -50,17 +68,6 @@ public fun String.titleCase(): String =
  */
 public fun String.camelCase(): String =
     split("_").camelCase()
-
-/**
- * Joins these strings into a `CamelCase` string.
- *
- * The string will start with the first capital letter if possible.
- *
- * Each element is capitalized and joined in the order of appearance in this `Iterable`.
- * The elements are never changed except for the first char.
- */
-public fun Iterable<String>.camelCase(): String =
-    filter { it.isNotBlank() }.joinToString(separator = "") { it.titleCase() }
 
 /**
  * Trims the common indent from all the lines, as well as the trailing whitespace.
