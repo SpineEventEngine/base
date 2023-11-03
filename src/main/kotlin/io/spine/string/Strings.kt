@@ -107,9 +107,8 @@ public fun String.pi(indent: String = Indent.defaultJavaIndent.value): String =
  *
  * @see Stringifiers.toString
  */
-public inline fun <reified T : Any> T.stringify(): String {
-    return Stringifiers.toString(this, T::class.java)
-}
+public inline fun <reified T : Any> T.stringify(): String =
+    Stringifiers.toString(this, T::class.java)
 
 /**
  * Joins the elements of this `Iterable` into a single string having each item on a separate line.

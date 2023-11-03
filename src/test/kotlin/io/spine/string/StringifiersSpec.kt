@@ -51,7 +51,7 @@ import org.junit.jupiter.api.Test
     "TestFunctionName" /* Allow starting with a capital letter when they are named after a type. */
 )
 @DisplayName("`Stringifiers` utility class should")
-internal class StringifiersTest : UtilityClassTest<Stringifiers>(Stringifiers::class.java) {
+internal class StringifiersSpec : UtilityClassTest<Stringifiers>(Stringifiers::class.java) {
 
     companion object {
         private const val DELIMITER = '#'
