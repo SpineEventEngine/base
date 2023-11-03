@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,168 +23,148 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.string
 
-package io.spine.string;
+import com.google.common.collect.ImmutableList
+import com.google.common.collect.ImmutableMap
+import com.google.protobuf.Duration
+import com.google.protobuf.Timestamp
+import com.google.protobuf.util.Durations
+import com.google.protobuf.util.Timestamps
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
+import io.spine.base.Identifier
+import io.spine.base.Time
+import io.spine.string.Stringifiers.fromString
+import io.spine.string.Stringifiers.stringify
+import io.spine.test.string.STask
+import io.spine.test.string.STaskId
+import io.spine.test.string.STaskStatus
+import io.spine.testing.UtilityClassTest
+import io.spine.type.toCompactJson
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.protobuf.Duration;
-import com.google.protobuf.Timestamp;
-import com.google.protobuf.util.Durations;
-import com.google.protobuf.util.Timestamps;
-import io.spine.base.Time;
-import io.spine.test.string.STask;
-import io.spine.test.string.STaskId;
-import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.base.Identifier.newUuid;
-import static io.spine.string.Stringifiers.newForListOf;
-import static io.spine.string.Stringifiers.newForMapOf;
-import static io.spine.test.string.STaskStatus.DONE;
-
+@Suppress(
+    "TestFunctionName" /* Allow starting with a capital letter when they are named after a type. */
+)
 @DisplayName("`Stringifiers` utility class should")
-class StringifiersTest extends UtilityClassTest<Stringifiers> {
+internal class StringifiersTest : UtilityClassTest<Stringifiers>(Stringifiers::class.java) {
 
-    StringifiersTest() {
-        super(Stringifiers.class);
+    companion object {
+        private const val DELIMITER = '#'
+        private const val SIZE = 5
     }
 
     @Nested
     @DisplayName("stringify")
-    class Stringify {
+    internal inner class Stringify {
 
         @Test
-        @DisplayName("a `boolean`")
-        void aBoolean() {
-            checkStringifies(false, "false");
+        fun boolean() = checkStringifies(false, "false")
+
+        @Test
+        fun int() = checkStringifies(1, "1")
+
+        @Test
+        fun long() = checkStringifies(1L, "1")
+
+        @Test
+        fun String() {
+            val theString = "some-string"
+            checkStringifies(theString, theString)
         }
 
         @Test
-        @DisplayName("an `int`")
-        void anInteger() {
-            checkStringifies(1, "1");
+        fun Timestamp() {
+            val timestamp = Timestamp.getDefaultInstance()
+            val expected = Timestamps.toString(timestamp)
+            checkStringifies(timestamp, expected)
         }
 
         @Test
-        @DisplayName(" a `long`")
-        void aLong() {
-            checkStringifies(1L, "1");
+        fun Duration() {
+            val duration = Duration.getDefaultInstance()
+            val expected = Durations.toString(duration)
+            checkStringifies(duration, expected)
         }
 
         @Test
-        @DisplayName("a `String`")
-        void aString() {
-            var theString = "some-string";
-
-            checkStringifies(theString, theString);
+        fun enums() {
+            checkStringifies(STaskStatus.DONE, "DONE")
         }
 
         @Test
-        @DisplayName("a `Timestamp`")
-        void aTimestamp() {
-            var timestamp = Timestamp.getDefaultInstance();
-            var expected = Timestamps.toString(timestamp);
+        fun `a Protobuf 'Message'`() {
+            val id = STaskId.newBuilder()
+                .setUuid(Identifier.newUuid())
+                .build()
+            val message = STask.newBuilder()
+                .setId(id)
+                .setStatus(STaskStatus.DONE)
+                .build()
 
-            checkStringifies(timestamp, expected);
+            val expected = message.toCompactJson()
+            checkStringifies(message, expected)
         }
-
-        @Test
-        @DisplayName("a `Duration`")
-        void aDuration() {
-            var duration = Duration.getDefaultInstance();
-            var expected = Durations.toString(duration);
-
-            checkStringifies(duration, expected);
-        }
-
-        @Test
-        @DisplayName("an enum")
-        void aEnum() {
-            checkStringifies(DONE, "DONE");
-        }
-
-        @Test
-        @DisplayName("a Protobuf `Message`")
-        void aProtobufMessage() {
-            var id = STaskId.newBuilder()
-                    .setUuid(newUuid())
-                    .build();
-            var message = STask.newBuilder()
-                    .setId(id)
-                    .setStatus(DONE)
-                    .build();
-
-            var expected = io.spine.type.Json.toCompactJson(message);
-            checkStringifies(message, expected);
-        }
-
-        private void checkStringifies(Object value, String expected) {
-            var conversionResult = Stringifiers.toString(value);
-            assertThat(conversionResult).isEqualTo(expected);
+        private fun checkStringifies(value: Any, expected: String) {
+            val conversionResult = Stringifiers.toString(value)
+            conversionResult shouldBe expected
         }
     }
 
     @Nested
-    @DisplayName("create `Stringifier` with a delimeter for")
-    class Delimited {
-
-        private static final char DELIMITER = '#';
-        private static final int SIZE = 5;
+    @DisplayName("create 'Stringifier' with a delimeter for")
+    internal inner class Delimited {
 
         @Test
-        @DisplayName("`List`")
-        void list() {
-            List<Timestamp> stamps = createList();
-            var stringifier = newForListOf(Timestamp.class, DELIMITER);
+        fun List() {
+            val stamps: List<Timestamp> = createList()
+            val stringifier = Stringifiers.newForListOf(
+                Timestamp::class.java, DELIMITER
+            )
+            val out = stringifier.toString(stamps)
 
-            var out = stringifier.toString(stamps);
+            out shouldContain DELIMITER.toString()
 
-            var assertOut = assertThat(out);
-            assertOut.contains(String.valueOf(DELIMITER));
-            var quoter = Quoter.forLists();
-            for (var stamp : stamps) {
-                assertOut.contains(quoter.quote(Timestamps.toString(stamp)));
+            val quoter = Quoter.forLists()
+            for (stamp in stamps) {
+                out shouldContain quoter.quote(Timestamps.toString(stamp))
             }
         }
 
         @Test
-        @DisplayName("`Map`")
-        void map() {
-            var stamps = createMap();
-            var stringifier = newForMapOf(Long.class, Timestamp.class, DELIMITER);
+        fun Map() {
+            val stamps = createMap()
+            val stringifier = Stringifiers.newForMapOf<Long, Timestamp>(DELIMITER)
+            val out = stringifier.toString(stamps)
 
-            var out = stringifier.toString(stamps);
-            var assertOut = assertThat(out);
-            assertOut.contains(String.valueOf(DELIMITER));
+            out shouldContain DELIMITER.toString()
 
-            var quoter = Quoter.forMaps();
-            for (var key : stamps.keySet()) {
-                assertOut.contains(String.valueOf(key));
-                assertOut.contains(quoter.quote(Timestamps.toString(stamps.get(key))));
+            val quoter = Quoter.forMaps()
+            for (key in stamps.keys) {
+                out shouldContain key.toString()
+                out shouldContain quoter.quote(Timestamps.toString(stamps[key]))
             }
         }
 
-        private ImmutableList<Timestamp> createList() {
-            ImmutableList.Builder<Timestamp> builder = ImmutableList.builder();
-            for (var i = 0; i < SIZE; i++) {
-                builder.add(Time.currentTime());
+        private fun createList(): ImmutableList<Timestamp> {
+            val builder = ImmutableList.builder<Timestamp>()
+            for (i in 0..<SIZE) {
+                builder.add(Time.currentTime())
             }
-            return builder.build();
+            return builder.build()
         }
 
-        private ImmutableMap<Long, Timestamp> createMap() {
-            ImmutableMap.Builder<Long, Timestamp> builder = ImmutableMap.builder();
-            for (var i = 0; i < SIZE; i++) {
-                var t = Time.currentTime();
-                builder.put((long) i, t);
+        private fun createMap(): ImmutableMap<Long, Timestamp> {
+            val builder = ImmutableMap.builder<Long, Timestamp>()
+            for (i in 0..<SIZE) {
+                val t = Time.currentTime()
+                builder.put(i.toLong(), t)
             }
-            return builder.build();
+            return builder.build()
         }
     }
 
@@ -194,31 +174,33 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
      */
     @Nested
     @DisplayName("parse a string into")
-    class Parsing {
+    internal inner class Parsing {
 
         @Test
-        @DisplayName("`Boolean`")
-        void logical() {
-            assertThat(Stringifiers.fromString("true", Boolean.class))
-                    .isTrue();
+        fun Boolean() {
+            fromString<Boolean>("true") shouldBe true
         }
 
         @Test
-        @DisplayName("`Integer`")
-        void integerNumber() {
-            assertThat(Stringifiers.fromString("-100500", Integer.class))
-                    .isEqualTo(-100500);
+        fun Integer() {
+            fromString<Int>("-100500") shouldBe -100500
         }
 
         @Test
-        @DisplayName("`List`")
-        void list() {
-            List<Integer> numbers = ImmutableList.of(100, 200, -300);
-            var stringifier = Stringifiers.newForListOf(Integer.class);
-            var numString = stringifier.toString(numbers);
+        fun List() {
+            val numbers: List<Int> = ImmutableList.of(100, 200, -300)
+            val stringifier = Stringifiers.newForListOf<Int>()
+            val numString = stringifier.toString(numbers)
 
-            var parsed = stringifier.fromString(numString);
-            assertThat(parsed).containsExactlyElementsIn(numbers);
+            val parsed = stringifier.fromString(numString)
+
+            parsed shouldContainExactly numbers
         }
+    }
+
+    @Test
+    fun `have an alias for 'toString' method`() {
+        val value = "foo-bar"
+        Stringifiers.toString(value) shouldBe stringify(value)
     }
 }
