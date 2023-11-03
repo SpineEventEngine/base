@@ -129,7 +129,7 @@ public final class Text implements Iterable<String> {
     /**
      * Obtains the text as joined lines.
      *
-     * <p>This method always returns same object, so repeated calls have no performance effect.
+     * <p>This method always returns the same object, so repeated calls have no performance effect.
      *
      * @see #toString()
      */

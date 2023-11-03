@@ -49,7 +49,7 @@ public fun <T> Iterable<T>.joinBackticked(): String =
 /**
  * Obtains the same string but with the first capital letter.
  *
- * If the first char of the string cannot be capitalized (e.g. is not a letter, is already
+ * If the first char of the string cannot be capitalized (e.g., is not a letter, is already
  * capitalized, etc.), obtains the same string.
  */
 public fun String.titleCase(): String =
@@ -101,3 +101,18 @@ public fun String.ti(): String = trimIndent().fixLineEndings()
  */
 public fun String.pi(indent: String = Indent.defaultJavaIndent.value): String =
     prependIndent(indent).fixLineEndings()
+
+/**
+ * Obtains a string representation of this object using a [Stringifier] for the object type.
+ *
+ * @see Stringifiers.toString
+ */
+public inline fun <reified T : Any> T.stringify(): String {
+    return Stringifiers.toString(this, T::class.java)
+}
+
+/**
+ * Joins the elements of this `Iterable` into a single string having each item on a separate line.
+ */
+public fun Iterable<*>.joinByLines(): String =
+    joinToString(separator = Separator.nl())
