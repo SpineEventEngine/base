@@ -23,6 +23,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+@file:JvmName("Stringify")
+
 package io.spine.string
 
 import com.google.common.escape.Escaper
@@ -34,9 +37,59 @@ import java.lang.reflect.Type
 import kotlin.reflect.KClass
 
 /**
- * Utility class for working with `Stringifier`s.
+ * Obtains a string representation of this object using a [Stringifier] for the object type.
+ *
+ * @see Stringifiers.toString
  */
-@Suppress("TooManyFunctions") // need to gather all of them here for easier usage.
+public inline fun <reified T : Any> T.stringify(): String =
+    Stringifiers.toString(this, T::class.java)
+
+/**
+ * Same as [Stringifiers.fromString] for brevity in Kotlin code.
+ */
+public inline fun <reified T : Any> fromString(str: String): T =
+    Stringifiers.fromString(str, T::class.java)
+
+/**
+ * Same as [Stringifier.fromString] accepting [KClass] instead of [Class].
+ */
+public fun <T : Any> fromString(str: String, cls: KClass<T>): T =
+    Stringifiers.fromString(str, cls.java)
+
+/**
+ * Same as [Stringifiers.newForListOf] for brevity in Kotlin code.
+ */
+public inline fun <reified T : Any> listStringifier(): Stringifier<List<T>> =
+    Stringifiers.newForListOf(T::class.java)
+
+/**
+ * Same as [Stringifiers.newForListOf] for brevity in Kotlin code.
+ */
+public inline fun <reified T: Any> listStringifier(delimiter: Char): Stringifier<List<T>> =
+    Stringifiers.newForListOf(T::class.java, delimiter)
+
+/**
+ * Same as [Stringifiers.newForMapOf] for brevity in Kotlin code.
+ */
+public inline fun <reified K : Any, reified V : Any> mapStringifier(): Stringifier<Map<K, V>> =
+    Stringifiers.newForMapOf(K::class.java, V::class.java)
+
+/**
+ * Same as [Stringifiers.newForMapOf] for brevity in Kotlin code.
+ */
+public inline fun <reified K : Any, reified V : Any> mapStringifier(
+    delimiter: Char
+): Stringifier<Map<K, V>> = Stringifiers.newForMapOf(K::class.java, V::class.java, delimiter)
+
+/**
+ * Utility object for working with `Stringifier`s.
+ *
+ * **API Note**: This object is Kotlin port of the `Stringifiers` class from Java.
+ * It is kept as an object, rather than a group of top-level functions, to preserve backward
+ * compatibility with the existing Java code. It is expected that it will be gradually
+ * migrated to top-level functions with an appropriate deprecation cycle.
+ */
+@Suppress("TooManyFunctions") // Need to gather all of them here for easier usage.
 public object Stringifiers {
 
     /**
@@ -59,6 +112,7 @@ public object Stringifiers {
      *
      * The same as [toString] but with the ability for static import in Java.
      */
+    @JvmStatic
     public fun <T : Any> stringify(obj: T): String = toString(obj)
 
     /**
@@ -103,18 +157,6 @@ public object Stringifiers {
     }
 
     /**
-     * Same as [fromString] accepting [KClass] instead of [Class].
-     */
-    public fun <T : Any> fromString(str: String, cls: KClass<T>): T =
-        fromString(str, cls.java)
-
-    /**
-     * Same as [fromString] for brevity in Kotlin code.
-     */
-    public inline fun <reified T : Any> fromString(str: String): T =
-        fromString(str, T::class.java)
-
-    /**
      * Obtains `Stringifier` for the map with default delimiter for the passed map elements.
      *
      * @param keyClass
@@ -133,12 +175,6 @@ public object Stringifiers {
         valueClass: Class<V>
     ): Stringifier<Map<K, V>> = MapStringifier(keyClass, valueClass)
 
-
-    /**
-     * Same as [newForMapOf] for brevity in Kotlin code.
-     */
-    public inline fun <reified K : Any, reified V : Any> newForMapOf(): Stringifier<Map<K, V>> =
-        newForMapOf(K::class.java, V::class.java)
 
     /**
      * Obtains `Stringifier` for the map with custom delimiter for the passed map elements.
@@ -160,13 +196,6 @@ public object Stringifiers {
         valueClass: Class<V>,
         delimiter: Char
     ): Stringifier<Map<K, V>> = MapStringifier(keyClass, valueClass, delimiter)
-
-    /**
-     * Same as [newForMapOf] for brevity in Kotlin code.
-     */
-    public inline fun <reified K : Any, reified V : Any> newForMapOf(
-        delimiter: Char
-    ): Stringifier<Map<K, V>> = newForMapOf(K::class.java, V::class.java, delimiter)
 
     /**
      * Obtains `Stringifier` for `Boolean` values.
@@ -226,12 +255,6 @@ public object Stringifiers {
         ListStringifier(elementClass)
 
     /**
-     * Same as [newForListOf] for brevity in Kotlin code.
-     */
-    public inline fun <reified T : Any> newForListOf(): Stringifier<List<T>> =
-        newForListOf(T::class.java)
-
-    /**
      * Obtains `Stringifier` for a list with the custom delimiter for the passed list elements.
      *
      * @param elementClass
@@ -246,12 +269,6 @@ public object Stringifiers {
         elementClass: Class<T>,
         delimiter: Char
     ): Stringifier<List<T>> = ListStringifier(elementClass, delimiter)
-
-    /**
-     * Same as [newForListOf] for brevity in Kotlin code.
-     */
-    public inline fun <reified T: Any> newForListOf(delimiter: Char): Stringifier<List<T>> =
-        newForListOf(T::class.java, delimiter)
 
     /**
      * Obtains a `Stringifier` for the passed `enum` class.

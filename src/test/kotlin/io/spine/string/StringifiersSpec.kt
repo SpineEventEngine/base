@@ -36,7 +36,6 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.spine.base.Identifier
 import io.spine.base.Time
-import io.spine.string.Stringifiers.fromString
 import io.spine.string.Stringifiers.stringify
 import io.spine.test.string.STask
 import io.spine.test.string.STaskId
@@ -60,7 +59,7 @@ internal class StringifiersSpec : UtilityClassTest<Stringifiers>(Stringifiers::c
 
     @Nested
     @DisplayName("stringify")
-    internal inner class Stringify {
+    internal inner class StringifyKt {
 
         @Test
         fun boolean() = checkStringifies(false, "false")
@@ -122,7 +121,7 @@ internal class StringifiersSpec : UtilityClassTest<Stringifiers>(Stringifiers::c
         @Test
         fun List() {
             val stamps: List<Timestamp> = createList()
-            val stringifier = Stringifiers.newForListOf<Timestamp>(DELIMITER)
+            val stringifier = listStringifier<Timestamp>(DELIMITER)
             val out = stringifier.toString(stamps)
 
             out shouldContain DELIMITER.toString()
@@ -136,7 +135,7 @@ internal class StringifiersSpec : UtilityClassTest<Stringifiers>(Stringifiers::c
         @Test
         fun Map() {
             val stamps = createMap()
-            val stringifier = Stringifiers.newForMapOf<Long, Timestamp>(DELIMITER)
+            val stringifier = mapStringifier<Long, Timestamp>(DELIMITER)
             val out = stringifier.toString(stamps)
 
             out shouldContain DELIMITER.toString()
@@ -187,7 +186,7 @@ internal class StringifiersSpec : UtilityClassTest<Stringifiers>(Stringifiers::c
         @Test
         fun List() {
             val numbers: List<Int> = ImmutableList.of(100, 200, -300)
-            val stringifier = Stringifiers.newForListOf<Int>()
+            val stringifier = listStringifier<Int>()
             val numString = stringifier.toString(numbers)
 
             val parsed = stringifier.fromString(numString)

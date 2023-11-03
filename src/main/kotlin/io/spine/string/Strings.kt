@@ -29,6 +29,14 @@
 package io.spine.string
 
 /**
+ * This file contains extension functions for obtaining <em>standard</em> string
+ * representation of various objects. For string representations using [Stringifier],
+ * please see [io.spine.string.Stringifiers].
+ */
+@Suppress("unused")
+private const val ABOUT = ""
+
+/**
  * Joins these strings into a `CamelCase` string.
  *
  * The string will start with the first capital letter if possible.
@@ -101,14 +109,6 @@ public fun String.ti(): String = trimIndent().fixLineEndings()
  */
 public fun String.pi(indent: String = Indent.defaultJavaIndent.value): String =
     prependIndent(indent).fixLineEndings()
-
-/**
- * Obtains a string representation of this object using a [Stringifier] for the object type.
- *
- * @see Stringifiers.toString
- */
-public inline fun <reified T : Any> T.stringify(): String =
-    Stringifiers.toString(this, T::class.java)
 
 /**
  * Joins the elements of this `Iterable` into a single string having each item on a separate line.
