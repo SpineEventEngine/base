@@ -248,6 +248,12 @@ public object Stringifiers {
     ): Stringifier<List<T>> = ListStringifier(elementClass, delimiter)
 
     /**
+     * Same as [newForListOf] for brevity in Kotlin code.
+     */
+    public inline fun <reified T: Any> newForListOf(delimiter: Char): Stringifier<List<T>> =
+        newForListOf(T::class.java, delimiter)
+
+    /**
      * Obtains a `Stringifier` for the passed `enum` class.
      *
      * @param enumClass

@@ -122,9 +122,7 @@ internal class StringifiersTest : UtilityClassTest<Stringifiers>(Stringifiers::c
         @Test
         fun List() {
             val stamps: List<Timestamp> = createList()
-            val stringifier = Stringifiers.newForListOf(
-                Timestamp::class.java, DELIMITER
-            )
+            val stringifier = Stringifiers.newForListOf<Timestamp>(DELIMITER)
             val out = stringifier.toString(stamps)
 
             out shouldContain DELIMITER.toString()
