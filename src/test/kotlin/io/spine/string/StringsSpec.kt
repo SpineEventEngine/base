@@ -92,4 +92,10 @@ class StringsSpec {
     fun `join iterable with backticks`() {
         listOf("a", "b", "c").joinBackticked() shouldBe "`a`, `b`, `c`"
     }
+
+    @Test
+    fun `provide extension for stringifying an object`() {
+        val value = "some value"
+        value.stringify() shouldBe value
+    }
 }

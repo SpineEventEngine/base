@@ -31,6 +31,7 @@ import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
+@Suppress("DEPRECATION")
 internal class TextTest {
 
     private val nl = System.lineSeparator()

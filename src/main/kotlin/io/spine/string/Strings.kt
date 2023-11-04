@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,14 @@
 package io.spine.string
 
 /**
+ * This file contains extension functions for obtaining <em>standard</em> string
+ * representation of various objects. For string representations using [Stringifier],
+ * please see [io.spine.string.Stringifiers].
+ */
+@Suppress("unused")
+private const val ABOUT = ""
+
+/**
  * Joins these strings into a `CamelCase` string.
  *
  * The string will start with the first capital letter if possible.
@@ -49,7 +57,7 @@ public fun <T> Iterable<T>.joinBackticked(): String =
 /**
  * Obtains the same string but with the first capital letter.
  *
- * If the first char of the string cannot be capitalized (e.g. is not a letter, is already
+ * If the first char of the string cannot be capitalized (e.g., is not a letter, is already
  * capitalized, etc.), obtains the same string.
  */
 public fun String.titleCase(): String =
@@ -101,3 +109,9 @@ public fun String.ti(): String = trimIndent().fixLineEndings()
  */
 public fun String.pi(indent: String = Indent.defaultJavaIndent.value): String =
     prependIndent(indent).fixLineEndings()
+
+/**
+ * Joins the elements of this `Iterable` into a single string having each item on a separate line.
+ */
+public fun Iterable<*>.joinByLines(): String =
+    joinToString(separator = Separator.nl())

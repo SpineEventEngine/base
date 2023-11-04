@@ -78,19 +78,17 @@ dependencies {
     annotationProcessor(AutoService.processor)
     compileOnly(AutoService.annotations)
 
-    implementation(Spine.logging)
+    implementation(Spine.Logging.lib)
     implementation(Kotlin.reflect)
 
     /* Have `protobuf` dependency instead of `api` or `implementation` so that proto
-       files from the library are included into the compilation. We need this because we
+       files from the library are included in the compilation. We need this because we
        build our descriptor set files using those standard proto files too.
 
        See Protobuf Gradle Plugin documentation for details:
            https://github.com/google/protobuf-gradle-plugin#protos-in-dependencies
     */
-    Protobuf.libs.forEach {
-        protobuf(it)
-    }
+    protobuf(Protobuf.protoSrcLib)
 
     testImplementation(Spine.testlib)
     testImplementation(Spine.Logging.smokeTest)

@@ -24,4 +24,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.192")
+package io.spine.string;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.string.Stringifiers.stringify;
+
+@DisplayName("`Stringify` should")
+class StringifyJavaSpec {
+
+    @Test
+    @DisplayName("provide `stringify()` method")
+    void provideStringifyMethod() {
+        var value = "foo-bar";
+        assertThat(stringify(value)).isEqualTo(value);
+    }
+}

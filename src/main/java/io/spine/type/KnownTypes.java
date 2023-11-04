@@ -51,8 +51,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.string.Strings.joinByLines;
 import static io.spine.util.Predicates2.distinctBy;
-import static io.spine.util.Text.joiner;
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
 import static java.util.Comparator.comparing;
@@ -65,10 +65,11 @@ import static java.util.stream.Collectors.toSet;
  * the {@linkplain io.spine.code.proto.FileDescriptors#KNOWN_TYPES resource file}.
  *
  * <p>An instance of {@link KnownTypes} is immutable. All the instance methods of this class are
- * deterministic, i.e., when called on the same instance, they return results that are equal in
- * terms of {@code Object.equals}. Though, the {@link KnownTypes#instance()} method is not
- * deterministic, i.e. can return different objects. It is guaranteed that no types are being
- * forgotten:
+ * deterministic. This means that when they are called on the same instance, they return results
+ * that are equal in terms of {@code Object.equals}.
+ *
+ * <p>Though, the {@link KnownTypes#instance()} method is not deterministic, meaning it
+ * can return different objects. It is guaranteed that no types are being forgotten:
  * <pre>
  *     {@code
  *     KnownTypes oldTypes = KnownTypes.instance();
@@ -279,7 +280,8 @@ public class KnownTypes implements Serializable {
         var result = new StringBuilder(KnownTypes.class.getSimpleName());
         result.append(':')
               .append(lineSeparator());
-        joiner().appendTo(result, allUrlList());
+        var urls = printAllTypes();
+        result.append(urls);
         return result.toString();
     }
 
@@ -287,11 +289,11 @@ public class KnownTypes implements Serializable {
      * Prints alphabetically sorted URLs of the known types, having each type on a separate line.
      */
     public String printAllTypes() {
-        return joiner().join(allUrlList());
+        return joinByLines(allUrlList());
     }
 
     /**
-     * Obtains alphabetically sorted list of URLs of all known types.
+     * Obtains an alphabetically sorted URL list of all known types.
      */
     private List<String> allUrlList() {
         var result = allUrls().stream()
@@ -304,8 +306,7 @@ public class KnownTypes implements Serializable {
     /**
      * A holder of the {@link KnownTypes} instance.
      *
-     * @apiNote This class is public for allowing extension of known types by
-     *  the development tools.
+     * @apiNote This class is public for allowing extending known types by the development tools.
      */
     @Internal
     public static final class Holder {
@@ -318,7 +319,7 @@ public class KnownTypes implements Serializable {
         /** The singleton instance, which can be updated by {@link #extendWith(TypeSet)}. */
         private static KnownTypes instance = load();
 
-        /** Prevents instantiation from outside. */
+        /** Prevents instantiation from the outside. */
         private Holder() {
         }
 

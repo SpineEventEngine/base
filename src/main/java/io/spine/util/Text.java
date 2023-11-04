@@ -45,8 +45,11 @@ import static java.lang.System.lineSeparator;
  *
  * @apiNote Even though this class provides static utilities for splitting and merging
  *         lines, please prefer using instance methods of this class.
+ * @deprecated Please use a similar type for
+ *      the <a href="https://github.com/SpineEventEngine/text">Text library</a>.
  */
 @Immutable
+@Deprecated
 public final class Text implements Iterable<String> {
 
     private static final Splitter SPLITTER = Splitter.on(lineSeparator());
@@ -126,7 +129,7 @@ public final class Text implements Iterable<String> {
     /**
      * Obtains the text as joined lines.
      *
-     * <p>This method always returns same object, so repeated calls have no performance effect.
+     * <p>This method always returns the same object, so repeated calls have no performance effect.
      *
      * @see #toString()
      */
