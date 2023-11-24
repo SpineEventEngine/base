@@ -80,7 +80,7 @@ fun NamedDomainObjectContainer<Configuration>.forceVersions() {
 }
 
 private fun ResolutionStrategy.forceProductionDependencies() {
-    @Suppress("DEPRECATION") // Force SLF4J version.
+    @Suppress("DEPRECATION") // Force versions of SLF4J and Kotlin libs.
     force(
         AnimalSniffer.lib,
         AutoCommon.lib,
@@ -95,6 +95,7 @@ private fun ResolutionStrategy.forceProductionDependencies() {
         Kotlin.reflect,
         Kotlin.stdLib,
         Kotlin.stdLibCommon,
+        Kotlin.stdLibJdk7,
         Kotlin.stdLibJdk8,
         Protobuf.GradlePlugin.lib,
         Protobuf.libs,
