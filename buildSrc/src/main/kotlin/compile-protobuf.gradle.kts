@@ -32,6 +32,7 @@ plugins {
     id("com.google.protobuf")
 }
 
+
 // For generating test fixtures. See `src/test/proto`.
 protobuf {
     configurations.excludeProtobufLite()

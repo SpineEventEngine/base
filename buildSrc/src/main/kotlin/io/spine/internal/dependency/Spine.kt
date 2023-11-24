@@ -45,7 +45,7 @@ object Spine {
          *
          * @see <a href="https://github.com/SpineEventEngine/base">spine-base</a>
          */
-        const val base = "2.0.0-SNAPSHOT.189"
+        const val base = "2.0.0-SNAPSHOT.192"
 
         /**
          * The version of [Spine.reflect].
@@ -59,7 +59,7 @@ object Spine {
          *
          * @see <a href="https://github.com/SpineEventEngine/logging">spine-logging</a>
          */
-        const val logging = "2.0.0-SNAPSHOT.232"
+        const val logging = "2.0.0-SNAPSHOT.233"
 
         /**
          * The version of [Spine.testlib].
@@ -75,7 +75,7 @@ object Spine {
          * @see [Spine.CoreJava.server]
          * @see <a href="https://github.com/SpineEventEngine/core-java">core-java</a>
          */
-        const val core = "2.0.0-SNAPSHOT.159"
+        const val core = "2.0.0-SNAPSHOT.173"
 
         /**
          * The version of [Spine.modelCompiler].
@@ -89,7 +89,7 @@ object Spine {
          *
          * @see <a href="https://github.com/SpineEventEngine/mc-java">spine-mc-java</a>
          */
-        const val mcJava = "2.0.0-SNAPSHOT.170"
+        const val mcJava = "2.0.0-SNAPSHOT.172"
 
         /**
          * The version of [Spine.baseTypes].
@@ -103,7 +103,7 @@ object Spine {
          *
          * @see <a href="https://github.com/SpineEventEngine/time">spine-time</a>
          */
-        const val time = "2.0.0-SNAPSHOT.134"
+        const val time = "2.0.0-SNAPSHOT.135"
 
         /**
          * The version of [Spine.change].
@@ -195,10 +195,12 @@ object Spine {
      *
      * See [mc-java](https://github.com/SpineEventEngine/mc-java).
      */
+    @Suppress("MemberVisibilityCanBePrivate") // `pluginLib()` is used by subprojects.
     object McJava {
         const val version = ArtifactVersion.mcJava
         const val pluginId = "io.spine.mc-java"
-        const val pluginLib = "$toolsGroup:spine-mc-java-plugins:${version}:all"
+        val pluginLib = pluginLib(version)
+        fun pluginLib(version: String): String = "$toolsGroup:spine-mc-java-plugins:$version:all"
     }
 
     @Deprecated("Please use `javadocFilter` instead.", ReplaceWith("javadocFilter"))
