@@ -79,6 +79,7 @@ dependencies {
     compileOnly(AutoService.annotations)
 
     implementation(Spine.Logging.lib)
+    implementation(Spine.reflect)
     implementation(Kotlin.reflect)
 
     /* Have `protobuf` dependency instead of `api` or `implementation` so that proto

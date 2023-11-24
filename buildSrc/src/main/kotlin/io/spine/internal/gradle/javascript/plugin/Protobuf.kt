@@ -49,6 +49,9 @@ fun JsPlugins.protobuf() {
 
     val protobufExt = project.extensions.getByType(ProtobufExtension::class.java)
     protobufExt.apply {
+
+        generatedFilesBaseDir = projectDir.path
+
         protoc {
             artifact = Protobuf.compiler
         }
@@ -62,7 +65,7 @@ fun JsPlugins.protobuf() {
 
                     remove("java")
 
-                    // For information on JavaScript code generation, please see
+                    // For information on JavaScript code generation please see
                     // https://github.com/google/protobuf/blob/master/js/README.md
 
                     id("js") {
