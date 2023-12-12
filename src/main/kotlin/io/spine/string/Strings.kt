@@ -57,8 +57,8 @@ public fun <T> Iterable<T>.joinBackticked(): String =
 /**
  * Obtains the same string but with the first capital letter.
  *
- * If the first char of the string cannot be capitalized (e.g., is not a letter, is already
- * capitalized, etc.), obtains the same string.
+ * If the first char of the string cannot be capitalized (e.g., is not a letter,
+ * is already capitalized, etc.), obtains the same string.
  */
 public fun String.titleCase(): String =
     replaceFirstChar { it.titlecase() }
@@ -78,6 +78,11 @@ public fun String.camelCase(): String =
     split("_").camelCase()
 
 /**
+ * System-dependent line separator.
+ */
+private val NL: String = Separator.nl()
+
+/**
  * Trims the common indent from all the lines, as well as the trailing whitespace.
  *
  * This method is similar to [String.trimIndent], but unlike it:
@@ -90,28 +95,64 @@ public fun String.trimWhitespace(): String {
     val trimmedLines = lines.map {
         it.trimEnd()
     }
-    return trimmedLines.joinToString(Separator.nl())
+    return trimmedLines.joinToString(NL)
 }
 
 /**
- * Replaces [Separator.LF] used by Kotlin string utilities for splitting by lines,
- * with [Separator.nl] so that we don't have issues when writing generated texts under Windows.
+ * Replaces [Separator.LF] with [Separator.system].
+ *
+ * [Separator.LF] is used by Kotlin string utilities for splitting by lines.
+ * This may cause issues when writing generated texts under Windows.
+ *
+ * If you could not find a replacement for system-dependent line separation in
+ * `io.spine.string` package, please use this function after a Kotlin string utility call.
+ *
+ * @see String.pi
+ * @see String.tm
+ * @see String.ti
  */
-private fun String.fixLineEndings(): String = replace(Separator.LF.value, Separator.nl())
+public fun String.naturalizeEndings(): String = replace(Separator.LF.value, NL)
 
 /**
  * Trims indentation similarly to [String.trimIndent] but preserving system line separators.
  */
-public fun String.ti(): String = trimIndent().fixLineEndings()
+public fun String.ti(): String = trimIndent().naturalizeEndings()
+
+/**
+ * The same as [trimMargin] but with system-dependent line separator.
+ */
+public fun String.tm(): String = trimMargin().naturalizeEndings()
 
 /**
  *  Prepends indentation similarly to [String.prependIndent] but preserving system line separators.
+ *
+ *  @see Iterable.indent
  */
 public fun String.pi(indent: String = Indent.defaultJavaIndent.value): String =
-    prependIndent(indent).fixLineEndings()
+    prependIndent(indent).naturalizeEndings()
 
 /**
  * Joins the elements of this `Iterable` into a single string having each item on a separate line.
+ *
+ * The lines are delimited with system line separator.
  */
 public fun Iterable<*>.joinByLines(): String =
-    joinToString(separator = Separator.nl())
+    joinToString(separator = NL)
+
+/**
+ * Joins these lines of code into a code block, accounting for extra indent.
+ *
+ * Similar to [prependIndent] but with system-dependent line separator.
+ *
+ * @param step
+ *         the indentation of each level.
+ * @param level
+ *         the number of indentation levels to add. If zero, no indentation would be added.
+ * @see String.pi
+ */
+public fun Iterable<String>.indent(step: Indent, level: Int): String {
+    val indentation = step.atLevel(level)
+    return joinToString(NL) {
+        indentation + it
+    }
+}
