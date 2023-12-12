@@ -25,6 +25,7 @@
  */
 
 @file:JvmName("Strings")
+@file:Suppress("TooManyFunctions") // Extension functions for `String` are grouped here.
 
 package io.spine.string
 
