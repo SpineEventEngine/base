@@ -33,36 +33,35 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotates a program element (class, method, package, etc.) which is not a part of a public API,
- * and thus should not be used by people who are not members of the team developing the module
- * containing this program element.
+ * Marks a program element (class, method, package, etc.) as internal to the Spine Event Engine,
+ * indicating it is NOT part of the public API and hence not intended for use outside
+ * the module's development team.
  *
- * <p>If the annotation is used for a constructor, a <strong>field</strong>,
- * a <strong>method</strong>, or a <strong>package</strong>, it means
- * that corresponding element is internal to the Spine Event Engine and as such should
- * not be used programmers using the framework.
+ * <p>The usage scenarios for the annotation vary depending on the element it is applied to.
  *
- * <p>If the annotation is used for a <strong>type</strong> it means one of the following.
+ * <h3>If applied to a constructor, field, method, or package</h3>
  *
- * <p><strong>First reason.</strong> This type is internal to the Spine Event Engine framework,
- * and is not meant to be used directly by the framework users.</p>
+ * <p>The annotated program element is not intended for usage by the framework users
  *
- * <p><strong>Second reason.</strong> The type is internal to a bounded context, artifact of which
- * exposes the type to the outside world (presumably for historical reasons).</p>
+ * <h3>If applied to a type</h3>
  *
- * <p>When so, the type with this annotation can be used only inside the bounded context
- * which declares it.
+ * <p>The annotation applied to a type could mean either:
+ * <ul>
+ *     <li><strong>Option 1:</strong> The type is internal to the Spine Engine framework,
+ *         hence should not be directly used by the framework users.
  *
- * <p>The type must not be used neither for inbound (i.e. being sent to the bounded context
- * which declares this type) nor for outbound communication (i.e. being sent by this bounded
- * context outside). An attempt to use the type otherwise will cause runtime error.</p>
+ *     <li><strong>Option 2:</strong> The type is specific to a bounded context in which it may be
+ *         exposed externally because of technical or historical reasons.
+ *         Attempting to use the type for inbound or outbound communication will
+ *         trigger runtime errors.
+ * </ul>
  *
- * @apiNote If you plan to implement an extension which is going to be wired into
- * the framework, you may want to use the internal parts. Please consider consulting with the Spine
- * development team, as the internal APIs do not have the same stability guarantee as public ones.
+ * <p>See also {@link SPI} for annotations related to framework extensions.
  *
- * <p>See {@link SPI} annotation if you plan to write an extension of the framework.
- *
+ * @apiNote Implementing an extension to wire into the framework might tempt you
+ *          to use these internal parts.
+ *          However, be aware that they might have less stability than public APIs.
+ *          Consultation with the Spine development team is strongly recommended in these cases.
  * @see SPI
  */
 @Internal
