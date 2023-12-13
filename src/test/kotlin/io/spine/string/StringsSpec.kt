@@ -98,4 +98,25 @@ class StringsSpec {
         val value = "some value"
         value.stringify() shouldBe value
     }
+
+    @Test
+    fun `indent lines`() {
+        val source = """
+            line 1
+            line 2
+            line 3
+        """.ti().lines()
+
+        source.indent(Indent(size = 2), level = 2) shouldBe """
+            |    line 1
+            |    line 2
+            |    line 3
+        """.tm()
+
+        source.indent(Indent(size = 3), level = 0) shouldBe """
+            |line 1
+            |line 2
+            |line 3
+        """.tm()
+    }
 }

@@ -37,8 +37,8 @@ public enum class Separator(
     public val value: String,
 
     /**
-     * The representation of [value] to be used for debugging multi-line strings terminated.
-     * by [system line separator][nl].
+     * The representation of [value] to be used for debugging multi-line strings
+     * terminated by [system line separator][nl].
      */
      public val escaped: String
 ) {
