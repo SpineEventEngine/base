@@ -24,4 +24,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.195")
+package io.spine.internal.dependency
+
+@Suppress("unused", "ConstPropertyName")
+object KotlinX {
+
+    const val group = "org.jetbrains.kotlinx"
+
+    object Coroutines {
+
+        // https://github.com/Kotlin/kotlinx.coroutines
+        const val version = "1.7.3"
+        const val core = "$group:kotlinx-coroutines-core:$version"
+        const val jdk8 = "$group:kotlinx-coroutines-jdk8:$version"
+    }
+}
