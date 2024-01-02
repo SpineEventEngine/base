@@ -24,37 +24,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:Suppress("ConstPropertyName")
+
 package io.spine.internal.dependency
 
-// https://github.com/protocolbuffers/protobuf
-@Suppress(
-    "MemberVisibilityCanBePrivate" /* used directly from the outside */,
-    "ConstPropertyName" /* https://bit.ly/kotlin-prop-names */
-)
-object Protobuf {
-    private const val group = "com.google.protobuf"
-    const val version       = "3.25.0"
-    /**
-     * The Java library containing proto definitions of Google Protobuf.
-     */
-    const val protoSrcLib = "${group}:protobuf-java:${version}"
-    val libs = listOf(
-        protoSrcLib,
-        "${group}:protobuf-java-util:${version}",
-        "${group}:protobuf-kotlin:${version}"
-    )
-    const val compiler = "${group}:protoc:${version}"
+/**
+ * The components of the IntelliJ Platform.
+ *
+ * Make sure to add the `intellijReleases` and `jetBrainsCacheRedirector`
+ * repositories to your project. See `kotlin/Repositories.kt` for details.
+ */
+@Suppress("unused")
+object IntelliJ {
 
-    // https://github.com/google/protobuf-gradle-plugin/releases
-    object GradlePlugin {
-        /**
-         * The version of this plugin is already specified in `buildSrc/build.gradle.kts` file.
-         * Thus, when applying the plugin to projects build files, only the [id] should be used.
-         *
-         * When changing the version, also change the version used in the `build.gradle.kts`.
-         */
-        const val version = "0.9.4"
-        const val id = "com.google.protobuf"
-        const val lib = "${group}:protobuf-gradle-plugin:${version}"
+    /**
+     * The version of the IntelliJ platform.
+     *
+     * This is the version used by Kotlin compiler `1.9.21`.
+     * Advance this version with caution because it may break the setup of
+     * IntelliJ platform standalone execution.
+     */
+    const val version = "213.7172.53"
+
+    object Platform {
+        private const val group = "com.jetbrains.intellij.platform"
+        const val core = "$group:core:$version"
+        const val util = "$group:util:$version"
+    }
+
+    object JavaPsi {
+        private const val group = "com.jetbrains.intellij.java"
+        const val api = "$group:java-psi:$version"
+        const val impl = "$group:java-psi-impl:$version"
     }
 }
