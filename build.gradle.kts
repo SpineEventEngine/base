@@ -74,6 +74,14 @@ version = rootProject.extra["versionToPublish"]!!
 repositories.standardToSpineSdk()
 configurations.forceVersions()
 
+configurations.all {
+    resolutionStrategy {
+        // Forcing `reflect` explicitly here,
+        // as this is a direct dependency of this module.
+        force(Spine.reflect)
+    }
+}
+
 dependencies {
     annotationProcessor(AutoService.processor)
     compileOnly(AutoService.annotations)
