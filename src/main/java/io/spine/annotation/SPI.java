@@ -43,7 +43,7 @@ import java.lang.annotation.Target;
  * service provider framework pattern.
  */
 @SPI
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.RUNTIME)
 @Target({
         ElementType.ANNOTATION_TYPE,
         ElementType.CONSTRUCTOR,

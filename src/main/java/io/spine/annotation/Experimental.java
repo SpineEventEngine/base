@@ -43,7 +43,7 @@ import java.lang.annotation.Target;
  *   <li>removing this annotation from an API gives it a stable status.
  * </ol>
  */
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.RUNTIME)
 @Target({
         ElementType.ANNOTATION_TYPE,
         ElementType.CONSTRUCTOR,
