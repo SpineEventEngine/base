@@ -61,7 +61,7 @@ public final class ClassName extends StringTypeValue {
     private static final char DOT_SEPARATOR = '.';
 
     /**
-     * Separates nested class name from the name of the outer class in a fully-qualified name.
+     * Separates nested class name from the name of the outer class in a fully qualified name.
      */
     private static final char OUTER_CLASS_DELIMITER = '$';
 
@@ -165,7 +165,9 @@ public final class ClassName extends StringTypeValue {
      * @return new instance of {@code ClassName}
      */
     public static ClassName from(ServiceDescriptor serviceType) {
-        return construct(serviceType.getFile(), serviceType.getName() + GRPC_POSTFIX, null);
+        var packageName = PackageName.resolve(serviceType.getFile().toProto());
+        var simpleName = SimpleClassName.create(serviceType.getName() + GRPC_POSTFIX);
+        return of(packageName, simpleName);
     }
 
     private static String javaPackageName(FileDescriptor file) {
@@ -192,7 +194,7 @@ public final class ClassName extends StringTypeValue {
 
     /**
      * Obtains prefix for a type which is enclosed into the passed message.
-     * If null value is passed, returns an empty string.
+     * If a {@code null} value is passed, returns an empty string.
      */
     private static String containingClassPrefix(@Nullable Descriptor containingMessage) {
         if (containingMessage == null) {
@@ -282,7 +284,7 @@ public final class ClassName extends StringTypeValue {
     }
 
     /**
-     * Converts fully-qualified name to simple name. If the class is nested inside one or more
+     * Converts fully qualified name to simple name. If the class is nested inside one or more
      * classes, the most nested name will be returned.
      */
     public SimpleClassName toSimple() {

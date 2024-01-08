@@ -39,29 +39,28 @@ import org.junit.jupiter.api.Test
 @DisplayName("`io.spine.annotation` package should")
 internal class AnnotationsSpec {
 
+    /**
+     * Tests that API level annotation classes have the [RUNTIME] retention policy.
+     *
+     * The [RUNTIME] level is required to:
+     *  1. Ease the usage in tests.
+     *  2. Allow handling `Internal` types in inbound and outbound communications.
+     */
     @Test
-    fun `have 'Beta' annotation`() {
-        Beta::class.java.retention() shouldBe SOURCE
-    }
-
-    @Test
-    fun `have 'Experimental' annotation`() {
-        Experimental::class.java.retention() shouldBe SOURCE
+    fun `have API level annotations with 'RUNTIME' retention`() {
+        arrayOf(
+            Beta::class.java,
+            Experimental::class.java,
+            Internal::class.java,
+            SPI::class.java
+        ).forEach {
+            it.retention() shouldBe RUNTIME
+        }
     }
 
     @Test
     fun `have 'GeneratedMixin' annotation`() {
         GeneratedMixin::class.java.retention() shouldBe SOURCE
-    }
-
-    @Test
-    fun `have 'Internal' annotation`() {
-        Internal::class.java.retention() shouldBe RUNTIME
-    }
-
-    @Test
-    fun `have 'SPI' annotation`() {
-        SPI::class.java.retention() shouldBe SOURCE
     }
 }
 

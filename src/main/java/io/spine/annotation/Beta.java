@@ -42,7 +42,7 @@ import java.lang.annotation.Target;
  * It is generally safe for applications to depend on beta APIs at the cost of some extra work
  * during upgrades.
  */
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.RUNTIME)
 @Target({
         ElementType.ANNOTATION_TYPE,
         ElementType.CONSTRUCTOR,
