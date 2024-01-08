@@ -1,5 +1,5 @@
 /*
- * Copyright 2023, TeamDev. All rights reserved.
+ * Copyright 2024, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ package io.spine.internal.dependency
  */
 @Suppress("unused", "ConstPropertyName")
 object Validation {
-    const val version = "2.0.0-SNAPSHOT.110"
+    const val version = "2.0.0-SNAPSHOT.123"
     const val group = "io.spine.validation"
     const val runtime = "$group:spine-validation-java-runtime:$version"
     const val java = "$group:spine-validation-java:$version"

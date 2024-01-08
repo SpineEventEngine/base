@@ -495,17 +495,34 @@ extend google.protobuf.FileOptions {
     // For more information on such restrictions please see the documentation of
     // the type option called `internal_type`.
     //
+    // If a file contains a declaration of a `service`, this option will NOT be applied to it.
+    // A service is not a data type, and therefore, this option does not apply to it.
+    // Internal services are not supported.
+    //
     bool internal_all = 73942;
 
     // Indicates a file which contains elements of Service Provider Interface (SPI).
+    //
+    // This option applies to messages, enums, and services.
+    //
     bool SPI_all = 73943;
 
-    // Indicates a public API that can change at any time, and has no guarantee of
-    // API stability and backward-compatibility.
+    // Indicates a file declaring public data type API which that can change at any time,
+    // has no guarantee of API stability and backward-compatibility.
+    //
+    // If a file contains a declaration of a `service`, this option will NOT be applied to it.
+    // A service is not a data type, and therefore, this option does not apply to it.
+    // Experimental services are not supported.
+    //
     bool experimental_all = 73944;
 
-    // Signifies that a public API is subject to incompatible changes, or even removal,
+    // Signifies that a public data type API is subject to incompatible changes, or even removal,
     // in a future release.
+    //
+    // If a file contains a declaration of a `service`, this option will NOT be applied to it.
+    // A service is not a data type, and therefore, this option does not apply to it.
+    // Beta services are not supported.
+    //
     bool beta_all = 73945;
 
     // Specifies a characteristic common for all the message types in the given file.
