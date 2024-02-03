@@ -46,9 +46,16 @@ public interface Closeable : AutoCloseable {
     public val isOpen: Boolean
 
     /**
-     * Closes the object.
+     * Performs the release of the resources held by this object.
      *
      * Overrides to remove the checked exception from the signature.
+     *
+     * Implementations <em>may</em> require that the object implementing this interface
+     * invokes this method only once, and throw [IllegalStateException] for repeated invocation.
+     * If this is the case, and you would like to avoid [pre-checking][isOpen] consider
+     * using [closeIfOpen], which does the check itself.
+     *
+     * @see closeIfOpen
      */
     public override fun close()
 
@@ -66,6 +73,8 @@ public interface Closeable : AutoCloseable {
      * Performs the release of the resources held by this object only if it is still open.
      *
      * Otherwise, does nothing.
+     *
+     * @see close
      */
     public fun closeIfOpen() {
         if (isOpen) {
