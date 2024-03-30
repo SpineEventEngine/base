@@ -29,6 +29,7 @@ package io.spine.string
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldStartWith
+import io.spine.testing.TestValues.randomString
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -118,5 +119,14 @@ class StringsSpec {
             |line 2
             |line 3
         """.tm()
+    }
+
+    @Test
+    fun `encode and decode using Base64`() {
+        val original = randomString()
+        val encoded: String = original.toBase64Encoded()
+        val decoded: String = encoded.decodeBase64()
+
+        decoded shouldBe original
     }
 }
