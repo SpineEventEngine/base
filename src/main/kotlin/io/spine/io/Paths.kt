@@ -32,7 +32,7 @@ import io.spine.string.toBase64Encoded
 import java.nio.file.Path
 
 /**
- * Converts this path to a base64-encoded string.
+ * Converts this path to a Base64-encoded string.
  *
  * @see [String.toBase64Encoded]
  */
