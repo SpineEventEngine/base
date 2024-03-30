@@ -162,7 +162,7 @@ public fun Iterable<String>.indent(step: Indent, level: Int): String {
 }
 
 /**
- * Converts this string to Base64 encoded version using UTF-8 charset.
+ * Converts this string to Base64-encoded version using UTF-8 charset.
  *
  * @see Base64
  */
