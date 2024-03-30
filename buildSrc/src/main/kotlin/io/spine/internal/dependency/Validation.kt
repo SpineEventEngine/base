@@ -33,7 +33,7 @@ package io.spine.internal.dependency
  */
 @Suppress("unused", "ConstPropertyName")
 object Validation {
-    const val version = "2.0.0-SNAPSHOT.123"
+    const val version = "2.0.0-SNAPSHOT.127"
     const val group = "io.spine.validation"
     const val runtime = "$group:spine-validation-java-runtime:$version"
     const val java = "$group:spine-validation-java:$version"

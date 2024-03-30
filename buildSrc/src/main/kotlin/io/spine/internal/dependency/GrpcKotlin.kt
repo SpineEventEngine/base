@@ -24,4 +24,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.199")
+package io.spine.internal.dependency
+
+/**
+ * gRPC-Kotlin/JVM.
+ *
+ * @see <a href="https://github.com/grpc/grpc-kotlin">GitHub project</a>
+ */
+@Suppress("unused")
+object GrpcKotlin {
+    const val version = "1.3.0"
+    const val stub = "io.grpc:grpc-kotlin-stub:$version"
+
+    object ProtocPlugin {
+        const val id = "grpckt"
+        const val artifact = "io.grpc:protoc-gen-grpc-kotlin:$version:jdk8@jar"
+    }
+}

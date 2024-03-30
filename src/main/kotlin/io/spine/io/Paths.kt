@@ -24,4 +24,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.199")
+@file:JvmName("Paths")
+
+package io.spine.io
+
+import io.spine.string.toBase64Encoded
+import java.nio.file.Path
+
+/**
+ * Converts this path to a Base64-encoded string.
+ *
+ * @see [String.toBase64Encoded]
+ */
+public fun Path.toBase64Encoded(): String = toString().toBase64Encoded()

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023, TeamDev. All rights reserved.
+ * Copyright 2024, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,9 @@
 @file:Suppress("TooManyFunctions") // Extension functions for `String` are grouped here.
 
 package io.spine.string
+
+import java.util.*
+import kotlin.text.Charsets.UTF_8
 
 /**
  * This file contains extension functions for obtaining <em>standard</em> string
@@ -156,4 +159,26 @@ public fun Iterable<String>.indent(step: Indent, level: Int): String {
     return joinToString(NL) {
         indentation + it
     }
+}
+
+/**
+ * Converts this string to Base64-encoded version using UTF-8 charset.
+ *
+ * @see Base64
+ */
+public fun String.toBase64Encoded(): String {
+    val encoder = Base64.getEncoder()
+    val valueBytes: ByteArray = toByteArray(UTF_8)
+    return encoder.encodeToString(valueBytes)
+}
+
+/**
+ * Decodes Base64-encoded value into a string with UTF-8 charset.
+ *
+ * @see Base64
+ */
+public fun String.decodeBase64(): String {
+    val decoder = Base64.getDecoder()
+    val decodedBytes = decoder.decode(this)
+    return String(decodedBytes, UTF_8)
 }

@@ -24,4 +24,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.199")
+package io.spine.internal.dependency
+
+/**
+ * Kotlin Coroutines.
+ * 
+ * @see <a href="https://github.com/Kotlin/kotlinx.coroutines">GitHub projecet</a>
+ */
+@Suppress("unused")
+object Coroutines {
+    const val version = "1.6.4"
+    const val jdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$version"
+    const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
+    const val bom = "org.jetbrains.kotlinx:kotlinx-coroutines-bom:$version"
+    const val coreJvm = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:$version"
+}

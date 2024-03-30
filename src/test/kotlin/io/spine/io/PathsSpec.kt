@@ -24,4 +24,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.199")
+package io.spine.io
+
+import io.kotest.matchers.shouldBe
+import io.spine.string.decodeBase64
+import io.spine.testing.TestValues.randomString
+import java.nio.file.Paths
+import kotlin.io.path.div
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+
+@DisplayName("Extensions for `Path` should")
+internal class PathsSpec {
+
+    @Test
+    fun `obtain Base64-encoded path string`() {
+        val original = Paths.get(randomString()) / randomString()
+        val encoded = original.toBase64Encoded()
+        val decoded = Paths.get(encoded.decodeBase64())
+        
+        decoded shouldBe original
+    }
+}

@@ -198,15 +198,16 @@ dependencies {
 dependOnBuildSrcJar()
 
 /**
- * Adds a dependency on a `buildSrc.jar`, iff `src` folder is missing,
- * and `buildSrc.jar` is present in `buildSrc/` folder instead.
+ * Adds a dependency on a `buildSrc.jar`, iff:
+ *  1) the `src` folder is missing, and
+ *  2) `buildSrc.jar` is present in `buildSrc/` folder instead.
  *
- * This approach is used in scope of integration testing.
+ * This approach is used in the scope of integration testing.
  */
 fun Project.dependOnBuildSrcJar() {
     val srcFolder = this.rootDir.resolve("src")
     val buildSrcJar = rootDir.resolve("buildSrc.jar")
-    if(!srcFolder.exists() && buildSrcJar.exists()) {
+    if (!srcFolder.exists() && buildSrcJar.exists()) {
         logger.info("Adding the pre-compiled 'buildSrc.jar' to 'implementation' dependencies.")
         dependencies {
             implementation(files("buildSrc.jar"))

@@ -111,7 +111,7 @@ val exposeManifestForTests by tasks.creating {
         val manifest = Manifest()
 
         // The manifest version attribute is crucial for writing.
-        // It it's absent nothing would be written.
+        // If it's absent, nothing would be written.
         manifest.mainAttributes[MANIFEST_VERSION] = "1.0"
 
         manifestAttributes.forEach { entry ->
