@@ -83,14 +83,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * }
  * </pre>
  *
- * <p>The values retrieved via methods of the {@code Field} type may then be passed to a client to
+ * <p>The values retrieved via methods of the {@code Field} class may then be passed to a client to
  * form a subscription request.
  *
  * <p>The class descendants differentiate between the various field types to enable the typed
  * filter creation on the client side.
  *
- * <p>See the Spine Model Compiler for Java for extensive details
- * on how the {@code Field} types are generated.
+ * <p>See <a href="https://github.com/SpineEventEngine/mc-java">Spine Model Compiler for Java</a>
+ * for extensive details on how the {@code Field} types are generated.
  *
  * @apiNote In the generated code this class is, among others, inherited by the types which
  *        declare nested message fields as own public instance methods, as follows:
@@ -98,9 +98,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *        public EntityStateField someFieldName() {...}
  *        </pre>
  *        Thus, the {@code SubscribableField} class has to avoid name clashes with proto fields
- *        declared this way, hence the otherwise redundant "get-" prefix on the {@link #getField()}
- *        method. For the same reason the class does not inherit from
- *        {@link io.spine.value.ValueHolder}.
+ *        declared this way.
+ *        Hence, the otherwise redundant "get-" prefix on the {@link #getField()} method.
+ *        For the same reason the class does not inherit from
+ *        {@link io.spine.value.ValueHolder ValueHolder}.
  */
 @SuppressWarnings(
         /* Prevent instantiation in favor of concrete subclasses. */
