@@ -24,20 +24,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.jetbrains.dokka.gradle.DokkaTask
+package io.spine.internal.dependency
 
-plugins {
-    id("org.jetbrains.dokka") // Cannot use `Dokka` dependency object here yet.
-}
-
-dependencies {
-    useDokkaForKotlinAsJava()
-    useDokkaWithSpineExtensions()
-}
-
-tasks.withType<DokkaTask>().configureEach {
-    configureForJava()
-    onlyIf {
-        (it as DokkaTask).isInPublishingGraph()
-    }
+// https://github.com/stefanbirkner/system-lambda
+@Suppress("unused", "ConstPropertyName")
+object SystemLambda {
+    const val version = "1.2.1"
+    const val group = "com.github.stefanbirkner"
+    const val lib = "$group:system-lambda:$version"
 }

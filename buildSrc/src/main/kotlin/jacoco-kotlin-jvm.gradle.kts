@@ -24,11 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.io.File
-import org.gradle.kotlin.dsl.getValue
-import org.gradle.kotlin.dsl.getting
-import org.gradle.kotlin.dsl.jacoco
-import org.gradle.testing.jacoco.tasks.JacocoReport
+import io.spine.internal.gradle.buildDirectory
 
 plugins {
     jacoco
@@ -55,7 +51,7 @@ private val about = ""
  */
 val jacocoTestReport: JacocoReport by tasks.getting(JacocoReport::class) {
 
-    val classFiles = File("${buildDir}/classes/kotlin/jvm/")
+    val classFiles = File("$buildDirectory/classes/kotlin/jvm/")
         .walkBottomUp()
         .toSet()
     classDirectories.setFrom(classFiles)
@@ -66,5 +62,5 @@ val jacocoTestReport: JacocoReport by tasks.getting(JacocoReport::class) {
     )
     sourceDirectories.setFrom(files(coverageSourceDirs))
 
-    executionData.setFrom(files("${buildDir}/jacoco/jvmTest.exec"))
+    executionData.setFrom(files("$buildDirectory/jacoco/jvmTest.exec"))
 }

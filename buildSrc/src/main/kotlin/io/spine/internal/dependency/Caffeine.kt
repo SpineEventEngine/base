@@ -24,14 +24,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:Suppress("unused")
+package io.spine.internal.dependency
 
-import org.gradle.api.artifacts.dsl.RepositoryHandler
-import org.gradle.api.artifacts.repositories.MavenArtifactRepository
-import org.gradle.kotlin.dsl.maven
-
-val RepositoryHandler.intellijReleases: MavenArtifactRepository
-    get() = maven("https://www.jetbrains.com/intellij-repository/releases")
-
-val RepositoryHandler.jetBrainsCacheRedirector: MavenArtifactRepository
-    get() = maven("https://cache-redirector.jetbrains.com/intellij-dependencies")
+/**
+ * A [high performance](https://github.com/ben-manes/caffeine/wiki/Benchmarks),
+ * [near optimal](https://github.com/ben-manes/caffeine/wiki/Efficiency) caching library.
+ *
+ * This library is a transitive dependency for us via ErrorProne.
+ *
+ * @see <a href="https://github.com/ben-manes/caffeine">Caffeine at GitHub</a>
+ */
+@Suppress("unused")
+object Caffeine {
+    private const val version = "3.0.5"
+    const val lib = "com.github.ben-manes.caffeine:caffeine:$version"
+}
