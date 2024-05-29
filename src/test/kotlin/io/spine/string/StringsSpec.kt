@@ -129,4 +129,11 @@ class StringsSpec {
 
         decoded shouldBe original
     }
+
+    @Test
+    fun `count non-overlapping subscrings`() {
+        "baobab".count("mao") shouldBe 0
+        "ababababa".count("aba") shouldBe 2
+        "the three truths".count("th") shouldBe 3
+    }
 }
