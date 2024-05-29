@@ -182,3 +182,27 @@ public fun String.decodeBase64(): String {
     val decodedBytes = decoder.decode(this)
     return String(decodedBytes, UTF_8)
 }
+
+/**
+ * Counts a number of times the given [substring] appears in this one.
+ *
+ * The function counts non-overlapping occurrences.
+ * For example, the result for the `"aba"` substring in `"ababababa"` would be 2.
+ *
+ * @param substring
+ *         the substring to look for in this one.
+ */
+public fun String.count(substring: String): Int {
+    var count = 0
+    var startIndex = 0
+    while (startIndex < length) {
+        val index = indexOf(substring, startIndex)
+        if (index >= 0) {
+            count++
+            startIndex = index + substring.length
+        } else {
+            break
+        }
+    }
+    return count
+}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,20 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.jetbrains.dokka.gradle.DokkaTask
+package io.spine.internal.dependency
 
-plugins {
-    id("org.jetbrains.dokka") // Cannot use `Dokka` dependency object here yet.
-}
-
-dependencies {
-    useDokkaForKotlinAsJava()
-    useDokkaWithSpineExtensions()
-}
-
-tasks.withType<DokkaTask>().configureEach {
-    configureForJava()
-    onlyIf {
-        (it as DokkaTask).isInPublishingGraph()
-    }
+/**
+ * Code coverage library for Java.
+ *
+ * @see <a href="https://www.eclemma.org/jacoco/">Releases</a>
+ */
+@Suppress("ConstPropertyName")
+object Jacoco {
+    const val version = "0.8.12"
 }
