@@ -1,11 +1,11 @@
 /*
- * Copyright 2023, TeamDev. All rights reserved.
+ * Copyright 2024, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -32,11 +32,11 @@ import com.google.common.base.Throwables
 import com.google.protobuf.InvalidProtocolBufferException
 import com.google.protobuf.Message
 import com.google.protobuf.MessageOrBuilder
-import com.google.protobuf.TypeRegistry
 import com.google.protobuf.util.JsonFormat
 import com.google.protobuf.util.JsonFormat.Parser
 import com.google.protobuf.util.JsonFormat.Printer
 import io.spine.protobuf.builderFor
+import io.spine.type.TypeRegistryHolder.typeRegistry
 import io.spine.util.Exceptions.newIllegalArgumentException
 
 /**
@@ -58,10 +58,6 @@ private const val ABOUT = ""
  * Holds lazily evaluated properties related to generating and parsing JSON.
  */
 private object JsonOutput {
-
-    private val typeRegistry: TypeRegistry by lazy {
-        KnownTypes.instance().typeRegistry()
-    }
 
     val printer: Printer by lazy {
         JsonFormat.printer()
