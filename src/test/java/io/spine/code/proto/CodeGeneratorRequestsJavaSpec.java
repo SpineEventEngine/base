@@ -26,8 +26,7 @@
 
 package io.spine.code.proto;
 
-import com.google.protobuf.compiler.PluginProtos;
-import kotlin.io.FilesKt;
+import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 class CodeGeneratorRequestsJavaSpec {
 
     private File requestFile;
-    private PluginProtos.CodeGeneratorRequest request;
+    private CodeGeneratorRequest request;
 
     @BeforeEach
     void prepareFile(@TempDir Path dir) {
