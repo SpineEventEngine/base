@@ -26,17 +26,20 @@
 
 package io.spine.type
 
-import com.google.protobuf.TypeRegistry
+import com.google.protobuf.ExtensionRegistry
+import io.spine.option.OptionsProvider
 
 /**
- * Holds an instance of [TypeRegistry] containing all [known types][KnownTypes].
+ * Holds an instance of [ExtensionRegistry] initialized with all known custom Protobuf options.
+ *
+ * @see OptionsProvider.registryWithAllOptions
  */
-public object TypeRegistryHolder {
+public object ExtensionRegistryHolder {
 
     /**
-     * Lazily initialized instance of [TypeRegistry] with all [known types][KnownTypes].
+     * Lazily initialized instance of [ExtensionRegistry] with all known custom Protobuf options.
      */
-    public val typeRegistry: TypeRegistry by lazy {
-        KnownTypes.instance().typeRegistry()
+    public val extensionRegistry: ExtensionRegistry by lazy {
+        OptionsProvider.registryWithAllOptions()
     }
 }
