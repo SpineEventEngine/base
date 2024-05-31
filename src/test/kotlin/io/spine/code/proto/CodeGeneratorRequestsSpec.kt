@@ -62,15 +62,22 @@ internal class CodeGeneratorRequestsSpec {
     }
 }
 
-internal fun constructRequest(encodedPath: String): CodeGeneratorRequest = codeGeneratorRequest {
-    val descr = TimestampProto.getDescriptor()
-    protoFile += descr.toProto()
-    fileToGenerate += descr.file.name
-    compilerVersion = version {
-        major = 42
-        minor = 314
-        patch = 271
+/**
+ * Creates a stub instance [CodeGeneratorRequest] initialized with data from [TimestampProto].
+ *
+ * @param parameterValue
+ *         the value to be set to the `parameter` property of the request.
+ */
+internal fun constructRequest(parameterValue: String): CodeGeneratorRequest =
+    codeGeneratorRequest {
+        val descr = TimestampProto.getDescriptor()
+        protoFile += descr.toProto()
+        fileToGenerate += descr.file.name
+        compilerVersion = version {
+            major = 42
+            minor = 314
+            patch = 271
+        }
+        parameter = parameterValue
     }
-    parameter = encodedPath
-}
 
