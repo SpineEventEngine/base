@@ -29,7 +29,7 @@
 
 package io.spine.string
 
-import java.util.*
+import java.util.Base64
 import kotlin.text.Charsets.UTF_8
 
 /**
