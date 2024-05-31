@@ -115,7 +115,7 @@ public fun MessageOrBuilder.toCompactJson(): String =
  * @throws IllegalArgumentException
  *          if the message of this type cannot be parsed from the given string.
  */
-public fun <T: Message> Class<T>.fromJson(json: String): T {
+public fun <T : Message> Class<T>.fromJson(json: String): T {
     try {
         val messageBuilder = builderFor(this)
         JsonOutput.parser.merge(json, messageBuilder)
