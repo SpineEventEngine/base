@@ -32,6 +32,7 @@ import io.kotest.matchers.string.shouldStartWith
 import io.spine.testing.TestValues.randomString
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 
@@ -135,5 +136,15 @@ class StringsSpec {
         "baobab".count("mao") shouldBe 0
         "ababababa".count("aba") shouldBe 2
         "the three truths".count("th") shouldBe 3
+    }
+
+    @Test
+    fun `ensure prefix`() {
+        "abc".ensurePrefix("x") shouldBe "xabc"
+        "".ensurePrefix("x") shouldBe "x"
+        "abc".ensurePrefix("ab") shouldBe "abc"
+        assertThrows<IllegalArgumentException> {
+            "abc".ensurePrefix("")
+        }
     }
 }

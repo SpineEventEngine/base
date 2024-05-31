@@ -30,6 +30,7 @@ import io.kotest.matchers.shouldBe
 import io.spine.string.decodeBase64
 import io.spine.testing.TestValues.randomString
 import java.nio.file.Paths
+import kotlin.io.path.Path
 import kotlin.io.path.div
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -44,5 +45,14 @@ internal class PathsSpec {
         val decoded = Paths.get(encoded.decodeBase64())
         
         decoded shouldBe original
+    }
+
+    @Test
+    fun `replace file extension`() {
+        Path("my/path/file.bin").replaceExtension(".txt") shouldBe Path("my/path/file.txt")
+        Path("file").replaceExtension(".txt") shouldBe Path("file.txt")
+        Path("file").replaceExtension("txt") shouldBe Path("file.txt")
+        Path("file.txt").replaceExtension("") shouldBe Path("file")
+        Path("file.").replaceExtension("") shouldBe Path("file")
     }
 }
