@@ -206,3 +206,17 @@ public fun String.count(substring: String): Int {
     }
     return count
 }
+
+/**
+ * Ensures that this string starts with the given prefix.
+ */
+public fun String.ensurePrefix(prefix: String): String {
+    require(prefix.isNotEmpty()) {
+        "The prefix must not be empty."
+    }
+    return if (startsWith(prefix)) {
+        this
+    } else {
+        prefix + this
+    }
+}
