@@ -41,7 +41,10 @@ import kotlin.io.path.nameWithoutExtension
 public fun Path.toBase64Encoded(): String = toString().toBase64Encoded()
 
 /**
- * Replaces the extension for this file.
+ * Replaces the extension for the file denoted by this path.
+ *
+ * The function does not check the presence of the file.
+ * It does not check if this path represents a directory, either.
  *
  * @param newExtension
  *         a new file extension with or without leading `"."`.

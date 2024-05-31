@@ -49,7 +49,7 @@ internal class PathsSpec {
 
     @Test
     fun `replace file extension`() {
-        Path("file.bin").replaceExtension(".txt") shouldBe Path("file.txt")
+        Path("my/path/file.bin").replaceExtension(".txt") shouldBe Path("my/path/file.txt")
         Path("file").replaceExtension(".txt") shouldBe Path("file.txt")
         Path("file").replaceExtension("txt") shouldBe Path("file.txt")
         Path("file.txt").replaceExtension("") shouldBe Path("file")
