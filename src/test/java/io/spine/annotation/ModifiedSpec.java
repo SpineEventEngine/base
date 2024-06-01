@@ -47,7 +47,7 @@ import static java.lang.annotation.ElementType.TYPE;
 /**
  * Tests for the {@link Modified} annotation.
  */
-@DisplayName("Annotation `@Modified` should")
+@DisplayName("`@Modified` annotation should")
 class ModifiedSpec {
 
     @Test
