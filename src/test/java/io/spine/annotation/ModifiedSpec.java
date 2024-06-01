@@ -47,6 +47,7 @@ import static java.lang.annotation.ElementType.TYPE;
 /**
  * Tests for the {@link Modified} annotation.
  */
+@DisplayName("Annotation `@Modified` should")
 class ModifiedSpec {
 
     @Test
@@ -64,8 +65,14 @@ class ModifiedSpec {
                 .asList()
                 .containsAtLeastElementsIn(
                         ImmutableList.of(
-                                PACKAGE, TYPE, ANNOTATION_TYPE, METHOD, CONSTRUCTOR, FIELD,
-                                LOCAL_VARIABLE, PARAMETER
+                                ANNOTATION_TYPE,
+                                CONSTRUCTOR,
+                                FIELD,
+                                LOCAL_VARIABLE,
+                                METHOD,
+                                PACKAGE,
+                                PARAMETER,
+                                TYPE
                         )
                 );
     }
