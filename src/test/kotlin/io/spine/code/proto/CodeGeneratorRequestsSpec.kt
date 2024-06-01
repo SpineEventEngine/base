@@ -80,4 +80,3 @@ internal fun constructRequest(parameterValue: String): CodeGeneratorRequest =
         }
         parameter = parameterValue
     }
-
