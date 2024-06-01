@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,4 +24,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.203")
+package io.spine.io
+
+import io.kotest.matchers.shouldBe
+import java.io.File
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+
+@DisplayName("Extensions for `File` should")
+internal class FilesSpec {
+
+    @Test
+    fun `replace file extension`() {
+        File("my/path/file.bin").replaceExtension(".txt") shouldBe File("my/path/file.txt")
+        File("file").replaceExtension(".txt") shouldBe File("file.txt")
+        File("file").replaceExtension("txt") shouldBe File("file.txt")
+        File("file.txt").replaceExtension("") shouldBe File("file")
+        File("file.").replaceExtension("") shouldBe File("file")
+    }
+}

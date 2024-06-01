@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,4 +24,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.203")
+package io.spine.type
+
+import com.google.protobuf.ExtensionRegistry
+import io.spine.option.OptionsProvider
+
+/**
+ * Holds an instance of [ExtensionRegistry] initialized with all known custom Protobuf options.
+ *
+ * @see OptionsProvider.registryWithAllOptions
+ */
+public object ExtensionRegistryHolder {
+
+    /**
+     * Lazily initialized instance of [ExtensionRegistry] with all known custom Protobuf options.
+     */
+    public val extensionRegistry: ExtensionRegistry by lazy {
+        OptionsProvider.registryWithAllOptions()
+    }
+}

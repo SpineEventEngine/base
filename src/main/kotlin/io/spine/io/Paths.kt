@@ -28,7 +28,6 @@
 
 package io.spine.io
 
-import io.spine.string.ensurePrefix
 import io.spine.string.toBase64Encoded
 import java.nio.file.Path
 import kotlin.io.path.nameWithoutExtension
@@ -50,10 +49,6 @@ public fun Path.toBase64Encoded(): String = toString().toBase64Encoded()
  *         a new file extension with or without leading `"."`.
  */
 public fun Path.replaceExtension(newExtension: String): Path {
-    val newExt = if (newExtension.isEmpty()) {
-        newExtension
-    } else {
-        newExtension.ensurePrefix(".")
-    }
+    val newExt = newExtension.ensureDotPrefix()
     return resolveSibling(nameWithoutExtension + newExt)
 }

@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2024, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -27,13 +27,12 @@ package io.spine.code.proto
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet.parseFrom
-import com.google.protobuf.ExtensionRegistry
 import com.google.protobuf.InvalidProtocolBufferException
-import io.spine.option.OptionsProvider
+import io.spine.type.ExtensionRegistryHolder.extensionRegistry
 import io.spine.util.Exceptions.illegalArgumentWithCauseOf
 import java.io.IOException
 import java.io.InputStream
-import java.util.*
+import java.util.Optional
 
 /**
  * Static factory methods for creating instances of [FileDescriptorSet]
@@ -44,13 +43,10 @@ import java.util.*
  */
 public object FileDescriptorSetReader {
 
-    /** The extension registry used when parsing.  */
-    private fun registry(): ExtensionRegistry = OptionsProvider.registryWithAllOptions()
-
     /** Parses a descriptor set from the given byte array. */
     @JvmStatic
     public fun parse(bytes: ByteArray): FileDescriptorSet = try {
-        parseFrom(bytes, registry())
+        parseFrom(bytes, extensionRegistry)
     } catch (e: InvalidProtocolBufferException) {
         throw illegalArgumentWithCauseOf(e)
     }
@@ -58,7 +54,7 @@ public object FileDescriptorSetReader {
     /** Attempts to parse a descriptor set from the given byte array. */
     @JvmStatic
     public fun tryParse(bytes: ByteArray): Optional<FileDescriptorSet> = try {
-        val result = parseFrom(bytes, registry())
+        val result = parseFrom(bytes, extensionRegistry)
         Optional.of(result)
     } catch (ignored: InvalidProtocolBufferException) {
         Optional.empty()
@@ -67,7 +63,7 @@ public object FileDescriptorSetReader {
     /** Parses a descriptor set from the given stream. */
     @JvmStatic
     public fun parse(stream: InputStream): FileDescriptorSet = try {
-        parseFrom(stream, registry())
+        parseFrom(stream, extensionRegistry)
     } catch (e: IOException) {
         throw illegalArgumentWithCauseOf(e)
     }

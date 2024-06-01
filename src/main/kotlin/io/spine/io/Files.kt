@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,4 +24,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.203")
+@file:JvmName("Files")
+
+package io.spine.io
+
+import io.spine.string.ensurePrefix
+import java.io.File
+
+/**
+ * Creates a new instance with the given extension.
+ *
+ * The function does not check the presence of the file.
+ * It does not check if this path represents a directory, either.
+ *
+ * @param newExtension
+ *         a new file extension with or without leading `"."`.
+ */
+public fun File.replaceExtension(newExtension: String): File {
+    val newExt = newExtension.ensureDotPrefix()
+    return resolveSibling(nameWithoutExtension + newExt)
+}
+
+/**
+ * Ensures that the prefix `.` exists in this string if it is not empty.
+ *
+ * @return this string if it is already prefixed or is empty,
+ *         otherwise returns new prefixed string.
+ */
+internal fun String.ensureDotPrefix() =
+    if (isEmpty()) {
+        this
+    } else {
+        ensurePrefix(".")
+    }

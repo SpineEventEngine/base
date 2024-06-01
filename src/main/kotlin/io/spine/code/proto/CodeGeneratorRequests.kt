@@ -24,19 +24,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.jetbrains.dokka.gradle.DokkaTask
+@file:JvmName("CodeGeneratorRequests")
 
-plugins {
-    id("org.jetbrains.dokka") // Cannot use `Dokka` dependency object here yet.
+package io.spine.code.proto
+
+import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest
+import io.spine.type.ExtensionRegistryHolder.extensionRegistry
+import java.io.InputStream
+import kotlin.reflect.KClass
+
+/**
+ * Creates new [CodeGeneratorRequest] instance by parsing it from the given input stream.
+ *
+ * This function uses [ExtensionRegistry][extensionRegistry] with all known
+ * custom Protobuf options.
+ *
+ * @see io.spine.type.ExtensionRegistryHolder
+ */
+public fun KClass<CodeGeneratorRequest>.parse(input: InputStream): CodeGeneratorRequest {
+    return parseCodeGeneratorRequest(input)
 }
 
-dependencies {
-    useDokkaWithSpineExtensions()
-}
-
-tasks.withType<DokkaTask>().configureEach {
-    configureForKotlin()
-    onlyIf {
-        (it as DokkaTask).isInPublishingGraph()
-    }
-}
+/**
+ * Creates new [CodeGeneratorRequest] instance by parsing it from the given input stream.
+ *
+ * This function uses [ExtensionRegistry][extensionRegistry] with all known
+ * custom Protobuf options.
+ *
+ * This function is intended for using from Java. For Kotlin, please use [KClass.parse].
+ *
+ * @see io.spine.type.ExtensionRegistryHolder
+ * @see KClass.parse
+ */
+public fun parseCodeGeneratorRequest(input: InputStream): CodeGeneratorRequest =
+    CodeGeneratorRequest.parseFrom(input, extensionRegistry)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023, TeamDev. All rights reserved.
+ * Copyright 2024, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@ import com.google.protobuf.TypeRegistry
 import io.spine.string.Indent
 import io.spine.string.Separator
 import io.spine.string.pi
+import io.spine.type.TypeRegistryHolder.typeRegistry
 
 /**
  * Utilities for working with proto text format of Protobuf [Message] types.
@@ -48,7 +49,6 @@ private const val ABOUT = ""
 
 private object TextOutput {
     val printer: Printer by lazy {
-        val typeRegistry = KnownTypes.instance().typeRegistry()
         TextFormat.printer()
             .escapingNonAscii(true)
             .usingTypeRegistry(typeRegistry)
