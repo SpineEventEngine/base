@@ -29,6 +29,11 @@ package io.spine.base;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.type.KnownMessage;
 
+import java.util.UUID;
+
+import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+
 /**
  * A common interface for the {@code string}-based unique identifiers.
  *
@@ -49,4 +54,22 @@ import io.spine.type.KnownMessage;
 @SuppressWarnings("InterfaceNeverImplemented") // Used by the Protobuf Compiler plugin.
 @Immutable
 public interface UuidValue extends KnownMessage {
+
+    /**
+     * Verifies if the given UUID value is valid.
+     *
+     * @param uuid
+     *         the value to check
+     * @throws IllegalArgumentException
+     *          if the given string is not a valid representation of UUID
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored") // We use `UUID.fromString()` only for checking.
+    static void checkValid(String uuid) {
+        checkNotEmptyOrBlank(uuid);
+        try {
+            UUID.fromString(uuid);
+        } catch (NumberFormatException e) {
+            throw newIllegalArgumentException(e, "Invalid UUID string: `%s`.", uuid);
+        }
+    }
 }
