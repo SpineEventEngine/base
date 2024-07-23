@@ -30,6 +30,7 @@ import io.spine.internal.dependency.ErrorProne
 import io.spine.internal.dependency.GradleDoctor
 import io.spine.internal.dependency.Kotest
 import io.spine.internal.dependency.Kover
+import io.spine.internal.dependency.Ksp
 import io.spine.internal.dependency.ProtoData
 import io.spine.internal.dependency.ProtoTap
 import io.spine.internal.dependency.Protobuf
@@ -64,9 +65,9 @@ fun ScriptHandlerScope.standardSpineSdkRepositories() {
  *
  * But for some plugins, it's impossible to apply them directly to a project.
  * For example, when a plugin is not published to Gradle Portal, it can only be
- * applied with buildscript's classpath. Thus, it's needed to leave some freedom
+ * applied with the buildscript's classpath. Thus, it's needed to leave some freedom
  * upon how to apply them. In such cases, just a shortcut to a dependency object
- * can be declared, without applying of the plugin in-place.
+ * can be declared without applying the plugin in-place.
  */
 private const val ABOUT_DEPENDENCY_EXTENSIONS = ""
 
@@ -132,6 +133,9 @@ val PluginDependenciesSpec.kotest: PluginDependencySpec
 
 val PluginDependenciesSpec.kover: PluginDependencySpec
     get() = id(Kover.id).version(Kover.version)
+
+val PluginDependenciesSpec.ksp: PluginDependencySpec
+    get() = id(Ksp.id).version(Ksp.version)
 
 /**
  * Configures the dependencies between third-party Gradle tasks

@@ -24,19 +24,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.publish
+package io.spine.base
 
-import io.spine.internal.gradle.Repository
+import java.util.UUID
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
+import org.junit.jupiter.api.assertThrows
 
-/**
- * Repositories to which we may publish.
- */
-object PublishingRepos {
+@DisplayName("`UuidValue` should")
+internal class UuidValueSpec {
 
-    val cloudArtifactRegistry = CloudArtifactRegistry.repository
-
-    /**
-     * Obtains a GitHub repository by the given name.
-     */
-    fun gitHub(repoName: String): Repository = GitHubPackages.repository(repoName)
+    @Test
+    fun `provide validation method for a string value`() {
+        assertThrows<IllegalArgumentException> {
+            UuidValue.checkValid("")
+        }
+        assertThrows<IllegalArgumentException> {
+            UuidValue.checkValid("1-2-3")
+        }
+        assertDoesNotThrow {
+            UuidValue.checkValid(UUID.randomUUID().toString())
+        }
+    }
 }
