@@ -33,14 +33,6 @@ import java.util.Base64
 import kotlin.text.Charsets.UTF_8
 
 /**
- * This file contains extension functions for obtaining <em>standard</em> string
- * representation of various objects. For string representations using [Stringifier],
- * please see [io.spine.string.Stringifiers].
- */
-@Suppress("unused")
-private const val ABOUT = ""
-
-/**
  * Joins these strings into a `CamelCase` string.
  *
  * The string will start with the first capital letter if possible.
