@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -38,7 +38,7 @@ package io.spine.internal.dependency
 )
 object ProtoTap {
     const val group = "io.spine.tools"
-    const val version = "0.8.3"
+    const val version = "0.8.7"
     const val gradlePluginId = "io.spine.prototap"
     const val api = "$group:prototap-api:$version"
     const val gradlePlugin = "$group:prototap-gradle-plugin:$version"

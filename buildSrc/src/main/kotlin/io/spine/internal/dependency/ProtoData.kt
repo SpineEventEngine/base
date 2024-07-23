@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -65,7 +65,7 @@ object ProtoData {
      * The version of ProtoData dependencies.
      */
     val version: String
-    private const val fallbackVersion = "0.21.3"
+    private const val fallbackVersion = "0.30.0"
 
     /**
      * The distinct version of ProtoData used by other build tools.
@@ -74,7 +74,7 @@ object ProtoData {
      * transitional dependencies, this is the version used to build the project itself.
      */
     val dogfoodingVersion: String
-    private const val fallbackDfVersion = "0.21.3"
+    private const val fallbackDfVersion = "0.27.0"
 
     /**
      * The artifact for the ProtoData Gradle plugin.
@@ -122,6 +122,9 @@ object ProtoData {
 
     val fatCli
         get() = "$group:protodata-fat-cli:$version"
+
+    val testlib
+        get() = "$group:protodata-testlib:$version"
 
     /**
      * An env variable storing a custom [version].

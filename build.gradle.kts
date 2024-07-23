@@ -58,7 +58,6 @@ apply<IncrementGuard>()
 spinePublishing {
     destinations = with(PublishingRepos) {
         setOf(
-            cloudRepo,
             cloudArtifactRegistry,
             gitHub("base")
         )
