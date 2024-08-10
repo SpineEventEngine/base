@@ -924,18 +924,18 @@ message IsOption {
     // When a simple name is set, the package of the interface matches the
     // package of the Java class generated for message types to which this option applies.
     //
-    // If the value of the [generate] field is set to `true`, the framework will
+    // If the value of the `generate` field is set to `true`, the framework will
     // generate the interface using the given name.
     //
     // Otherwise, the code will be generated assuming the that the referenced interface
     // already exists. If this is not the case, compilation error will occur.
     //
-    // The interface will extend [com.google.protobuf.Message].
+    // The interface will extend `com.google.protobuf.Message`.
     //
     // The generated interface will have no declared methods.
     //
     // If the value of the option contains the Java package name separator (`.`) AND
-    // the value of the [generate] property is `true`, the Model Compiler will create
+    // the value of the `generate` property is `true`, the Model Compiler will create
     // a new Java file using the package of the referenced interface (either direct or
     // implied from the options of the proto file).
     //
@@ -962,18 +962,18 @@ message CompareByOption {
     //  - enumerations (following the order of numbers associated with each constant);
     //  - messages marked with `(compare_by)`.
     //
-    // Other types are not permitted. Neither are repeated and map fields. Such declarations can
-    // lead to build-time errors.
+    // Other types are not permitted. Repeated or map fields are not permitted either.
+    // Such declarations can lead to build-time errors.
     //
-    // To refer to nested fields, separate the field names with a dot (`.`). No fields in the path
-    // can be repeated or maps.
+    // To refer to nested fields, separate the field names with a dot (`.`).
+    // No fields in the path can be repeated or maps.
     //
     // When multiple field paths are specified, comparison is executed in the order of reference.
-    // For example, specifying ["seconds", "nanos"] makes the comparison mechanism prioritize
+    // For example, specifying `["seconds", "nanos"]` makes the comparison mechanism prioritize
     // the `seconds` field and refer to `nanos` only when `seconds` are equal.
     //
-    // Note. When comparing message fields, a non-set message is always less than a set message.
-    // But if a message is set to a default value, the comparison falls back to
+    // NOTE: When comparing fields with a message type, a non-set message is always less than
+    // a set message. But if a message is set to a default value, the comparison falls back to
     // the field-wise comparison, i.e. number values are treated as zeros, `bool` — as `false`,
     // and so on.
     //
