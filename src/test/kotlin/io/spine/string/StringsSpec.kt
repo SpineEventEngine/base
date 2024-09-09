@@ -51,6 +51,12 @@ class StringsSpec {
         initial.camelCase() shouldBe expected
     }
 
+    @ParameterizedTest
+    @CsvSource("aaa,aaa", "field_name,fieldName", "TypeName,typeName", "___u_ri____,uRi")
+    fun `produce a lower camel case string`(initial: String, expected: String) {
+        initial.lowerCamelCase() shouldBe expected
+    }
+
     @Test
     fun `trim whitespace`() {
         val value = """
