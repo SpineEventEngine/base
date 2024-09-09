@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -51,8 +51,8 @@ repositories {
 /**
  * The version of Jackson used by `buildSrc`.
  *
- * Please keep this value in sync. with `io.spine.internal.dependency.Jackson.version`.
- * It's not a requirement, but would be good in terms of consistency.
+ * Please keep this value in sync with [io.spine.internal.dependency.Jackson.version].
+ * It is not a requirement but would be good in terms of consistency.
  */
 val jacksonVersion = "2.15.3"
 
@@ -114,7 +114,7 @@ val protobufPluginVersion = "0.9.4"
  * @see <a href="https://github.com/Kotlin/dokka/releases">
  *     Dokka Releases</a>
  */
-val dokkaVersion = "1.9.10"
+val dokkaVersion = "1.9.20"
 
 /**
  * The version of Detekt Gradle Plugin.
