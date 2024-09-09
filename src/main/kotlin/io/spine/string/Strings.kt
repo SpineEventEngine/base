@@ -74,6 +74,22 @@ public fun String.camelCase(): String =
     split("_").camelCase()
 
 /**
+ * Obtains the same string but in `lowerCamelCase` instead of `snake_case`.
+ *
+ * The string will start with the first letter lowered, if possible.
+ *
+ * Examples:
+ *  - `"aaa"` becomes `"aaa"`;
+ *  - `"field_name"` becomes `"fieldName"`;
+ *  - `"TypeName"` stays `"typeName"`;
+ *  - `"___u_ri____"` becomes `"URi"`.
+ */
+public fun String.lowerCamelCase(): String =
+    split("_")
+        .camelCase()
+        .replaceFirstChar { it.lowercase() }
+
+/**
  * System-dependent line separator.
  */
 private val NL: String = Separator.nl()
