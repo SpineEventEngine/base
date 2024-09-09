@@ -185,3 +185,12 @@ fun Project.configureTaskDependencies() {
         "publishPluginJar".dependOn(createVersionFile)
     }
 }
+
+/**
+ * Obtains all modules of the root project to which this project belongs that
+ * do not have `"-tests"` in their names.
+ *
+ * By convention such modules are for integration tests and should be treated differently.
+ */
+val Project.productionModules: Iterable<Project>
+    get() = rootProject.subprojects.filter { !it.name.contains("-tests") }
