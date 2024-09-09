@@ -27,6 +27,7 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
+import io.spine.annotation.GeneratedMixin;
 import io.spine.type.KnownMessage;
 
 import java.util.UUID;
@@ -51,8 +52,8 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  *     }
  * </pre>
  */
-@SuppressWarnings("InterfaceNeverImplemented") // Used by the Protobuf Compiler plugin.
 @Immutable
+@GeneratedMixin
 public interface UuidValue extends KnownMessage {
 
     /**
