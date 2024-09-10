@@ -10,7 +10,7 @@ all modules and does not describe the project structure per-subproject.
  -->
 <groupId>io.spine</groupId>
 <artifactId>base</artifactId>
-<version>2.0.0-SNAPSHOT.207</version>
+<version>2.0.0-SNAPSHOT.208</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -139,15 +139,24 @@ all modules and does not describe the project structure per-subproject.
   </dependency>
   <dependency>
     <groupId>com.google.auto.service</groupId>
-    <artifactId>auto-service</artifactId>
+    <artifactId>auto-service-annotations</artifactId>
     <version>1.1.1</version>
     <scope>provided</scope>
   </dependency>
   <dependency>
-    <groupId>com.google.auto.service</groupId>
-    <artifactId>auto-service-annotations</artifactId>
-    <version>1.1.1</version>
-    <scope>provided</scope>
+    <groupId>com.google.devtools.ksp</groupId>
+    <artifactId>symbol-processing</artifactId>
+    <version>1.8.22-1.0.11</version>
+  </dependency>
+  <dependency>
+    <groupId>com.google.devtools.ksp</groupId>
+    <artifactId>symbol-processing-api</artifactId>
+    <version>1.8.22-1.0.11</version>
+  </dependency>
+  <dependency>
+    <groupId>com.google.devtools.ksp</groupId>
+    <artifactId>symbol-processing-cmdline</artifactId>
+    <version>1.8.22-1.0.11</version>
   </dependency>
   <dependency>
     <groupId>com.google.errorprone</groupId>
@@ -180,6 +189,11 @@ all modules and does not describe the project structure per-subproject.
     <groupId>com.puppycrawl.tools</groupId>
     <artifactId>checkstyle</artifactId>
     <version>10.12.1</version>
+  </dependency>
+  <dependency>
+    <groupId>dev.zacsweers.autoservice</groupId>
+    <artifactId>auto-service-ksp</artifactId>
+    <version>1.1.0</version>
   </dependency>
   <dependency>
     <groupId>io.gitlab.arturbosch.detekt</groupId>
