@@ -24,4 +24,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.208")
+package io.spine.compare
+
+/**
+ * A service provider interface for dynamic registering comparators
+ * in [ComparatorRegistry].
+ */
+public interface ComparatorProvider {
+
+    /**
+     * Registers comparators for specific [Class]s in the given [registry].
+     *
+     * An example usage:
+     *
+     * ```
+     * override fun registerIn(registry: ComparatorRegistry) = registry.run {
+     *     register<Timestamp>(Timestamps.comparator())
+     *     register<Duration>(Durations.comparator())
+     * }
+     * ```
+     */
+    public fun registerIn(registry: ComparatorRegistry)
+}

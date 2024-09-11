@@ -27,6 +27,7 @@
 @file:Suppress("RemoveRedundantQualifierName") // Cannot use imports in some places.
 
 import io.spine.internal.dependency.AutoService
+import io.spine.internal.dependency.AutoServiceKsp
 import io.spine.internal.dependency.Kotlin
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Spine
@@ -50,8 +51,8 @@ plugins {
     `compile-protobuf`
     `jvm-module`
     idea
-    `gradle-doctor`
     `project-report`
+    ksp
 }
 apply<IncrementGuard>()
 
@@ -82,8 +83,8 @@ configurations.all {
 }
 
 dependencies {
-    annotationProcessor(AutoService.processor)
     compileOnly(AutoService.annotations)
+    ksp(AutoServiceKsp.processor)
 
     implementation(Spine.Logging.lib)
     implementation(Spine.reflect)

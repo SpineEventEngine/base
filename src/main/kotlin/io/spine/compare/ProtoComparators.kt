@@ -24,4 +24,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.208")
+package io.spine.compare
+
+import com.google.auto.service.AutoService
+import com.google.protobuf.Duration
+import com.google.protobuf.Timestamp
+import com.google.protobuf.util.Durations
+import com.google.protobuf.util.Timestamps
+
+/**
+ * Registers comparators provided by `protobuf-java-util` library
+ * for `Timestamp` and `Duration` types.
+ */
+@AutoService(ComparatorProvider::class)
+internal class ProtoComparators : ComparatorProvider {
+
+    override fun registerIn(registry: ComparatorRegistry) = registry.run {
+        register<Timestamp>(Timestamps.comparator())
+        register<Duration>(Durations.comparator())
+    }
+}
