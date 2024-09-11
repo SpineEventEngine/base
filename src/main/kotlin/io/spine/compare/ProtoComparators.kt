@@ -33,17 +33,8 @@ import com.google.protobuf.util.Durations
 import com.google.protobuf.util.Timestamps
 
 /**
- * Registers comparators for Protobuf Well-Known messages in the [ComparatorRegistry].
- *
- * The following messages are assigned a comparator:
- *
- * 1. [Timestamp].
- * 2. [Duration].
- *
- * The used comparators are provided by Protobuf itself in a scope
- * of `protobuf-java-util` library.
- *
- * See also: [Protobuf Docs | Well-Known Types](https://protobuf.dev/reference/protobuf/google.protobuf/).
+ * Registers comparators provided by `protobuf-java-util` library
+ * for `Timestamp` and `Duration` types.
  */
 @AutoService(ComparatorProvider::class)
 internal class ProtoComparators : ComparatorProvider {
