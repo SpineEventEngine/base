@@ -33,33 +33,23 @@ import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.MethodOrderer
-import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestMethodOrder
 
-// The test covers both API.
 @DisplayName("`ComparatorRegistry` should`")
-@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 internal class ComparatorRegistrySpec {
 
     private val registry = ComparatorRegistry
-    private val comparator = compareBy<String> { it.length }
-
-    @AfterEach
-    fun clearRegistry() = registry.clear()
 
     @Test
-    @Order(1)
-    fun `load the comparators from the present providers`() {
+    fun `load the comparators from the providers`() {
         registry.contains(Timestamp::class.java).shouldBeTrue()
         registry.contains(Duration::class.java).shouldBeTrue()
     }
 
     @Test
     fun `register and check presence of comparators`() {
+        val comparator = compareBy<String> { it.length }
         registry.contains<String>().shouldBeFalse()
         registry.register<String>(comparator)
         registry.contains<String>().shouldBeTrue()
@@ -67,23 +57,26 @@ internal class ComparatorRegistrySpec {
 
     @Test
     fun `override the already registered comparator`() {
-        val comparator2 = compareBy<String> { it.first() }
-        registry.register<String>(comparator)
-        registry.register<String>(comparator2)
-        registry.get<String>() shouldBe comparator2
+        val comparator1 = compareBy<Double> { it }
+        val comparator2 = compareBy<Double> { it }
+        registry.register<Double>(comparator1)
+        registry.register<Double>(comparator2)
+        registry.get<Double>() shouldBe comparator2
     }
 
     @Test
     fun `return a comparator`() {
-        shouldThrow<IllegalStateException> { registry.get<String>() }
-        registry.register<String>(comparator)
-        registry.get<String>() shouldBe comparator
+        val comparator = compareBy<Float> { it }
+        shouldThrow<IllegalStateException> { registry.get<Float>() }
+        registry.register<Float>(comparator)
+        registry.get<Float>() shouldBe comparator
     }
 
     @Test
     fun `search for a comparator`() {
-        registry.find<String>().shouldBeNull()
-        registry.register<String>(comparator)
-        registry.find<String>() shouldBe comparator
+        val comparator = compareBy<StringBuilder> { it.length }
+        registry.find<StringBuilder>().shouldBeNull()
+        registry.register<StringBuilder>(comparator)
+        registry.find<StringBuilder>() shouldBe comparator
     }
 }

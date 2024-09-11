@@ -60,9 +60,6 @@ public object ComparatorRegistry {
         ServiceLoader.load(ComparatorProvider::class.java)
             .forEach { it.provideIn(this) }
     }
-
-    @VisibleForTesting
-    internal fun clear(): Unit = map.clear()
 }
 
 public inline fun <reified T : Any> ComparatorRegistry.contains(): Boolean = contains(T::class.java)
