@@ -76,7 +76,7 @@ public object ComparatorRegistry {
 
     private fun loadServiceProviders() {
         ServiceLoader.load(ComparatorProvider::class.java)
-            .forEach { it.provideIn(this) }
+            .forEach { it.registerIn(this) }
     }
 }
 

@@ -27,9 +27,22 @@
 package io.spine.compare
 
 /**
- * A service provider interface for custom comparators.
+ * A service provider interface for dynamic registering comparators
+ * in [ComparatorRegistry].
  */
 public interface ComparatorProvider {
 
-    public fun provideIn(registry: ComparatorRegistry)
+    /**
+     * Registers comparators for specific [Class]s in the given [registry].
+     *
+     * An example usage:
+     *
+     * ```
+     * override fun registerIn(registry: ComparatorRegistry) = registry.run {
+     *     register<Timestamp>(Timestamps.comparator())
+     *     register<Duration>(Durations.comparator())
+     * }
+     * ```
+     */
+    public fun registerIn(registry: ComparatorRegistry)
 }
