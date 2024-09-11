@@ -26,7 +26,7 @@
 
 package io.spine.compare
 
-import java.util.*
+import java.util.ServiceLoader
 
 /**
  * The comparator registry, which maintains a mapping between a [Class]
