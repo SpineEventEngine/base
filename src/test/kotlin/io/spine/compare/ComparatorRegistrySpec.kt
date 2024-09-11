@@ -29,9 +29,6 @@ package io.spine.compare
 import com.google.protobuf.Duration
 import com.google.protobuf.Timestamp
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.matchers.booleans.shouldBeFalse
-import io.kotest.matchers.booleans.shouldBeTrue
-import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -43,16 +40,16 @@ internal class ComparatorRegistrySpec {
 
     @Test
     fun `load the comparators from the providers`() {
-        registry.contains(Timestamp::class.java).shouldBeTrue()
-        registry.contains(Duration::class.java).shouldBeTrue()
+        registry.contains(Timestamp::class.java) shouldBe true
+        registry.contains(Duration::class.java) shouldBe true
     }
 
     @Test
     fun `register and check presence of comparators`() {
         val comparator = compareBy<String> { it.length }
-        registry.contains<String>().shouldBeFalse()
+        registry.contains<String>() shouldBe false
         registry.register<String>(comparator)
-        registry.contains<String>().shouldBeTrue()
+        registry.contains<String>() shouldBe true
     }
 
     @Test
@@ -75,7 +72,7 @@ internal class ComparatorRegistrySpec {
     @Test
     fun `search for a comparator`() {
         val comparator = compareBy<StringBuilder> { it.length }
-        registry.find<StringBuilder>().shouldBeNull()
+        registry.find<StringBuilder>() shouldBe null
         registry.register<StringBuilder>(comparator)
         registry.find<StringBuilder>() shouldBe comparator
     }
