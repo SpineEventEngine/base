@@ -27,46 +27,80 @@
 package io.spine.compare
 
 import java.util.*
-import org.jetbrains.annotations.VisibleForTesting
 
 /**
- * The registry of comparators to their types.
+ * The comparator registry, which maintains a mapping between a [Class]
+ * and its associated comparator.
+ *
+ * A new comparator can be added to the registry [directly][register],
+ * or dynamically with the help of [ComparatorProvider] service provider.
  */
 public object ComparatorRegistry {
 
     private val map = mutableMapOf<Class<*>, Comparator<*>>()
 
     init {
-        applyProviders()
+        loadServiceProviders()
     }
 
-    // `public` for Java users, Kotlin user should use reified counterparts.
+    /**
+     * Registers a [comparator] for the given [clazz].
+     *
+     * The method overrides the previously set comparator, if any.
+     */
     public fun <T> register(clazz: Class<T>, comparator: Comparator<T>) {
         map[clazz] = comparator
     }
 
-    @Suppress("UNCHECKED_CAST") // Type safety is enforced by `register()` method.
+    /**
+     * Returns a comparator for the given [clazz].
+     *
+     * @throws IllegalStateException if there is no a comparator for the given [clazz].
+     */
+    @Suppress("UNCHECKED_CAST") // Type safety is enforced by `register()` method signature.
     public fun <T> get(clazz: Class<T>): Comparator<T> {
         check(contains(clazz))
         return map[clazz]!! as Comparator<T>
     }
 
-    @Suppress("UNCHECKED_CAST") // Type safety is enforced by `register()` method.
+    /**
+     * Returns a comparator for the given [clazz], if any.
+     */
+    @Suppress("UNCHECKED_CAST") // Type safety is enforced by `register()` method signature.
     public fun <T> find(clazz: Class<T>): Comparator<T>? = map[clazz] as Comparator<T>?
 
+    /**
+     * Tells whether the registry has a comparator for the given [clazz].
+     */
     public fun contains(clazz: Class<*>): Boolean = map.containsKey(clazz)
 
-    private fun applyProviders() {
+    private fun loadServiceProviders() {
         ServiceLoader.load(ComparatorProvider::class.java)
             .forEach { it.provideIn(this) }
     }
 }
 
+/**
+ * Tells whether the registry has a comparator for the specified type [T].
+ */
 public inline fun <reified T : Any> ComparatorRegistry.contains(): Boolean = contains(T::class.java)
 
+/**
+ * Returns a comparator for the specified type [T], if any.
+ */
 public inline fun <reified T : Any> ComparatorRegistry.find(): Comparator<T>? = find(T::class.java)
 
+/**
+ * Returns a comparator for the specified type [T].
+ *
+ * @throws IllegalStateException if there is no a comparator for the type [T].
+ */
 public inline fun <reified T : Any> ComparatorRegistry.get(): Comparator<T> = get(T::class.java)
 
+/**
+ * Registers a [comparator] for the specified type [T].
+ *
+ * The method overrides the previously set comparator, if any.
+ */
 public inline fun <reified T> ComparatorRegistry.register(comparator: Comparator<T>): Unit =
     register(T::class.java, comparator)
