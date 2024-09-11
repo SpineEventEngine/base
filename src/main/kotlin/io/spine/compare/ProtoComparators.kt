@@ -32,10 +32,16 @@ import com.google.protobuf.Timestamp
 import com.google.protobuf.util.Durations
 import com.google.protobuf.util.Timestamps
 
+/**
+ * Registers comparators for some of the Protobuf Well-Known messages
+ * in the [ComparatorRegistry].
+ *
+ * The used comparators are provided by Protobuf itself.
+ */
 @AutoService(ComparatorProvider::class)
-internal class ProtoWellKnownComparators : ComparatorProvider {
+internal class ProtoComparators : ComparatorProvider {
 
-    override fun provideIn(registry: ComparatorRegistry) = registry.run {
+    override fun registerIn(registry: ComparatorRegistry) = registry.run {
         register<Timestamp>(Timestamps.comparator())
         register<Duration>(Durations.comparator())
     }
