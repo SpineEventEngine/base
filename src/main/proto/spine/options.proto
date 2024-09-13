@@ -232,8 +232,8 @@ extend google.protobuf.FieldOptions {
     // An API bearing this annotation is exempt from any compatibility guarantees made by its
     // containing library. Note that the presence of this annotation implies nothing about the
     // quality of the API in question, only the fact that it is not "API-frozen."
-    // It is generally safe for applications to depend on beta APIs, at the cost of some extra work
-    // during upgrades.
+    // It is generally safe for applications to depend on beta APIs, at the cost of
+    // some extra work during upgrades.
     //
     bool beta = 73853;
 
@@ -259,9 +259,9 @@ extend google.protobuf.FieldOptions {
     //
     // All column fields are considered optional by the framework.
     //
-    // Currently, only entities of projection and process manager type are eligible for having
-    // columns (see `EntityOption`). For all other message types the column declarations are
-    // ignored.
+    // Currently, only entities of projection and process manager type are
+    // eligible for having columns (see `EntityOption`).
+    // For all other message types the column declarations are ignored.
     //
     // The `repeated` and `map` fields cannot be columns.
     //
@@ -276,8 +276,8 @@ extend google.protobuf.OneofOptions {
 
     // Marks a `oneof` group, in which one field *must* be set.
     //
-    // Alternative to `(required_field)` with all the field in the group joined with the OR
-    // operator.
+    // Alternative to `(required_field)` with all the field in the group
+    // joined with the OR operator.
     //
     bool is_required = 73891;
 
@@ -295,9 +295,10 @@ extend google.protobuf.MessageOptions {
     // The number of parameters and their types are determined by the type of field options.
     //
     // Usage of this value is deprecated. Along with the old `msg_format`s, it exists to support
-    // the old validation library. The new version of the validation library, which does not lie in
-    // the `base` repository, constructs the default error messages separately when creating
-    // language-agnostic validation rules.
+    // the old version of the Validation library.
+    // The new version of the Validation library, which does not lie in the `base` repository,
+    // constructs the default error messages separately when creating language-agnostic
+    // validation rules.
     //
     string default_message = 73901 [deprecated = true];
 
@@ -328,6 +329,8 @@ extend google.protobuf.MessageOptions {
     EntityOption entity = 73903;
 
     // An external validation constraint for a field.
+    //
+    // WARNING: This option is deprecated and is scheduled for removal in Spine v2.0.0.
     //
     // Allows to re-define validation constraints for a message when its usage as a field of
     // another type requires alternative constraints. This includes definition of constraints for
@@ -408,7 +411,7 @@ extend google.protobuf.MessageOptions {
     //       Spine Model Compiler does not check such an "overwriting".
     //       See the issue: https://github.com/SpineEventEngine/base/issues/318.
     //
-    string constraint_for = 73904;
+    string constraint_for = 73904 [deprecated = true];
 
     // Reserved 73905 to 73910 for future validation options.
 
@@ -456,8 +459,10 @@ extend google.protobuf.MessageOptions {
     //
     // In the example above, `CreateProject` message is a `ProjectCommand`.
     //
-    // To specify a characteristic for every message in a `.proto` file, use `(every_is)` file
-    // option. If both `(is)` and `(every_is)` options are found, both are applied.
+    // To specify a characteristic for every message in a `.proto` file,
+    // please use `(every_is)` file option.
+    //
+    // If both `(is)` and `(every_is)` options are applicable for a type, both are applied.
     //
     // When targeting Java, specify the name of a Java interface to be implemented by this
     // message via `(is).java_type`.
@@ -545,13 +550,13 @@ extend google.protobuf.FileOptions {
     // In the example above, `CreateProject`, `CreateProject.WithAssignee`, and `DeleteProject`
     // messages are `ProjectCommand`-s.
     //
-    // To specify a characteristic for a single message, use `(is)` message option. If both `(is)`
-    // and `(every_is)` options are found, both are applied.
+    // To specify a characteristic for a single message, please use `(is)` message option.
+    // If both `(is)` and `(every_is)` options are applicable for a type, both are applied.
     //
     // When targeting Java, specify the name of a Java interface to be implemented by these
     // message types via `(every_is).java_type`.
     //
-    IsOption every_is = 73946;
+    EveryIsOption every_is = 73946;
 
     // Reserved 73947 to 73970 for future use.
 }
@@ -896,53 +901,66 @@ message EntityOption {
     Visibility visibility = 2;
 }
 
-// Defines a marker for a given type or a set of types.
+// Defines a common type for message types declared in the same proto file.
 //
-// The option may be used in two modes:
-//   - with the marker code generation;
-//   - without the marker code generation.
+// The nature of the type depends on the target programming language.
+// For example, the `java_type` property defines a name of the Java interface common
+// to all message classes generated for the proto file having this option.
 //
-// When used with the code generation, language-specific markers are generated by the Protobuf
-// compiler. Otherwise, it is expected that the user creates such markers manually.
+// The option triggers creation of the common type if the `generate` property is set to true.
+// Otherwise, it is expected that the user provides the reference to an existing type.
 //
-message IsOption {
+message EveryIsOption {
 
-    // Enables the generation of marker interfaces.
+    // Enables the generation of the common type.
     //
-    // Creation of the marker interfaces is disabled by default.
+    // The default value is `false`.
     //
     bool generate = 1;
 
     // The reference to a Java top-level interface.
     //
     // The interface cannot be nested into a class or another interface.
-    // If a nested interface is provided, the code generation is likely to produce
-    // uncompilable code.
+    // If a nested interface is provided, the code generation should fail the build process.
     //
     // The value may be a fully-qualified or a simple name.
     //
-    // When a simple name is set, the package of the interface matches the
-    // package of the Java class generated for message types to which this option applies.
+    // When a simple name is set, it is assumed that the interface belongs to
+    // the package of the generated message classes.
+    //
+    // If the value of the `generate` field is set to `false` the referenced interface must exist.
+    // Otherwise, a compilation error will occur.
     //
     // If the value of the `generate` field is set to `true`, the framework will
-    // generate the interface using the given name.
+    // generate the interface using the given name and the package as described above.
     //
-    // Otherwise, the code will be generated assuming the that the referenced interface
-    // already exists. If this is not the case, compilation error will occur.
-    //
-    // The interface will extend `com.google.protobuf.Message`.
-    //
-    // The generated interface will have no declared methods.
-    //
-    // If the value of the option contains the Java package name separator (`.`) AND
-    // the value of the `generate` property is `true`, the Model Compiler will create
-    // a new Java file using the package of the referenced interface (either direct or
-    // implied from the options of the proto file).
-    //
-    // If both `(is)` and `(every_is)` options specify a Java interface, the message class
-    // implements both interfaces.
+    // The generated interface will extend `com.google.protobuf.Message` and
+    // will have no declared methods.
     //
     string java_type = 2;
+}
+
+// Defines additional type for a message type in which this option is declared.
+//
+// The nature of the type depends on the target programming language.
+// For example, the `java_type` property defines a name of the Java interface which
+// the generated message class will implement.
+//
+message IsOption {
+
+    // The reference to a Java top-level interface.
+    //
+    // The interface cannot be nested into a class or another interface.
+    // If a nested interface is provided, the code generation should fail the build process.
+    //
+    // The value may be a fully-qualified or a simple name.
+    //
+    // When a simple name is set, it is assumed that the interface belongs to
+    // the package of the generated message classes.
+    //
+    // The referenced interface must exist. Otherwise, a compilation error will occur.
+    //
+    string java_type = 1;
 }
 
 // Defines the way to compare two messages of the same type to one another.
