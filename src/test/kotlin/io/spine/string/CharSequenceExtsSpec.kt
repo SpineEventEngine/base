@@ -90,6 +90,13 @@ class CharSequenceExtsSpec {
         noSeparators.revealLineSeparators() shouldBeSameInstanceAs noSeparators
     }
 
+    @Test
+    fun `tell if the sequence contains any of characters`() {
+        val binaryName = "org.example.MyClass\$Nested"
+        binaryName.containsAny('.', '$') shouldBe true
+        binaryName.containsAny('_', 'w', 'z') shouldBe false
+    }
+
     companion object {
 
         @JvmStatic

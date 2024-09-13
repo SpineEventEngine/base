@@ -35,7 +35,19 @@ public fun CharSequence.contains(s: Separator): Boolean =
     contains(s.value)
 
 /**
- * Obtains all line separators found it this sequence.
+ * Tells if this sequence contains any of the given characters.
+ */
+public fun CharSequence.containsAny(vararg char: Char): Boolean {
+    char.forEach {
+        if (contains(it)) {
+            return true
+        }
+    }
+    return false
+}
+
+/**
+ * Obtains all line separators found in this sequence.
  *
  * Keys of the returned map are indexes of the characters the separators occupy in this sequence.
  * Values are the separators themselves.
@@ -56,7 +68,7 @@ public fun CharSequence.containsLineSeparators(): Boolean =
     !findLineSeparators().values.isEmpty()
 
 /**
- * Tells if this char sequence contain at least one non-system line separator.
+ * Tells if this char sequence contains at least one non-system line separator.
  */
 public fun CharSequence.containsNonSystemLineSeparator(): Boolean {
     val found = findLineSeparators().values.any { !it.isSystem() }
@@ -65,7 +77,7 @@ public fun CharSequence.containsNonSystemLineSeparator(): Boolean {
 
 /**
  * Finds all the line separators in this sequence and replaces them with escaped replacements
- * like "\r" or "\n", so that the separators are become visible in logging or other
+ * like "\r" or "\n", so that the separators become visible in logging or other
  * diagnostic output.
  *
  * @see CharSequence.revealLineSeparators
