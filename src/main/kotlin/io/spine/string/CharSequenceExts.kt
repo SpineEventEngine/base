@@ -37,14 +37,10 @@ public fun CharSequence.contains(s: Separator): Boolean =
 /**
  * Tells if this sequence contains any of the given characters.
  */
-public fun CharSequence.containsAny(vararg char: Char): Boolean {
-    char.forEach {
-        if (contains(it)) {
-            return true
-        }
+public fun CharSequence.containsAny(vararg char: Char): Boolean =
+    char.any {
+        contains(it)
     }
-    return false
-}
 
 /**
  * Obtains all line separators found in this sequence.
