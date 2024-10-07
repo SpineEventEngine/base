@@ -32,7 +32,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.protobuf</groupId>
     <artifactId>protobuf-java</artifactId>
-    <version>3.25.1</version>
+    <version>3.25.5</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
