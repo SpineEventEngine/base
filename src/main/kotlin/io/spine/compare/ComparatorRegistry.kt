@@ -48,6 +48,7 @@ public object ComparatorRegistry {
      *
      * The method overrides the previously set comparator, if any.
      */
+    @JvmStatic
     public fun <T> register(clazz: Class<T>, comparator: Comparator<T>) {
         map[clazz] = comparator
     }
@@ -57,6 +58,7 @@ public object ComparatorRegistry {
      *
      * @throws IllegalStateException if there is no a comparator for the given [clazz].
      */
+    @JvmStatic
     @Suppress("UNCHECKED_CAST") // Type safety is enforced by `register()` method signature.
     public fun <T> get(clazz: Class<T>): Comparator<T> {
         check(contains(clazz))
@@ -66,12 +68,14 @@ public object ComparatorRegistry {
     /**
      * Returns a comparator for the given [clazz], if any.
      */
+    @JvmStatic
     @Suppress("UNCHECKED_CAST") // Type safety is enforced by `register()` method signature.
     public fun <T> find(clazz: Class<T>): Comparator<T>? = map[clazz] as Comparator<T>?
 
     /**
      * Tells whether the registry has a comparator for the given [clazz].
      */
+    @JvmStatic
     public fun contains(clazz: Class<*>): Boolean = map.containsKey(clazz)
 
     private fun loadServiceProviders() {
