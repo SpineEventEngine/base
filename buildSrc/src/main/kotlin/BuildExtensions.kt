@@ -31,23 +31,17 @@ import io.spine.internal.dependency.GradleDoctor
 import io.spine.internal.dependency.Kotest
 import io.spine.internal.dependency.Kover
 import io.spine.internal.dependency.Ksp
+import io.spine.internal.dependency.McJava
 import io.spine.internal.dependency.ProtoData
 import io.spine.internal.dependency.ProtoTap
 import io.spine.internal.dependency.Protobuf
-import io.spine.internal.dependency.Spine
 import io.spine.internal.gradle.standardToSpineSdk
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.tasks.JavaExec
 import org.gradle.kotlin.dsl.ScriptHandlerScope
 import org.gradle.plugin.use.PluginDependenciesSpec
 import org.gradle.plugin.use.PluginDependencySpec
-
-/**
- * Applies [standard][standardToSpineSdk] repositories to this `buildscript`.
- */
-fun ScriptHandlerScope.standardSpineSdkRepositories() {
-    repositories.standardToSpineSdk()
-}
 
 /**
  * Provides shortcuts to reference our dependency objects.
@@ -63,28 +57,47 @@ fun ScriptHandlerScope.standardSpineSdkRepositories() {
  *     get() = id(GradleDoctor.pluginId).version(GradleDoctor.version)
  * ```
  *
- * But for some plugins, it's impossible to apply them directly to a project.
+ * But for some plugins, it is impossible to apply them directly to a project.
  * For example, when a plugin is not published to Gradle Portal, it can only be
- * applied with the buildscript's classpath. Thus, it's needed to leave some freedom
+ * applied with the buildscript's classpath. Thus, it is necessary to leave some freedom
  * upon how to apply them. In such cases, just a shortcut to a dependency object
  * can be declared without applying the plugin in-place.
  */
 private const val ABOUT_DEPENDENCY_EXTENSIONS = ""
 
 /**
- * Shortcut to [Spine.McJava] dependency object.
+ * Applies [standard][standardToSpineSdk] repositories to this `buildscript`.
+ */
+fun ScriptHandlerScope.standardSpineSdkRepositories() {
+    repositories.standardToSpineSdk()
+}
+
+/**
+ * Shortcut to [McJava] dependency object for using under `buildScript`.
+ */
+val ScriptHandlerScope.mcJava: McJava
+    get() = McJava
+
+/**
+ * Shortcut to [McJava] dependency object.
  *
  * This plugin is not published to Gradle Portal and cannot be applied directly to a project.
  * Firstly, it should be put to buildscript's classpath and then applied by ID only.
  */
-val PluginDependenciesSpec.mcJava: Spine.McJava
-    get() = Spine.McJava
+val PluginDependenciesSpec.mcJava: McJava
+    get() = McJava
+
+/**
+ * Shortcut to [ProtoData] dependency object for using under `buildscript`.
+ */
+val ScriptHandlerScope.protoData: ProtoData
+    get() = ProtoData
 
 /**
  * Shortcut to [ProtoData] dependency object.
  *
- * This plugin is published at Gradle Portal. But when used in a pair with [mcJava],
- * it cannot be applied directly to a project.
+ * This plugin is published at Gradle Plugin Portal.
+ * But when used in a pair with [mcJava], it cannot be applied directly to a project.
  * It is so, because [mcJava] uses [protoData] as its dependency.
  * And buildscript's classpath ends up with both of them.
  */
@@ -187,10 +200,48 @@ fun Project.configureTaskDependencies() {
 }
 
 /**
- * Obtains all modules of the root project to which this project belongs that
- * do not have `"-tests"` in their names.
+ * Obtains all modules names of which do not have `"-tests"` as the suffix.
  *
- * By convention such modules are for integration tests and should be treated differently.
+ * By convention, such modules are for integration tests and should be treated differently.
  */
 val Project.productionModules: Iterable<Project>
     get() = rootProject.subprojects.filter { !it.name.contains("-tests") }
+
+
+/**
+ * Sets the remote debug option for this task.
+ *
+ * The port number is [5566][BuildSettings.REMOTE_DEBUG_PORT].
+ *
+ * @param enabled If `true` the task will be suspended.
+ */
+fun Task.remoteDebug(enabled: Boolean = true) { this as JavaExec
+    debugOptions {
+        this@debugOptions.enabled.set(enabled)
+        port.set(BuildSettings.REMOTE_DEBUG_PORT)
+        server.set(true)
+        suspend.set(true)
+    }
+}
+
+/**
+ * Sets remote debug options for the `launchProtoData` task.
+ *
+ * @param enabled if `true` the task will be suspended.
+ *
+ * @see remoteDebug
+ */
+fun Project.protoDataRemoteDebug(enabled: Boolean = true) {
+    tasks.findByName("launchProtoData")?.remoteDebug(enabled)
+}
+
+/**
+ * Sets remote debug options for the `launchTestProtoData` task.
+ *
+ * @param enabled if `true` the task will be suspended.
+ *
+ * @see remoteDebug
+ */
+fun Project.testProtoDataRemoteDebug(enabled: Boolean = true) {
+    tasks.findByName("launchTestProtoData")?.remoteDebug(enabled)
+}

@@ -58,14 +58,22 @@ package io.spine.internal.dependency
     "KDocUnresolvedReference" /* Referencing private properties in constructor KDoc. */
 )
 object ProtoData {
+    const val pluginGroup = Spine.group
     const val group = "io.spine.protodata"
     const val pluginId = "io.spine.protodata"
+
+    /**
+     * Identifies ProtoData as a `classpath` dependency under `buildScript` block.
+     *
+     * The dependency is obtained from https://plugins.gradle.org/m2/.
+     */
+    const val module = "io.spine:protodata"
 
     /**
      * The version of ProtoData dependencies.
      */
     val version: String
-    private const val fallbackVersion = "0.54.2"
+    private const val fallbackVersion = "0.61.4"
 
     /**
      * The distinct version of ProtoData used by other build tools.
@@ -74,14 +82,19 @@ object ProtoData {
      * transitional dependencies, this is the version used to build the project itself.
      */
     val dogfoodingVersion: String
-    private const val fallbackDfVersion = "0.54.2"
+    private const val fallbackDfVersion = "0.61.4"
 
     /**
      * The artifact for the ProtoData Gradle plugin.
      */
     val pluginLib: String
 
-    fun pluginLib(version: String): String =
+    /**
+     * The artifact to be used during experiments when publishing locally.
+     *
+     * @see ProtoData
+     */
+    private fun pluginLib(version: String): String =
         "$group:gradle-plugin:$version"
 
     fun api(version: String): String =
@@ -89,10 +102,6 @@ object ProtoData {
 
     val api
         get() = api(version)
-
-    @Deprecated("Use `backend` instead", ReplaceWith("backend"))
-    val compiler
-        get() = backend
 
     val backend
         get() = "$group:protodata-backend:$version"
@@ -106,16 +115,8 @@ object ProtoData {
     val cliApi
         get() = "$group:protodata-cli-api:$version"
 
-    @Deprecated("Use `java()` instead", ReplaceWith("java(version)"))
-    fun codegenJava(version: String): String =
-        java(version)
-
     fun java(version: String): String =
         "$group:protodata-java:$version"
-
-    @Deprecated("Use `java` instead.", ReplaceWith("java"))
-    val codegenJava
-        get() = java(version)
 
     val java
         get() = java(version)
@@ -167,7 +168,7 @@ object ProtoData {
         } else {
             version = fallbackVersion
             dogfoodingVersion = fallbackDfVersion
-            pluginLib = "${Spine.group}:protodata:$version"
+            pluginLib = "$pluginGroup:protodata:$version"
         }
     }
 }
