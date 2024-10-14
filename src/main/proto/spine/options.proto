@@ -611,9 +611,9 @@ message IfMissingOption {
 //
 //     message KelvinTemperature {
 //         double value = 1 [(min) = {
-//             value = "0.0"
-//             exclusive = true
-//             error_msg = "Temperature cannot reach {other}K, but provided {value}."
+//             value: "0.0",
+//             exclusive: true,
+//             error_msg: "Temperature cannot reach {other}K, but provided {value}."
 //         }];
 //     }
 //
@@ -736,8 +736,8 @@ message PatternOption {
         //
         // By default, the dot does not match line break characters.
         //
-        // May also be known in some platforms as "single line" mode and be encoded with the `s`
-        // flag.
+        // May also be known in some platforms as "single line" mode and be encoded with
+        // the `s` flag.
         //
         bool dot_all = 1;
 
@@ -799,8 +799,8 @@ message IfInvalidOption {
 
     // A user-defined validation error format message.
     //
-    // May include the token `{value}` for the actual value of the field. The token will be replaced
-    // at runtime when the error is constructed.
+    // May include the token `{value}` for the actual value of the field.
+    // The token will be replaced at runtime when the error is constructed.
     //
     string error_msg = 2;
 }
