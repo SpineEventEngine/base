@@ -68,6 +68,9 @@ internal class FieldPathExtsSpec {
     fun `join into string`() {
         val path = "big.bada.boom"
         FieldPath(path).joined shouldBe path
+
+        val notNested = "plain"
+        FieldPath(notNested).joined shouldBe notNested
     }
 
     @Test
