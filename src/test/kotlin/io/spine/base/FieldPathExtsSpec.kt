@@ -60,7 +60,7 @@ internal class FieldPathExtsSpec {
 
     @Test
     fun `tell if the path is nested or not`() {
-        FieldPath("fiz.buz").isNotNested shouldBe false
+        FieldPath("fiz.b_z").isNotNested shouldBe false
         FieldPath("top").isNotNested shouldBe true
     }
 
@@ -80,7 +80,7 @@ internal class FieldPathExtsSpec {
 
     @Test
     fun `obtain a nested path`() {
-        FieldPath("from.top.to.bottom").stepInto() shouldBe FieldPath("top.to.bottom")
+        FieldPath("from.top_to.bottom").stepInto() shouldBe FieldPath("top_to.bottom")
         assertThrows<IllegalStateException> {
             FieldPath("top").stepInto()
         }
