@@ -978,7 +978,9 @@ message CompareByOption {
     //  - `bool` (false is less than true);
     //  - `string` (in the order of respective Unicode values);
     //  - enumerations (following the order of numbers associated with each constant);
-    //  - messages marked with `(compare_by)`.
+    //  - local messages (generated within the current build) marked with `(compare_by)`;
+    //  - external messages (from dependencies), which either marked with `(compare_by)`
+    //    OR have a comparator provided in `io.spine.compare.ComparatorRegistry`.
     //
     // Other types are not permitted. Repeated or map fields are not permitted either.
     // Such declarations can lead to build-time errors.
