@@ -1019,10 +1019,10 @@ message CompareByOption {
 //
 message IfSetAgainOption {
 
-    // The default error message used when the field is re-assigned.
+    // The default error message used when the field value is re-assigned.
     option (default_message) = "The field `{fieldName}` cannot be re-assigned.";
 
-    // A user-defined error message pattern.
+    // A user-defined error message.
     //
     // The specified message may include the following tokens:
     // 1. `{fieldName}` — the field name.
@@ -1035,7 +1035,7 @@ message IfSetAgainOption {
     //
     //     message User {
     //         UserId id = 1 [(set_once) = true,
-    //                        (if_set_again).error_msg = "The student ID cannot be re-assigned. The suggested value: `{newValue}`."];
+    //                        (if_set_again).error_msg = "The student ID cannot be re-assigned. The new value: `{newValue}`."];
     //     }
     //
     string error_msg = 1;
