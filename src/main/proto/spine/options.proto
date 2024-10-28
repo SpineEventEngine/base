@@ -267,7 +267,10 @@ extend google.protobuf.FieldOptions {
     //
     bool column = 73854;
 
-    // Reserved 73855 to 73890 for future options.
+    // See `IfSetAgainOption`.
+    IfSetAgainOption if_set_again = 73855;
+
+    // Reserved 73856 to 73890 for future options.
 
     // Reserved 73900 for removed `by` option.
 }
@@ -1002,4 +1005,24 @@ message CompareByOption {
     // If true, the default order is reversed. For example, numbers are ordered from the greater to
     // the lower, enums — from the last number value to the 0th value, etc.
     bool descending = 2;
+}
+
+// Defines the error message used if a `set_once` field is set again.
+//
+// Applies only to the fields marked as `set_once`.
+//
+// Example: Using the `(set_once)` option.
+//
+//     message User {
+//         UserId id = 1 [(set_once) = true,
+//                        (if_set_again).error_msg = "The student ID can't be re-assigned."];
+//     }
+//
+message IfSetAgainOption {
+
+    // The default error message for the field.
+    option (default_message) = "The field value can't be re-assigned.";
+
+    // A user-defined error message.
+    string error_msg = 1;
 }
