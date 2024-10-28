@@ -1015,13 +1015,13 @@ message CompareByOption {
 //
 //     message User {
 //         UserId id = 1 [(set_once) = true,
-//                        (if_set_again).error_msg = "The student ID can't be re-assigned."];
+//                        (if_set_again).error_msg = "The student ID cannot be re-assigned."];
 //     }
 //
 message IfSetAgainOption {
 
     // The default error message for the field.
-    option (default_message) = "The field value can't be re-assigned.";
+    option (default_message) = "The field value cannot be re-assigned.";
 
     // A user-defined error message.
     string error_msg = 1;
