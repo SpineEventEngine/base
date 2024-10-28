@@ -1026,8 +1026,8 @@ message IfSetAgainOption {
     //
     // The specified message may include the following tokens:
     // 1. `{fieldName}` — the field name.
-    // 2. `{currentValue}` — the field's current value.
-    // 3. `{newValue} — the field's new value.
+    // 2. `{currentValue}` — the current field value.
+    // 3. `{proposedValue}` — the value that was attempted to be set.
     //
     // The tokens will be replaced at runtime when the error is constructed.
     //
@@ -1035,7 +1035,7 @@ message IfSetAgainOption {
     //
     //     message User {
     //         UserId id = 1 [(set_once) = true,
-    //                        (if_set_again).error_msg = "The student ID cannot be re-assigned. The new value: `{newValue}`."];
+    //                        (if_set_again).error_msg = "The student ID field cannot be re-assigned. The current value: `{currentValue}`. The proposed value: `{proposedValue}`."];
     //     }
     //
     string error_msg = 1;
