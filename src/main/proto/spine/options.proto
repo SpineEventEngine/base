@@ -158,6 +158,9 @@ extend google.protobuf.FieldOptions {
     //
     // Once set, the `id` field cannot be changed.
     //
+    // Use `(if_set_again).error_msg` option to specify a custom error message that will be shown
+    // on attempt to re-assign the field value.
+    //
     bool set_once = 73824;
 
     // The option to mark a `repeated` field as a collection of unique elements.
@@ -267,7 +270,10 @@ extend google.protobuf.FieldOptions {
     //
     bool column = 73854;
 
-    // See `IfSetAgainOption`.
+    // Defines the error message used if a `set_once` field is set again.
+    //
+    // Applies only to the fields marked as `set_once`.
+    //
     IfSetAgainOption if_set_again = 73855;
 
     // Reserved 73856 to 73890 for future options.
@@ -1011,18 +1017,26 @@ message CompareByOption {
 //
 // Applies only to the fields marked as `set_once`.
 //
-// Example: Using the `(set_once)` option.
-//
-//     message User {
-//         UserId id = 1 [(set_once) = true,
-//                        (if_set_again).error_msg = "The student ID cannot be re-assigned."];
-//     }
-//
 message IfSetAgainOption {
 
-    // The default error message for the field.
-    option (default_message) = "The field value cannot be re-assigned.";
+    // The default error message used when the field is re-assigned.
+    option (default_message) = "The field `{fieldName}` cannot be re-assigned.";
 
-    // A user-defined error message.
+    // A user-defined error message pattern.
+    //
+    // The specified message may include the following tokens:
+    // 1. `{fieldName}` — the field name.
+    // 2. `{currentValue}` — the field's current value.
+    // 3. `{newValue} — the field's new value.
+    //
+    // The tokens will be replaced at runtime when the error is constructed.
+    //
+    // Example: Using the `(set_once)` option.
+    //
+    //     message User {
+    //         UserId id = 1 [(set_once) = true,
+    //                        (if_set_again).error_msg = "The student ID cannot be re-assigned. The suggested value: `{newValue}`."];
+    //     }
+    //
     string error_msg = 1;
 }
