@@ -1035,7 +1035,7 @@ message IfSetAgainOption {
     //
     //     message User {
     //         UserId id = 1 [(set_once) = true,
-    //                        (if_set_again).error_msg = "The student ID field cannot be re-assigned. The current value: `{currentValue}`. The proposed value: `{proposedValue}`."];
+    //                        (if_set_again).error_msg = "A student ID is used as a permanent identifier within academic system, and cannot be re-assigned."];
     //     }
     //
     string error_msg = 1;
