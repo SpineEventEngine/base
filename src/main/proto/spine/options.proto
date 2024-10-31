@@ -158,6 +158,9 @@ extend google.protobuf.FieldOptions {
     //
     // Once set, the `id` field cannot be changed.
     //
+    // Use `(if_set_again).error_msg` option to specify a custom error message that will be shown
+    // on attempt to re-assign the field value.
+    //
     bool set_once = 73824;
 
     // The option to mark a `repeated` field as a collection of unique elements.
@@ -267,7 +270,13 @@ extend google.protobuf.FieldOptions {
     //
     bool column = 73854;
 
-    // Reserved 73855 to 73890 for future options.
+    // Defines the error message used if a `set_once` field is set again.
+    //
+    // Applies only to the fields marked as `set_once`.
+    //
+    IfSetAgainOption if_set_again = 73855;
+
+    // Reserved 73856 to 73890 for future options.
 
     // Reserved 73900 for removed `by` option.
 }
@@ -1002,4 +1011,32 @@ message CompareByOption {
     // If true, the default order is reversed. For example, numbers are ordered from the greater to
     // the lower, enums — from the last number value to the 0th value, etc.
     bool descending = 2;
+}
+
+// Defines the error message used if a `set_once` field is set again.
+//
+// Applies only to the fields marked as `set_once`.
+//
+message IfSetAgainOption {
+
+    // The default error message used when the field value is re-assigned.
+    option (default_message) = "The field `{fieldName}` already has the value `{currentValue}` and cannot be reassigned to `{proposedValue}`.";
+
+    // A user-defined error message.
+    //
+    // The specified message may include the following tokens:
+    // 1. `{fieldName}` — the field name.
+    // 2. `{currentValue}` — the current field value.
+    // 3. `{proposedValue}` — the value that was attempted to be set.
+    //
+    // The tokens will be replaced at runtime when the error is constructed.
+    //
+    // Example: Using the `(set_once)` option.
+    //
+    //     message User {
+    //         UserId id = 1 [(set_once) = true,
+    //                        (if_set_again).error_msg = "A student ID is used as a permanent identifier within academic system, and cannot be re-assigned."];
+    //     }
+    //
+    string error_msg = 1;
 }
