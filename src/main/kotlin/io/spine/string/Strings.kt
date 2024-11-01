@@ -239,4 +239,3 @@ public inline  fun <reified T> simply(): String = T::class.simpleName!!
  * A shortcut for [shortDebugString] call.
  */
 public fun com.google.protobuf.Message.shortly(): String = shortDebugString()
-
