@@ -49,8 +49,8 @@ repositories.standardToSpineSdk()
 
 // Apply some plugins to make type-safe extension accessors available in this script file.
 plugins {
-    `compile-protobuf`
     `jvm-module`
+    `compile-protobuf`
     idea
     `project-report`
     ksp
