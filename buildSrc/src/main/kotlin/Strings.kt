@@ -24,8 +24,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.gradle.configurationcache.extensions.capitalized
-
 /**
  * This file provides extensions to `String` and `CharSequence` that wrap
  * analogues from standard Kotlin runtime.
