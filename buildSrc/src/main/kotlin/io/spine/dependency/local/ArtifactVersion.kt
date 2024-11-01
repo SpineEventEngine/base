@@ -45,7 +45,7 @@ object ArtifactVersion {
      *
      * @see <a href="https://github.com/SpineEventEngine/reflect">spine-reflect</a>
      */
-    const val reflect = "2.0.0-SNAPSHOT.190"
+    const val reflect = "2.0.0-SNAPSHOT.191"
 
     /**
      * The version of [Logging].
