@@ -29,6 +29,7 @@
 
 package io.spine.string
 
+import io.spine.type.shortDebugString
 import java.util.Base64
 import kotlin.text.Charsets.UTF_8
 
@@ -228,3 +229,14 @@ public fun String.ensurePrefix(prefix: String): String {
         prefix + this
     }
 }
+
+/**
+ * Returns the simple class name of the type [T].
+ */
+public inline  fun <reified T> simply(): String = T::class.simpleName!!
+
+/**
+ * A shortcut for [shortDebugString] call.
+ */
+public fun com.google.protobuf.Message.shortly(): String = shortDebugString()
+

@@ -80,7 +80,7 @@ public fun MessageOrBuilder.printToString(): String =
 /**
  * Prints a textual representation of the `MessageOrBuilder` to the returned string.
  *
- * The output starts with the fully-qualified name of the message type, followed
+ * The output starts with the fully qualified name of the message type, followed
  * by a curly brace. Then follows the [text about the fields][printToString] indented
  * with to spaces. The output closes by a curly brace on the new line.
  *

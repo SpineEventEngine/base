@@ -26,6 +26,7 @@
 
 package io.spine.string
 
+import com.google.protobuf.stringValue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldStartWith
@@ -152,5 +153,20 @@ class StringsSpec {
         assertThrows<IllegalArgumentException> {
             "abc".ensurePrefix("")
         }
+    }
+
+    @Test
+    fun `provide shortcut for simple class name`() {
+        simply<Any>() shouldBe "Any"
+    }
+
+    /**
+     * This test does cover the variety of outputs because
+     * the function under the test simply calls [io.spine.type.shortDebugString].
+     * We make the function used, contributing to the code coverage.
+     */
+    @Test
+    fun `provide shortcut for 'shortDebugString'`() {
+        stringValue { value = "Hey" }.shortly() shouldBe "value: \"Hey\""
     }
 }

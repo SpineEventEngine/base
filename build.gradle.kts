@@ -26,18 +26,19 @@
 
 @file:Suppress("RemoveRedundantQualifierName") // Cannot use imports in some places.
 
-import io.spine.internal.dependency.AutoService
-import io.spine.internal.dependency.AutoServiceKsp
-import io.spine.internal.dependency.Kotlin
-import io.spine.internal.dependency.Protobuf
-import io.spine.internal.dependency.Spine
-import io.spine.internal.gradle.publish.IncrementGuard
-import io.spine.internal.gradle.publish.PublishingRepos
-import io.spine.internal.gradle.publish.excludeGoogleProtoFromArtifacts
-import io.spine.internal.gradle.publish.spinePublishing
-import io.spine.internal.gradle.report.license.LicenseReporter
-import io.spine.internal.gradle.report.pom.PomGenerator
-import io.spine.internal.gradle.standardToSpineSdk
+import io.spine.dependency.lib.AutoService
+import io.spine.dependency.lib.AutoServiceKsp
+import io.spine.dependency.lib.Kotlin
+import io.spine.dependency.lib.Protobuf
+import io.spine.dependency.local.Logging
+import io.spine.dependency.local.Spine
+import io.spine.gradle.publish.IncrementGuard
+import io.spine.gradle.publish.PublishingRepos
+import io.spine.gradle.publish.excludeGoogleProtoFromArtifacts
+import io.spine.gradle.publish.spinePublishing
+import io.spine.gradle.report.license.LicenseReporter
+import io.spine.gradle.report.pom.PomGenerator
+import io.spine.gradle.standardToSpineSdk
 
 buildscript {
     standardSpineSdkRepositories()
@@ -74,19 +75,11 @@ version = rootProject.extra["versionToPublish"]!!
 repositories.standardToSpineSdk()
 configurations.forceVersions()
 
-configurations.all {
-    resolutionStrategy {
-        // Forcing `reflect` explicitly here,
-        // as this is a direct dependency of this module.
-        force(Spine.reflect)
-    }
-}
-
 dependencies {
     compileOnly(AutoService.annotations)
     ksp(AutoServiceKsp.processor)
 
-    implementation(Spine.Logging.lib)
+    implementation(Logging.lib)
     implementation(Spine.reflect)
     implementation(Kotlin.reflect)
 
@@ -100,7 +93,15 @@ dependencies {
     protobuf(Protobuf.protoSrcLib)
 
     testImplementation(Spine.testlib)
-    testImplementation(Spine.Logging.smokeTest)
+    testImplementation(Logging.smokeTest)
+}
+
+configurations.all {
+    resolutionStrategy {
+        force(Spine.reflect)
+        force(Logging.lib)
+        force(Logging.libJvm)
+    }
 }
 
 tasks {
