@@ -44,18 +44,18 @@ private const val ABOUT = ""
  * Makes the first character come in the title case.
  */
 fun String.titleCaseFirstChar(): String {
-    // return replaceFirstChar { it.titlecase() }
+     return replaceFirstChar { it.titlecase() }
     // OR for earlier Kotlin versions:
     //   1. add import of `org.gradle.configurationcache.extensions.capitalized`
     //   2. call `capitalized()` instead of `replaceFirstChar` above.
-    return capitalized()
+    // return capitalized()
 }
 
 /**
  * Converts this string to lowercase.
  */
 fun String.lowercased(): String {
-    //    return lowercase()
+    return lowercase()
     // OR for earlier Kotlin versions call:
-    return toLowerCase()
+    // return toLowerCase()
 }
