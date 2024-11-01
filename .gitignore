@@ -23,7 +23,7 @@
 
 # Gradle build files
 **/build/**
-!**/src/**/build/
+!**/src/**/build/**
 
 # Build files produced by the IDE
 **/out/**
