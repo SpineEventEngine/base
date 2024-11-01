@@ -33,7 +33,7 @@ package io.spine.dependency.local
  */
 @Suppress("ConstPropertyName", "unused")
 object Logging {
-    const val version = "2.0.0-SNAPSHOT.240"
+    const val version = "2.0.0-SNAPSHOT.241"
     const val group = Spine.group
     const val lib = "$group:spine-logging:$version"
     const val libJvm = "$group:spine-logging-jvm:$version"
