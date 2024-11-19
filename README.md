@@ -4,13 +4,13 @@
 
 # Spine Base
 
-This repository contains common data types and utilities used by the Spine SDK subprojects (e.g. 
-[core-java][core-java]).
+This repository contains common data types and utilities used by
+the Spine SDK subprojects (e.g. [core-java][core-java]).
 
 ## Adding to a Gradle project
 
-Spine Base is not supposed to be used directly in end user project. But if you need to, 
-here's how you add it to your Gradle project:
+Spine Base is not supposed to be used directly in an end-user project.
+But if you need to, here's how you add it to your Gradle project:
 
 ```kotlin
 dependencies {
