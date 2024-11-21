@@ -124,7 +124,7 @@ public final class Ensure {
      *
      * @return the passed instance
      * @throws IllegalStateException
-     *          if the passed path represents existing file, instead of a directory
+     *          if the passed path represents an existing file, instead of a directory
      */
     @CanIgnoreReturnValue
     public static Path ensureDirectory(Path directory) {
