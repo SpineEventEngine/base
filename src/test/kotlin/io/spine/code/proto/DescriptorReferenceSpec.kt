@@ -32,6 +32,7 @@ import com.google.common.io.Resources
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.spine.io.Resource
+import io.spine.string.Separator
 import io.spine.testing.Assertions.assertIllegalState
 import io.spine.testing.Assertions.assertNpe
 import io.spine.util.Exceptions
@@ -121,8 +122,8 @@ internal class DescriptorReferenceSpec {
     }
 
     companion object {
-        private const val WINDOWS_SEPARATOR = "\r\n"
-        private const val UNIX_SEPARATOR = "\n"
+        private val WINDOWS_SEPARATOR = Separator.CRLF.value
+        private val UNIX_SEPARATOR = Separator.LF.value
     }
 }
 
