@@ -30,9 +30,10 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.io.Ensure;
 import io.spine.io.Resource;
+import io.spine.string.Separator;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -44,14 +45,15 @@ import java.util.Iterator;
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.io.ByteStreams.toByteArray;
+import static io.spine.io.Ensure.ensureFile;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 /**
  * Reference to descriptor set files.
  *
- * <p>Multiple reference files may be present at runtime of an application. The files may be merged
- * by appending if a "fat" JAR artifact is required.
+ * <p>Multiple reference files may be present at the classpath of an application.
+ * The files may be merged by appending if a "fat" JAR artifact is required.
  */
 @Immutable
 public final class DescriptorReference {
@@ -59,23 +61,39 @@ public final class DescriptorReference {
     /**
      * A file that contains references to a number of Protobuf descriptor sets.
      *
-     * <p>There may be multiple `desc.ref` files present in one project.
+     * <p>There may be multiple such files present in one project.
      */
-    @VisibleForTesting
-    static final String FILE_NAME = "desc.ref";
+    private static final String FILE_NAME = "desc.ref";
+
+    /**
+     * The resource file with the {@link #FILE_NAME}.
+     */
     private static final Resource FILE_IN_CLASSPATH =
             Resource.file(FILE_NAME, DescriptorReference.class.getClassLoader());
 
-    @SuppressWarnings("HardcodedLineSeparator")     /* Use pre-defined separator to eliminate
-                                                       platform-dependent issues in `desc.ref`.*/
-    private static final String SEPARATOR = "\n";
+    /**
+     * System-independent line separator, which is compatible with Kotlin string splitting routines.
+     */
+    private static final String SEPARATOR = Separator.LF.getValue();
     private static final Splitter LINE_SPLITTER = Splitter.on(SEPARATOR)
                                                           .omitEmptyStrings()
                                                           .trimResults();
+    /**
+     * The name of the descriptor set file to which this reference points.
+     */
     private final String reference;
 
     private DescriptorReference(String reference) {
         this.reference = reference;
+    }
+
+    /**
+     * Obtains a reference to the descriptor reference file in the given directory.
+     *
+     * <p>The file may not exist yet.
+     */
+    public static File fileAt(Path directory) {
+        return directory.resolve(FILE_NAME).toFile();
     }
 
     /**
@@ -131,18 +149,35 @@ public final class DescriptorReference {
     /**
      * Writes this reference into the {@code desc.ref} file under the given directory.
      *
-     * <p>Appends the file if it already exists or creates a new file otherwise.
+     * <p>Appends this reference to the file if it already exists or creates a new file otherwise.
      *
      * @param directory
      *         target dir for the {@code desc.ref} file
      */
     public void writeTo(Path directory) {
         checkNotNull(directory);
-        var targetFile = directory.resolve(FILE_NAME);
-        Ensure.ensureFile(targetFile);
+        writeTo(directory, null);
+    }
+
+    /**
+     * Writes this reference to a {@code desc.ref} file under the specified directory,
+     * appending the optional trailing text.
+     *
+     * @param trail
+     *         the test-only parameter used for testing of reference files that can get
+     *         a forced system-dependent line separator added by development tools such as Git.
+     */
+    @VisibleForTesting
+    void writeTo(Path directory, @VisibleForTesting @Nullable String trail) {
+        checkNotNull(directory);
+        var targetFile = fileAt(directory).toPath();
+        ensureFile(targetFile);
         try {
             var resources = Files.readAllLines(targetFile);
             resources.add(reference);
+            if (trail != null) {
+                resources.add(trail);
+            }
             var result = String.join(SEPARATOR, resources)
                                .trim();
             Files.write(targetFile, ImmutableList.of(result), TRUNCATE_EXISTING);
@@ -152,39 +187,8 @@ public final class DescriptorReference {
     }
 
     /**
-     * Writes this reference to a {@code desc.ref} file under the specified directory.
-     *
-     * <p>Appends the specified newline string after the reference text.
-     *
-     * <p>Preserves all of the existing content of the {@code desc.ref} file.
-     *
-     * <p>If the specified directory does not contain a {@code desc.ref} file, it is
-     * created.
-     *
-     * <p>If one of the directories in the specified {@code Path} does ont exist, it is created.
-     *
-     * @param directory
-     *         the directory that contains a desired {@code desc.ref} file
-     * @param newline
-     *         a newline symbol that gets written after the reference text
+     * Obtains a {@code ResourceReference} that is described by this descriptor reference.
      */
-    @VisibleForTesting
-    void writeTo(Path directory, String newline) {
-        checkNotNull(directory);
-        var targetFile = directory.resolve(FILE_NAME);
-        Ensure.ensureFile(targetFile);
-        try {
-            var resources = Files.readAllLines(targetFile);
-            resources.add(reference + newline);
-            var result = String.join(SEPARATOR, resources)
-                               .trim();
-            Files.write(targetFile, ImmutableList.of(result), TRUNCATE_EXISTING);
-        } catch (IOException e) {
-            throw illegalStateWithCauseOf(e);
-        }
-    }
-
-    /** Obtains a {@code ResourceReference} that is described by this descriptor reference. */
     @VisibleForTesting
     Resource asResource() {
         return Resource.file(reference, getClass().getClassLoader());
