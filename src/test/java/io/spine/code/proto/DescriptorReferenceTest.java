@@ -29,7 +29,6 @@ package io.spine.code.proto;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 import io.spine.io.Resource;
-import io.spine.util.Exceptions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -50,6 +49,7 @@ import static io.spine.code.proto.given.DescriptorReferenceTestEnv.randomRef;
 import static io.spine.code.proto.given.DescriptorReferenceTestEnv.smokeTestModelCompilerRef;
 import static io.spine.testing.Assertions.assertIllegalState;
 import static io.spine.testing.Assertions.assertNpe;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -57,12 +57,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("`DescriptorReference` should")
+@SuppressWarnings(
+        "HardcodedLineSeparator"
+        /* Resistance to different separators is a part of these tests. */
+)
+
 class DescriptorReferenceTest {
 
-    @SuppressWarnings("HardcodedLineSeparator")
-    private static final String WINDOWS_SEPARATOR = "\r\n"; /* Resistance to different separators is
-                                                             * a part of the test. */
-    @SuppressWarnings("HardcodedLineSeparator")
+    private static final String WINDOWS_SEPARATOR = "\r\n";
     private static final String UNIX_SEPARATOR = "\n";
 
     @Test
@@ -99,7 +101,7 @@ class DescriptorReferenceTest {
         var knownTypes = knownTypesRef();
         knownTypes.writeTo(path);
 
-        var descRef = path.resolve(DescriptorReference.FILE_NAME).toFile();
+        var descRef = DescriptorReference.fileAt(path);
         var linesWritten = Files.readLines(descRef, UTF_8);
         assertEquals(1, linesWritten.size());
         var fileName = linesWritten.get(0);
@@ -140,7 +142,7 @@ class DescriptorReferenceTest {
     }
 
     private static void assertResourcesLoaded(Path path, DescriptorReference... expected) {
-        var descRef = path.resolve(DescriptorReference.FILE_NAME);
+        var descRef = DescriptorReference.fileAt(path).toPath();
         var existingDescriptors = loadFromResources(asList(descRef));
         List<Resource> result = newArrayList(existingDescriptors);
         assertEquals(expected.length, result.size());
@@ -161,8 +163,8 @@ class DescriptorReferenceTest {
     @SuppressWarnings("TailRecursion")
     // As long as the specified path does not contain files with names matching a random UUID value,
     // recursive calls should not happen.
-    private static File createFileUnderPath(Path path) {
-        // Ensures no existing file with such name.
+    private static File createFileUnderPath(Path path) throws IllegalStateException {
+        // Ensures no existing file with such a name.
         var fileName = UUID.randomUUID().toString();
         var result = new File(path.toFile(), fileName);
         if (result.exists()) {
@@ -172,9 +174,9 @@ class DescriptorReferenceTest {
             result.createNewFile();
             return result;
         } catch (IOException e) {
-            throw Exceptions.newIllegalStateException(e,
-                                                      "Could not create a temporary file in %s.",
-                                                      path.toAbsolutePath());
+            throw newIllegalStateException(e,
+                                           "Could not create a temporary file in %s.",
+                                           path.toAbsolutePath());
         }
     }
 }
