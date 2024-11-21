@@ -79,7 +79,7 @@ public final class DescriptorReference {
                                                           .omitEmptyStrings()
                                                           .trimResults();
     /**
-     * The name of the descriptor set file to which this reference points to.
+     * The name of the descriptor set file to which this reference points.
      */
     private final String reference;
 
