@@ -31,6 +31,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.io.Resource;
+import io.spine.string.Separator;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -60,7 +61,7 @@ public final class DescriptorReference {
     /**
      * A file that contains references to a number of Protobuf descriptor sets.
      *
-     * <p>There may be multiple `desc.ref` files present in one project.
+     * <p>There may be multiple such files present in one project.
      */
     private static final String FILE_NAME = "desc.ref";
 
@@ -70,11 +71,10 @@ public final class DescriptorReference {
     private static final Resource FILE_IN_CLASSPATH =
             Resource.file(FILE_NAME, DescriptorReference.class.getClassLoader());
 
-    @SuppressWarnings(
-            "HardcodedLineSeparator"
-            /* Use pre-defined separator to eliminate platform-dependent issues in `desc.ref`.*/
-    )
-    private static final String SEPARATOR = "\n";
+    /**
+     * System-independent line separator, which is compatible with Kotlin string splitting routines.
+     */
+    private static final String SEPARATOR = Separator.LF.getValue();
     private static final Splitter LINE_SPLITTER = Splitter.on(SEPARATOR)
                                                           .omitEmptyStrings()
                                                           .trimResults();
