@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2024, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,159 +24,180 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.code.proto
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.io.Files;
-import io.spine.io.Resource;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.UUID;
-
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.code.proto.DescriptorReference.loadFromResources;
-import static io.spine.code.proto.given.DescriptorReferenceTestEnv.knownTypesRef;
-import static io.spine.code.proto.given.DescriptorReferenceTestEnv.randomRef;
-import static io.spine.code.proto.given.DescriptorReferenceTestEnv.smokeTestModelCompilerRef;
-import static io.spine.testing.Assertions.assertIllegalState;
-import static io.spine.testing.Assertions.assertNpe;
-import static io.spine.util.Exceptions.newIllegalStateException;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.emptyList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.google.common.collect.ImmutableList
+import com.google.common.io.Files
+import com.google.common.io.Resources
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
+import io.spine.io.Resource
+import io.spine.testing.Assertions.assertIllegalState
+import io.spine.testing.Assertions.assertNpe
+import io.spine.util.Exceptions
+import java.io.File
+import java.io.IOException
+import java.net.MalformedURLException
+import java.net.URL
+import java.nio.charset.StandardCharsets
+import java.nio.file.Path
+import java.util.*
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 
 @DisplayName("`DescriptorReference` should")
-@SuppressWarnings(
-        "HardcodedLineSeparator"
-        /* Resistance to different separators is a part of these tests. */
-)
-
-class DescriptorReferenceTest {
-
-    private static final String WINDOWS_SEPARATOR = "\r\n";
-    private static final String UNIX_SEPARATOR = "\n";
+internal class DescriptorReferenceSpec {
 
     @Test
-    @DisplayName("be unaffected by Windows line separator")
-    void unaffectedByCrLf(@TempDir Path path) {
-        assertDescriptorRefsWrittenCorrectly(path, WINDOWS_SEPARATOR, knownTypesRef(), randomRef());
+    fun `handle trailing Windows line separator`(@TempDir path: Path) {
+        assertDescriptorRefsWrittenCorrectly(
+            path,
+            WINDOWS_SEPARATOR,
+            knownTypesRef(),
+            randomRef()
+        )
     }
 
     @Test
-    @DisplayName("be unaffected by Unix line separator")
-    void unaffectedByLf(@TempDir Path path) {
-        assertDescriptorRefsWrittenCorrectly(path, UNIX_SEPARATOR, knownTypesRef(), randomRef());
+    fun `handle trailing Linux line separator`(@TempDir path: Path) {
+        assertDescriptorRefsWrittenCorrectly(
+            path,
+            UNIX_SEPARATOR,
+            knownTypesRef(),
+            randomRef()
+        )
     }
 
     @Test
-    @DisplayName("ignore previous content of the `desc.ref` file")
-    void ignorePreviousDescRef(@TempDir Path path) {
-        var firstReference = randomRef();
-        firstReference.writeTo(path);
-        assertResourcesLoaded(path, firstReference);
+    fun `ignore previous content of the file`(@TempDir path: Path) {
+        val firstReference = randomRef()
+        firstReference.writeTo(path)
+        assertResourcesLoaded(path, firstReference)
 
-        var secondReference = knownTypesRef();
-        secondReference.writeTo(path);
-        assertResourcesLoaded(path, firstReference, secondReference);
+        val secondReference = knownTypesRef()
+        secondReference.writeTo(path)
+        assertResourcesLoaded(path, firstReference, secondReference)
 
-        var thirdReference = smokeTestModelCompilerRef();
-        thirdReference.writeTo(path);
-        assertResourcesLoaded(path, firstReference, secondReference, thirdReference);
+        val thirdReference = smokeTestModelCompilerRef()
+        thirdReference.writeTo(path)
+        assertResourcesLoaded(path, firstReference, secondReference, thirdReference)
     }
 
     @Test
-    @DisplayName("write a reference with expected content")
-    void properContent(@TempDir Path path) throws IOException {
-        var knownTypes = knownTypesRef();
-        knownTypes.writeTo(path);
+    fun `write a reference with expected content`(@TempDir path: Path) {
+        val knownTypes = knownTypesRef()
+        knownTypes.writeTo(path)
 
-        var descRef = DescriptorReference.fileAt(path);
-        var linesWritten = Files.readLines(descRef, UTF_8);
-        assertEquals(1, linesWritten.size());
-        var fileName = linesWritten.get(0);
-        assertThat(knownTypes.asResource().toString())
-                .contains(fileName);
-    }
+        val descRef = DescriptorReference.fileAt(path)
+        val linesWritten = Files.readLines(descRef, StandardCharsets.UTF_8)
+        linesWritten.size shouldBe 1
 
-    private static void assertDescriptorRefsWrittenCorrectly(@TempDir Path path,
-                                                             String separator,
-                                                             DescriptorReference... descriptors) {
-        for (var descriptor : descriptors) {
-            descriptor.writeTo(path, separator);
-        }
-
-        assertResourcesLoaded(path, descriptors);
+        val fileName = linesWritten[0]
+        knownTypes.asResource().toString() shouldContain fileName
     }
 
     @Test
-    @DisplayName("throw if the referenced path points to a file instead of a directory")
-    void throwsOnDirectory(@TempDir Path path) {
-        var knownTypes = knownTypesRef();
-        var newFile = createFileUnderPath(path);
-        assertIllegalState(() -> knownTypes.writeTo(newFile.toPath()));
+    fun `reject reference to a file`(@TempDir path: Path) {
+        val knownTypes = knownTypesRef()
+        val newFile = createFileAt(path)
+        assertIllegalState { knownTypes.writeTo(newFile.toPath()) }
     }
 
     @Test
-    @DisplayName("throw if the referenced path is null")
-    void throwsOnNull() {
-        var knownTypes = knownTypesRef();
-        assertNpe(() -> knownTypes.writeTo(null));
-    }
-
-    @Test
-    @DisplayName("return an empty iterator upon missing `desc.ref` file")
-    void onMissingDescRef() {
-        var result = DescriptorReference.loadFromResources(emptyList());
-        assertFalse(result.hasNext());
-    }
-
-    private static void assertResourcesLoaded(Path path, DescriptorReference... expected) {
-        var descRef = DescriptorReference.fileAt(path).toPath();
-        var existingDescriptors = loadFromResources(asList(descRef));
-        List<Resource> result = newArrayList(existingDescriptors);
-        assertEquals(expected.length, result.size());
-        for (var reference : expected) {
-            assertTrue(result.contains(reference.asResource()));
+    fun `reject 'null' destination directory`() {
+        val knownTypes = knownTypesRef()
+        assertNpe {
+            @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+            knownTypes.writeTo(null)
         }
     }
 
-    private static ImmutableList<URL> asList(Path descRef) {
-        try {
-            return ImmutableList.of(descRef.toUri()
-                                           .toURL());
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
+    @Test
+    fun `return an empty iterator upon missing file`() {
+        val result = DescriptorReference.loadFromResources(emptyList())
+
+        result.hasNext() shouldBe false
     }
 
-    @SuppressWarnings("TailRecursion")
-    // As long as the specified path does not contain files with names matching a random UUID value,
-    // recursive calls should not happen.
-    private static File createFileUnderPath(Path path) throws IllegalStateException {
-        // Ensures no existing file with such a name.
-        var fileName = UUID.randomUUID().toString();
-        var result = new File(path.toFile(), fileName);
-        if (result.exists()) {
-            return createFileUnderPath(path);
-        }
-        try {
-            result.createNewFile();
-            return result;
-        } catch (IOException e) {
-            throw newIllegalStateException(e,
-                                           "Could not create a temporary file in %s.",
-                                           path.toAbsolutePath());
-        }
+    companion object {
+        private const val WINDOWS_SEPARATOR = "\r\n"
+        private const val UNIX_SEPARATOR = "\n"
     }
+}
+
+private fun assertDescriptorRefsWrittenCorrectly(
+    @TempDir path: Path,
+    separator: String,
+    vararg descriptors: DescriptorReference
+) {
+    for (descriptor in descriptors) {
+        descriptor.writeTo(path, separator)
+    }
+    assertResourcesLoaded(path, *descriptors)
+}
+
+private fun assertResourcesLoaded(path: Path, vararg expected: DescriptorReference) {
+    val descRef = DescriptorReference.fileAt(path).toPath()
+    val existingDescriptors = DescriptorReference.loadFromResources(asList(descRef))
+    val result: List<Resource> = existingDescriptors.asSequence().toList()
+    result.size shouldBe expected.size
+    for (reference in expected) {
+        result.contains(reference.asResource()) shouldBe true
+    }
+}
+
+private fun asList(descRef: Path): ImmutableList<URL> {
+    try {
+        return ImmutableList.of(descRef.toUri().toURL())
+    } catch (e: MalformedURLException) {
+        throw IllegalStateException(e)
+    }
+}
+
+/**
+ * Creates a file with a random name at the given directory.
+ *
+ * In the unlikely event of already having the file with the random name,
+ * repeats the attempt to create a file with another name.
+ */
+private fun createFileAt(dir: Path): File {
+    val fileName = UUID.randomUUID().toString()
+    val result = File(dir.toFile(), fileName)
+    if (result.exists()) {
+        return createFileAt(dir)
+    }
+    try {
+        result.createNewFile()
+        return result
+    } catch (e: IOException) {
+        throw Exceptions.newIllegalStateException(
+            e,
+            "Could not create a temporary file in %s.",
+            dir.toAbsolutePath()
+        )
+    }
+}
+
+/** Returns a reference to a `"smoke-test-model-compiler.desc"` file.  */
+private fun smokeTestModelCompilerRef(): DescriptorReference {
+    val reference = "smoke_tests_model-compiler_tests_unspecified.desc"
+    return DescriptorReference.toOneFile(File(reference))
+}
+
+/** Returns a reference to a `"known_types.desc"` file.  */
+private fun knownTypesRef(): DescriptorReference {
+    val asFile = Resources.getResource(FileDescriptors.KNOWN_TYPES).file
+    val result = File(asFile)
+    return DescriptorReference.toOneFile(result)
+}
+
+/**
+ * Return a reference to a descriptor file with a random name.
+ * Note that the returned file does not exist.
+ */
+private fun randomRef(): DescriptorReference {
+    val reference = UUID.randomUUID().toString()
+    val result = File(reference)
+    return DescriptorReference.toOneFile(result)
 }
