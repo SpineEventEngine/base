@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 /*
  * Copyright 2024, TeamDev. All rights reserved.
  *
@@ -156,15 +158,13 @@ configurations.all {
     }
 }
 
-val jvmVersion = JavaLanguageVersion.of(11)
-
 java {
-    toolchain.languageVersion.set(jvmVersion)
+    toolchain.languageVersion.set(JavaLanguageVersion.of(11))
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = jvmVersion.toString()
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_11)
     }
 }
 
