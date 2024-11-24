@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -38,36 +38,45 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PACKAGE;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.SOURCE;
+import static java.lang.annotation.RetentionPolicy.CLASS;
 
 /**
- * The {@code Modified} annotation is used to mark the source code which was
- * {@linkplain Generated created} by one code generator and then
- * modified by another code generator hereby referenced as "modifier".
+ * The {@code Generated} annotation is used to mark source code that has been generated.
  *
- * <p>The {code value} element must contain the name of the modifier.
+ * <p>When applied to a package or a type, it means the whole package or a type was generated.
+ * It can be also applied to an element of Java code to differentiate generated code
+ * from handcrafted.
+ *
+ * <p>The {code value} element must contain the name of the generator.
  * The recommended convention is to use the fully qualified name of
  * the corresponding component, such as a class.
- * Alternatively, consider using Maven coordinates of the "modifier".
+ * Alternatively, consider using Maven coordinates of the "generator".
  *
- * <p>The {@code timestamp}, which is optional, is the time when the code was modified.
+ * <p>The {@code timestamp}, which is optional, is the time when the code was generated.
  * It should follow the ISO 8601 standard.
  *
- * <p>The {@code comment} element is the place for comments authors of code modifiers
- * may want to leave about the modifications made to the code.
+ * <p>The {@code comment} element is the place for comments authors of code generators
+ * may want to leave about the generated code.
  *
- * <p>If changes that a modifier applies to original source files are significant and
- * are likely to overwhelm the value of the {@code comment} element,
- * authors of modifiers may consider putting a URL to the documentation which outlines
- * the nature of changes applied by the modifier.
+ * <h3>About the name</h3>
  *
- * @see Generated
+ * <p>The name of this annotation type must be {@code Generated} so that development tools
+ * exclude the generated code from test coverage.
+ *
+ * <p>
+ * <a href="https://github.com/jacoco/jacoco/issues/685#issuecomment-392020612">JaCoCo analyzes</a>
+ * Java classes for the presence of an annotation which simple name is {@code Generated}.
+ * It cannot be {@code GrpcGenerated} or {@code SpineGenerated}.
+ * It could be any package, but the simple name must be {@code Generated}.
+ * Such a class is automatically excluded from the report.
+ *
+ * @see Modified
  * @since 2.0.0
  */
 @Documented
-@Retention(SOURCE)
+@Retention(CLASS)
 @Target({PACKAGE, TYPE, ANNOTATION_TYPE, CONSTRUCTOR, METHOD, FIELD, LOCAL_VARIABLE, PARAMETER})
-public @interface Modified {
+public @interface Generated {
 
     /**
      * Provides the name and other optional references (e.g., the version) to the code generator.
@@ -75,12 +84,12 @@ public @interface Modified {
     String[] value();
 
     /**
-     * Optional date and time when the code was modified.
+     * Optional date and time when the code was generated.
      */
     String timestamp() default "";
 
     /**
-     * Optional comments about the nature of the modification made to the original code.
+     * Optional comments that the code generator may want to include.
      */
     String comments() default "";
 }

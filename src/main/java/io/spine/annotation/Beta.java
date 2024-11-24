@@ -32,6 +32,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.CONSTRUCTOR;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PACKAGE;
+import static java.lang.annotation.ElementType.TYPE;
+
 /**
  * Signifies that a public API is subject to incompatible changes, or even removal
  * in a future release.
@@ -43,13 +50,7 @@ import java.lang.annotation.Target;
  * during upgrades.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({
-        ElementType.ANNOTATION_TYPE,
-        ElementType.CONSTRUCTOR,
-        ElementType.FIELD,
-        ElementType.METHOD,
-        ElementType.PACKAGE,
-        ElementType.TYPE})
+@Target({PACKAGE, TYPE, ANNOTATION_TYPE, CONSTRUCTOR, METHOD, FIELD,})
 @Documented
 public @interface Beta {
     /**
