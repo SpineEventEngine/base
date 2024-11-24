@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 /*
  * Copyright 2024, TeamDev. All rights reserved.
  *
@@ -25,6 +23,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 /**
  * This script uses two declarations of the constant [licenseReportVersion] because
