@@ -29,6 +29,7 @@ package io.spine.annotation
 import io.kotest.matchers.shouldBe
 import java.lang.annotation.RetentionPolicy.RUNTIME
 import java.lang.annotation.RetentionPolicy.SOURCE
+import java.lang.annotation.RetentionPolicy.CLASS
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -61,6 +62,11 @@ internal class AnnotationsSpec {
     @Test
     fun `have 'GeneratedMixin' annotation`() {
         GeneratedMixin::class.java.retention() shouldBe SOURCE
+    }
+
+    @Test
+    fun `have the 'CLASS' retention in the 'Generated' annotation`() {
+        Generated::class.java.retention() shouldBe CLASS
     }
 }
 
