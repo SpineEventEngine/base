@@ -147,6 +147,17 @@ extend google.protobuf.FieldOptions {
 
     // Indicates that a field can only be set once.
     //
+    // The field is considered unset as long as it has the default value. Setting a value over
+    // the default one is always allowed because it is not considered as "overriding".
+    // An overriding of a non-default value with the same value is also allowed. Please note,
+    // as for now, there is no support for explicit `optional` fields.
+    //
+    // The option can be applied to any singular field type:
+    //
+    // - any message or enum type;
+    // - any number type;
+    // - `bool`, `string` and `bytes`.
+    //
     // A typical use-case would include a value of an ID, which doesn't change over the course of
     // the life of an entity.
     //
@@ -159,7 +170,20 @@ extend google.protobuf.FieldOptions {
     // Once set, the `id` field cannot be changed.
     //
     // Use `(if_set_again).error_msg` option to specify a custom error message that will be shown
-    // on attempt to re-assign the field value.
+    // on attempt to re-assign the field value. An example usage can be found in docs to the
+    // corresponding option.
+    //
+    // Also, please note, depending on the target language, a Protobuf message can be built
+    // in different ways. For example, in Java, we have the following ways to create a message:
+    //
+    // 1. Create a new message instance, then set values field-by-field using the provided setters.
+    // 2. Merge data from another instance of the message or from the binary representation.
+    // 3. Build a message using `DynamicMessage` class.
+    // 4. Merge it from a message provided by a third-party Protobuf implementation.
+    // 5. And other...
+    //
+    // Primarily, the option aims to cover only regular usages like (1) and (2). For Java,
+    // for example, service usages like (4) and (5) are not supported.
     //
     bool set_once = 73824;
 
@@ -984,7 +1008,7 @@ message CompareByOption {
     //
     // The allowed field types are:
     //  - any number type;
-    //  - `bool` (false is less than true);
+    //  - `bool` (`false` is less than `true`);
     //  - `string` (in the order of respective Unicode values);
     //  - enumerations (following the order of numbers associated with each constant);
     //  - local messages (generated within the current build) marked with `(compare_by)`;
