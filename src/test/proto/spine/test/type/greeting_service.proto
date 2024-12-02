@@ -34,6 +34,10 @@ option java_package = "io.spine.test.type";
 option java_outer_classname = "GreetingServiceProto";
 option java_multiple_files = true;
 
+// Enable "vanilla" service generation.
+// See https://protobuf.dev/reference/java/java-generated/#service
+option java_generic_services = true;
+
 service GreetingService {
 
     rpc Hello (Greeting) returns (Greeting);

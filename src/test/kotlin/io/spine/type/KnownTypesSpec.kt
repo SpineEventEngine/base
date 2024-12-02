@@ -144,7 +144,7 @@ internal class KnownTypesSpec {
     @Test
     fun `find type URL by type name`() {
         val typeUrlExpected = TypeUrl.from(StringValue.getDescriptor())
-        val typeUrlActual = knownTypes.find(typeUrlExpected.toTypeName())
+        val typeUrlActual = knownTypes.find(typeUrlExpected.typeName())
             .map { obj: Type<*, *> -> obj.url() }
 
         typeUrlActual shouldBePresent {

@@ -103,7 +103,7 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
      * Obtains the {@linkplain TypeName name} of this type.
      */
     public TypeName name() {
-        return url().toTypeName();
+        return url().typeName();
     }
 
     /**
