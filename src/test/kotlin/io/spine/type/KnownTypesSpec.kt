@@ -134,7 +134,7 @@ internal class KnownTypesSpec {
 
         @Test
         fun `nested into other proto types`() {
-            val typeUrl = TypeUrl.of(EntityOption.Kind.getDescriptor())
+            val typeUrl = TypeUrl.from(EntityOption.Kind.getDescriptor())
             val className = knownTypes.classNameOf(typeUrl)
 
             className shouldBe ClassName.of(EntityOption.Kind::class.java)
@@ -143,7 +143,7 @@ internal class KnownTypesSpec {
 
     @Test
     fun `find type URL by type name`() {
-        val typeUrlExpected = TypeUrl.of(StringValue.getDescriptor())
+        val typeUrlExpected = TypeUrl.from(StringValue.getDescriptor())
         val typeUrlActual = knownTypes.find(typeUrlExpected.toTypeName())
             .map { obj: Type<*, *> -> obj.url() }
 
@@ -154,9 +154,9 @@ internal class KnownTypesSpec {
 
     @Test
     fun `obtain all types under a given package`() {
-        val taskId = TypeUrl.of(KnownTaskId.getDescriptor())
-        val taskName = TypeUrl.of(KnownTaskName.getDescriptor())
-        val task = TypeUrl.of(KnownTask.getDescriptor())
+        val taskId = TypeUrl.from(KnownTaskId.getDescriptor())
+        val taskName = TypeUrl.from(KnownTaskName.getDescriptor())
+        val task = TypeUrl.from(KnownTask.getDescriptor())
         val packageName = "spine.test.types"
         val packageTypes = knownTypes.allFromPackage(packageName)
 
@@ -191,9 +191,9 @@ internal class KnownTypesSpec {
     fun `print known type URLs in alphabetical order`() {
         val output = knownTypes.printAllTypes()
 
-        val anyUrl = TypeUrl.of(Any.getDescriptor()).value()
-        val timestampUrl = TypeUrl.of(Timestamp.getDescriptor()).value()
-        val durationUrl = TypeUrl.of(Duration.getDescriptor()).value()
+        val anyUrl = TypeUrl.from(Any.getDescriptor()).value()
+        val timestampUrl = TypeUrl.from(Timestamp.getDescriptor()).value()
+        val durationUrl = TypeUrl.from(Duration.getDescriptor()).value()
 
         output shouldContain anyUrl
         output shouldContain timestampUrl

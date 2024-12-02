@@ -68,7 +68,7 @@ class TypeUrlTest {
     private static final String TYPE_URL_VALUE =
             composeTypeUrl(TypeUrl.Prefix.GOOGLE_APIS.value(), TYPE_NAME);
 
-    private final TypeUrl stringValueTypeUrl = TypeUrl.of(TYPE_DESCRIPTOR);
+    private final TypeUrl stringValueTypeUrl = TypeUrl.from(TYPE_DESCRIPTOR);
 
     private static void assertValue(String expected, TypeUrl typeUrl) {
         assertThat(typeUrl.value())
@@ -112,7 +112,7 @@ class TypeUrlTest {
         @Test
         @DisplayName("a descriptor of standard Protobuf type")
         void standardDescriptor() {
-            var typeUrl = TypeUrl.of(TYPE_DESCRIPTOR);
+            var typeUrl = TypeUrl.from(TYPE_DESCRIPTOR);
 
             assertTypeUrl(typeUrl);
         }
@@ -124,7 +124,7 @@ class TypeUrlTest {
             var expectedUrl = composeTypeUrl(TypeUrl.Prefix.SPINE.value(),
                                              descriptor.getFullName());
 
-            var typeUrl = TypeUrl.of(descriptor);
+            var typeUrl = TypeUrl.from(descriptor);
 
             assertValue(expectedUrl, typeUrl);
         }
@@ -154,7 +154,7 @@ class TypeUrlTest {
         private void assertCreatedTypeUrl(String expectedPrefix, EnumDescriptor descriptor) {
             var expected = composeTypeUrl(expectedPrefix, descriptor.getFullName());
 
-            var typeUrl = TypeUrl.of(descriptor);
+            var typeUrl = TypeUrl.from(descriptor);
             assertValue(expected, typeUrl);
         }
 
@@ -209,7 +209,7 @@ class TypeUrlTest {
         @Test
         @DisplayName("created for a type declared in a file with empty `(type_url_prefix)`")
         void inFile() {
-            noPrefixType = TypeUrl.of(TypeWithoutPrefix.getDescriptor());
+            noPrefixType = TypeUrl.from(TypeWithoutPrefix.getDescriptor());
             assertEmptyPrefix();
         }
 

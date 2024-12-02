@@ -72,7 +72,7 @@ public final class AnyPacker {
         if (message instanceof Any) {
             return (Any) message;
         }
-        var typeUrl = TypeUrl.of(message.getDescriptorForType());
+        var typeUrl = TypeUrl.from(message.getDescriptorForType());
         var typeUrlPrefix = typeUrl.prefix();
         var result = Any.pack(message, typeUrlPrefix);
         return result;
