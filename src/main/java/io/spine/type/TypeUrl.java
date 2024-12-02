@@ -29,6 +29,7 @@ package io.spine.type;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.InlineMe;
 import com.google.protobuf.Any;
 import com.google.protobuf.AnyOrBuilder;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -67,6 +68,10 @@ public final class TypeUrl implements Serializable {
     private static final String SEPARATOR = "/";
     private static final Splitter splitter = Splitter.on(SEPARATOR);
 
+    /** Suggested replacement for the deprecated API. */
+    private static final String TYPE_URL_OF = "TypeUrl.of(descriptor)";
+    private static final String TYPE_URL =  "io.spine.type.TypeUrl";
+
     /** The prefix of the type URL. */
     private final String prefix;
 
@@ -98,42 +103,55 @@ public final class TypeUrl implements Serializable {
      */
     public static TypeUrl of(Message msg) {
         checkNotNull(msg);
-        return from(msg.getDescriptorForType());
+        return of(msg.getDescriptorForType());
+    }
+
+    /**
+     * Creates a new instance by the passed message descriptor taking its type URL.
+     *
+     * @param descriptor the descriptor of the Protobuf declaration
+     */
+    public static TypeUrl of(GenericDescriptor descriptor) {
+        checkNotNull(descriptor);
+        var prefix = prefixFor(descriptor);
+        return create(prefix, descriptor.getFullName());
     }
 
     /**
      * Creates a new instance by the passed message descriptor taking its type URL.
      *
      * @param descriptor the descriptor of the type
+     * @deprecated Please use {@link TypeUrl#of}.
      */
+    @Deprecated
+    @InlineMe(replacement = TYPE_URL_OF, imports = TYPE_URL)
     public static TypeUrl from(Descriptor descriptor) {
-        checkNotNull(descriptor);
-        var prefix = prefixFor(descriptor);
-        return create(prefix, descriptor.getFullName());
+        return of(descriptor);
     }
 
     /**
      * Creates a new instance by the passed enum descriptor taking its type URL.
      *
      * @param descriptor the descriptor of the type
+     * @deprecated Please use {@link TypeUrl#of}.
      */
+    @Deprecated
+    @InlineMe(replacement = TYPE_URL_OF, imports = TYPE_URL)
     public static TypeUrl from(EnumDescriptor descriptor) {
-        checkNotNull(descriptor);
-        var prefix = prefixFor(descriptor);
-        return create(prefix, descriptor.getFullName());
+        return of(descriptor);
     }
 
     /**
      * Creates a new instance by the passed service descriptor taking its type URL.
      *
      * @param descriptor the descriptor of the type
+     * @deprecated Please use {@link TypeUrl#of}.
      */
+    @Deprecated
+    @InlineMe(replacement = TYPE_URL_OF, imports = TYPE_URL)
     public static TypeUrl from(ServiceDescriptor descriptor) {
-        checkNotNull(descriptor);
-        var prefix = prefixFor(descriptor);
-        return create(prefix, descriptor.getFullName());
+        return of(descriptor);
     }
-
 
     /**
      * Creates a new instance from the passed type URL.
@@ -226,7 +244,7 @@ public final class TypeUrl implements Serializable {
      * by this type URL.
      *
      * <p>This is a convenience method. Use it only when you are sure the {@code TypeUrl} represents
-     * a message (i.e. not an enum).
+     * a message (i.e., not an enum).
      *
      * @throws IllegalStateException if the type URL represents an enum
      */
@@ -291,6 +309,9 @@ public final class TypeUrl implements Serializable {
         /**
          * Type prefix for standard Protobuf types.
          */
+        @SuppressWarnings(
+                "DuplicateStringLiteralInspection" /* Duplicates are in the generated code. */
+        )
         GOOGLE_APIS("type.googleapis.com"),
 
         /**

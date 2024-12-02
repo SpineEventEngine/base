@@ -125,7 +125,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Wi
 
     @Override
     public final TypeUrl url() {
-        return TypeUrl.from(descriptor());
+        return TypeUrl.of(descriptor());
     }
 
     @Override

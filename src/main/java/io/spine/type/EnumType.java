@@ -56,7 +56,7 @@ public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
 
     @Override
     public TypeUrl url() {
-        return TypeUrl.from(descriptor());
+        return TypeUrl.of(descriptor());
     }
 
     @Override
