@@ -361,7 +361,7 @@ public final class Identifier<I> {
     private static <I> boolean sameType(Class<I> idClass, FieldDescriptor f) {
         @SuppressWarnings("unchecked") // safe since it's Message type.
         var messageType = TypeUrl.of((Class<? extends Message>) idClass);
-        var fieldType = TypeUrl.from(f.getMessageType());
+        var fieldType = TypeUrl.of(f.getMessageType());
         return fieldType.equals(messageType);
     }
 
