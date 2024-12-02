@@ -147,18 +147,47 @@ extend google.protobuf.FieldOptions {
 
     // Indicates that a field can only be set once.
     //
-    // A field is considered unset as long as it retains its default value. Setting a value
-    // different from the default is always allowed, as it is not treated as "overriding."
-    // Overwriting a non-default value with the same value is also permitted. Please note
-    // that explicit `optional` fields are not supported at this time.
+    // This option allows the target field to accept assignments only if one of the following
+    // conditions is met:
     //
-    // This option can be applied to the following singular field types:
+    // 1. The current filed value is the default for its type.
+    //    Refer to the official docs on default values: https://protobuf.dev/programming-guides/proto3/#default.
+    // 2. The current field value equals to the proposed new value.
+    //
+    // The option can be applied to the following singular field types:
     //
     // - any message or enum type;
-    // - any number type;
+    // - any numeric type;
     // - `bool`, `string` and `bytes`.
     //
-    // Repeated and map fields are not supported. Such declarations can lead to build-time errors.
+    // Repeated fields, maps, and fields with explicit `optional` cardinality are not supported.
+    // Such declarations can lead to build-time errors. For more information on field cardinality,
+    // refer to the official docs: https://protobuf.dev/programming-guides/proto3/#field-labels.
+    //
+    // Assigning a value to a message field can be done in various ways in the generated code.
+    // It depends on the target language and specific implementation of `protoc`. This option
+    // doesn't enforce field immutability at the binary representation level. Also, it does not
+    // prevent the use of Protobuf utilities that can construct new messages without using field
+    // setters or properties. The primary purpose of this option is to support standard use cases,
+    // such as assigning values through setters or retrieving them during data merging.
+    //
+    // For example, let's take a look on how it works for the generated Java code. The following
+    // use cases are supported and validated by the option:
+    //
+    // 1. Assigning a field value using the field setter.
+    // 2. Assigning a field value using the field descriptor.
+    // 3. Merging data from another instance of the message class.
+    // 4. Merging data from a message's binary representation.
+    // 5. Merging specific fields (available for Message fields).
+    //
+    // Unsupported Java use cases include:
+    //
+    // 1. Constructing a message using the `DynamicMessage` class.
+    // 2. Merging data from messages provided by third-party Protobuf implementations.
+    // 3. Clearing a specific field or an entire message.
+    //
+    // For unsupported scenarios, the option performs no validation. It does not throw errors
+    // or prints warnings.
     //
     // A typical use case involves a field, such as an ID, which remains constant throughout
     // the lifecycle of an entity.
@@ -174,18 +203,6 @@ extend google.protobuf.FieldOptions {
     // Use `(if_set_again).error_msg` option to specify a custom error message that will be shown
     // on attempt to re-assign the field value. Refer to the documentation for the corresponding
     // option for an example of its usage.
-    //
-    // Note: depending on the target language, a Protobuf message can be built in various ways.
-    // For example, in Java, messages can be created as follows:
-    //
-    // 1. Create a new message instance and set values field-by-field using the provided setters.
-    // 2. Merge data from another instance of the message or from its binary representation.
-    // 3. Build a message using `DynamicMessage` class.
-    // 4. Merge data from a message provided by a third-party Protobuf implementation.
-    // 5. And other...
-    //
-    // This option is primarily intended to support standard use cases such as (1) and (2).
-    // In Java, for instance, scenarios like (4) and (5) are not supported.
     //
     bool set_once = 73824;
 
