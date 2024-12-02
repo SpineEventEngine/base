@@ -158,6 +158,8 @@ extend google.protobuf.FieldOptions {
     // - any number type;
     // - `bool`, `string` and `bytes`.
     //
+    // Repeated and map fields are not supported. Such declarations can lead to build-time errors.
+    //
     // A typical use case involves a field, such as an ID, which remains constant throughout
     // the lifecycle of an entity.
     //
