@@ -69,7 +69,7 @@ public final class TypeName extends StringTypeValue {
     }
 
     /**
-     * Creates new instance by the passed type name value.
+     * Creates a new instance with the given type name.
      */
     public static TypeName of(String typeName) {
         checkNotNull(typeName);
@@ -78,7 +78,7 @@ public final class TypeName extends StringTypeValue {
     }
 
     /**
-     * Creates instance from the passed type URL.
+     * Obtain a type name from the given type URL.
      */
     public static TypeName from(TypeUrl typeUrl) {
         checkNotNull(typeUrl);
