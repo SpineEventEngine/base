@@ -287,7 +287,7 @@ internal class TypeUrlSpec {
         @Test
         fun `rejecting other types of descriptors`() {
             assertRejects(AnyProto.getDescriptor()) // File descriptor.
-            assertRejects(Any.getDescriptor().field(0)!!) // Field descriptor.
+            assertRejects(Any.getDescriptor().field(1)!!) // Field descriptor.
             assertRejects(Transmission.getDescriptor().realOneofs[0]) // Oneof descriptor.
         }
 
