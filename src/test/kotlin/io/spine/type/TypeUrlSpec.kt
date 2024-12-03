@@ -199,8 +199,7 @@ internal class TypeUrlSpec {
         }
     }
 
-    @Nested
-    internal inner class
+    @Nested internal inner class
     reject {
 
         @Test
