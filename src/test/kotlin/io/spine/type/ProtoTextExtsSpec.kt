@@ -58,6 +58,9 @@ internal class ProtoTextExtsSpec {
         @BeforeEach
         fun createMessage() {
             msg = Time.currentTime()
+            if (msg.nanos == 0) {
+                msg = msg.toBuilder().setNanos(1).build()
+            }
         }
 
         private fun assertData() {
