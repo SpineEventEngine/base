@@ -73,8 +73,7 @@ internal class TypeUrlSpec {
 
     private val stringValueTypeUrl: TypeUrl = TypeUrl.from(descriptor)
 
-    @Nested
-    internal inner class
+    @Nested internal inner class
     `create an instance by` {
 
         @Test
@@ -177,8 +176,7 @@ internal class TypeUrlSpec {
      * Therefore, it is unreasonable to require using type URL prefixes until such a support
      * is provided by Protobuf, or by the Spine framework.
      */
-    @Nested
-    internal inner class
+    @Nested internal inner class
     `allow empty prefix when` {
 
         private lateinit var noPrefixType: TypeUrl
