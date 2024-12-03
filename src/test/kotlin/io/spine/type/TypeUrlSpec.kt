@@ -324,4 +324,3 @@ internal class TypeUrlSpec {
         SerializableTester.reserializeAndAssert(TypeUrl.of(Timestamp::class.java))
     }
 }
-
