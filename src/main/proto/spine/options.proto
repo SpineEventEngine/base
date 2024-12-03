@@ -147,8 +147,50 @@ extend google.protobuf.FieldOptions {
 
     // Indicates that a field can only be set once.
     //
-    // A typical use-case would include a value of an ID, which doesn't change over the course of
-    // the life of an entity.
+    // This option allows the target field to accept assignments only if one of the following
+    // conditions is met:
+    //
+    // 1. The current field value is the default for its type.
+    //    Refer to the official docs on default values: https://protobuf.dev/programming-guides/proto3/#default.
+    // 2. The current field value equals to the proposed new value.
+    //
+    // The option can be applied to the following singular field types:
+    //
+    // - any message or enum type;
+    // - any numeric type;
+    // - `bool`, `string` and `bytes`.
+    //
+    // Repeated fields, maps, and fields with explicit `optional` cardinality are not supported.
+    // Such declarations will lead to build-time errors. For more information on field cardinality,
+    // refer to the official docs: https://protobuf.dev/programming-guides/proto3/#field-labels.
+    //
+    // Assigning a value to a message field can be done in various ways in the generated code.
+    // It depends on the target language and specific implementation of `protoc`. This option
+    // doesn't enforce field immutability at the binary representation level. Also, it does not
+    // prevent the use of Protobuf utilities that can construct new messages without using field
+    // setters or properties. The primary purpose of this option is to support standard use cases,
+    // such as assigning values through setters or retrieving them during data merging.
+    //
+    // For example, let's take a look on how it works for the generated Java code. The following
+    // use cases are supported and validated by the option:
+    //
+    // 1. Assigning a field value using the field setter.
+    // 2. Assigning a field value using the field descriptor.
+    // 3. Merging data from another instance of the message class.
+    // 4. Merging data from a message's binary representation.
+    // 5. Merging specific fields (available for Message fields).
+    //
+    // Unsupported Java use cases include:
+    //
+    // 1. Constructing a message using the `DynamicMessage` class.
+    // 2. Merging data from messages provided by third-party Protobuf implementations.
+    // 3. Clearing a specific field or an entire message.
+    //
+    // For unsupported scenarios, the option performs no validation. It does not throw errors
+    // or print warnings.
+    //
+    // A typical use case involves a field, such as an ID, which remains constant throughout
+    // the lifecycle of an entity.
     //
     // Example: Using `(set_once)` field validation constraint.
     //
@@ -158,8 +200,9 @@ extend google.protobuf.FieldOptions {
     //
     // Once set, the `id` field cannot be changed.
     //
-    // Use `(if_set_again).error_msg` option to specify a custom error message that will be shown
-    // on attempt to re-assign the field value.
+    // Use `(if_set_again).error_msg` option to specify a custom error message that will be used for
+    // composing the error upon attempting to re-assign the field value. Refer to the documentation
+    // for the corresponding option for an example of its usage.
     //
     bool set_once = 73824;
 
@@ -984,7 +1027,7 @@ message CompareByOption {
     //
     // The allowed field types are:
     //  - any number type;
-    //  - `bool` (false is less than true);
+    //  - `bool` (`false` is less than `true`);
     //  - `string` (in the order of respective Unicode values);
     //  - enumerations (following the order of numbers associated with each constant);
     //  - local messages (generated within the current build) marked with `(compare_by)`;
@@ -992,7 +1035,7 @@ message CompareByOption {
     //    OR have a comparator provided in `io.spine.compare.ComparatorRegistry`.
     //
     // Other types are not permitted. Repeated or map fields are not permitted either.
-    // Such declarations can lead to build-time errors.
+    // Such declarations will lead to build-time errors.
     //
     // To refer to nested fields, separate the field names with a dot (`.`).
     // No fields in the path can be repeated or maps.
