@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2024, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -38,7 +38,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * A fully-qualified Protobuf type name.
+ * A fully qualified Protobuf type name.
  */
 @Immutable
 public final class TypeName extends StringTypeValue {
@@ -69,7 +69,7 @@ public final class TypeName extends StringTypeValue {
     }
 
     /**
-     * Creates new instance by the passed type name value.
+     * Creates a new instance with the given type name.
      */
     public static TypeName of(String typeName) {
         checkNotNull(typeName);
@@ -78,11 +78,11 @@ public final class TypeName extends StringTypeValue {
     }
 
     /**
-     * Creates instance from the passed type URL.
+     * Obtain a type name from the given type URL.
      */
     public static TypeName from(TypeUrl typeUrl) {
         checkNotNull(typeUrl);
-        return typeUrl.toTypeName();
+        return typeUrl.typeName();
     }
 
     /**

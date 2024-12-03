@@ -23,5 +23,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.223")
+package spine.test.protobuf;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package="io.spine.test.protobuf";
+option java_multiple_files = true;
+option java_outer_classname = "DescriptorExtsSpecProto";
+
+// This is a message type which contains both nested types and a map field.
+//
+// Protobuf generates synthetic descriptors for map entry types.
+// See https://protobuf.dev/programming-guides/proto3/#maps-features for details.
+//
+message AddressBook {
+
+    repeated Contact contact = 1;
+
+    message Contact {
+        string name = 1;
+        repeated PhoneNumber phone = 2;
+    }
+
+    message PhoneNumber {
+        string value = 1;
+    }
+
+    map<string, Contact> recent = 2;
+}

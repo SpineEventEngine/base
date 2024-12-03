@@ -28,6 +28,7 @@ package io.spine.protobuf
 
 import com.google.protobuf.Descriptors.Descriptor
 import com.google.protobuf.Descriptors.FieldDescriptor
+import io.spine.string.camelCase
 
 /**
  * Obtains a descriptor of the field with the given [name] or `null` if there is no such field.
@@ -38,3 +39,21 @@ public fun Descriptor.field(name: String): FieldDescriptor? = findFieldByName(na
  * Obtains a descriptor of the field with the given [number] or `null` if there is no such field.
  */
 public fun Descriptor.field(number: Int): FieldDescriptor? = findFieldByNumber(number)
+
+/**
+ * Obtains only descriptors of message types declared under the message represented
+ * by this descriptor.
+ *
+ * The method filters synthetic descriptors created for map fields.
+ * A descriptor of a map field entry is named after the name of the field
+ * with the `"Entry"` suffix.
+ * We use this convention for filtering [Descriptor.nestedTypes] returned by Protobuf API.
+ *
+ * @see <a href="https://protobuf.dev/programming-guides/proto3/#maps-features">
+ *     Protobuf documentation</a>
+ */
+public fun Descriptor.realNestedTypes(): List<Descriptor> {
+    val mapEntryTypes = fields.filter { it.isMapField }
+        .map { it.name.camelCase() + "Entry" }.toList()
+    return nestedTypes.filter { !mapEntryTypes.contains(it.name) }
+}

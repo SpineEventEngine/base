@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2024, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -48,6 +48,7 @@ import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static java.lang.String.format;
 
@@ -61,16 +62,13 @@ import static java.lang.String.format;
  *
  * @see Any#getTypeUrl()
  */
+@SuppressWarnings("ClassWithTooManyMethods")
 @Immutable
 public final class TypeUrl implements Serializable {
 
     private static final long serialVersionUID = 0L;
     private static final String SEPARATOR = "/";
     private static final Splitter splitter = Splitter.on(SEPARATOR);
-
-    /** Suggested replacement for the deprecated API. */
-    private static final String TYPE_URL_OF = "TypeUrl.of(descriptor)";
-    private static final String TYPE_URL =  "io.spine.type.TypeUrl";
 
     /** The prefix of the type URL. */
     private final String prefix;
@@ -103,73 +101,80 @@ public final class TypeUrl implements Serializable {
      */
     public static TypeUrl of(Message msg) {
         checkNotNull(msg);
-        return of(msg.getDescriptorForType());
-    }
-
-    /**
-     * Creates a new instance by the passed message descriptor taking its type URL.
-     *
-     * @param descriptor the descriptor of the Protobuf declaration
-     */
-    public static TypeUrl of(GenericDescriptor descriptor) {
-        checkNotNull(descriptor);
-        var prefix = prefixFor(descriptor);
-        return create(prefix, descriptor.getFullName());
+        return from(msg.getDescriptorForType());
     }
 
     /**
      * Creates a new instance by the passed message descriptor taking its type URL.
      *
      * @param descriptor the descriptor of the type
-     * @deprecated Please use {@link TypeUrl#of}.
      */
-    @Deprecated
-    @InlineMe(replacement = TYPE_URL_OF, imports = TYPE_URL)
     public static TypeUrl from(Descriptor descriptor) {
-        return of(descriptor);
+        checkNotNull(descriptor);
+        return ofTypeOrService(descriptor);
     }
 
     /**
      * Creates a new instance by the passed enum descriptor taking its type URL.
      *
      * @param descriptor the descriptor of the type
-     * @deprecated Please use {@link TypeUrl#of}.
      */
-    @Deprecated
-    @InlineMe(replacement = TYPE_URL_OF, imports = TYPE_URL)
     public static TypeUrl from(EnumDescriptor descriptor) {
-        return of(descriptor);
+        checkNotNull(descriptor);
+        return ofTypeOrService(descriptor);
     }
 
     /**
      * Creates a new instance by the passed service descriptor taking its type URL.
      *
      * @param descriptor the descriptor of the type
-     * @deprecated Please use {@link TypeUrl#of}.
      */
-    @Deprecated
-    @InlineMe(replacement = TYPE_URL_OF, imports = TYPE_URL)
     public static TypeUrl from(ServiceDescriptor descriptor) {
-        return of(descriptor);
+        checkNotNull(descriptor);
+        return ofTypeOrService(descriptor);
+    }
+
+    /**
+     * Obtains a type URL of a descriptor representing a message type, enum type, or service.
+     *
+     * @param descriptor
+     *         the descriptor for obtaining the type URL
+     * @return the type URL
+     * @throws IllegalArgumentException if the given descriptor is not of one of these
+     *         types: {@link Descriptor}, {@link EnumDescriptor},{@link ServiceDescriptor}
+     */
+    public static TypeUrl ofTypeOrService(GenericDescriptor descriptor) {
+        checkNotNull(descriptor);
+        if(!(descriptor instanceof Descriptor ||
+             descriptor instanceof EnumDescriptor ||
+             descriptor instanceof ServiceDescriptor)) {
+            throw newIllegalArgumentException(
+                    "Only messages, enums, or services can have type URLs." +
+                            " Encountered: `%s`.", descriptor.getClass().getName()
+            );
+        }
+        var prefix = prefixFor(descriptor);
+        return create(prefix, descriptor.getFullName());
     }
 
     /**
      * Creates a new instance from the passed type URL.
      *
-     * @param typeUrl the type URL of the Protobuf message type
+     * @param typeUrl the type URL of a Protobuf declaration such as message, enum, or service
      */
     @Internal
     public static TypeUrl parse(String typeUrl) {
         checkNotNull(typeUrl);
         checkArgument(!typeUrl.isEmpty());
-        checkArgument(isTypeUrl(typeUrl), "Malformed type URL: %s", typeUrl);
-
+        checkTypeUrlFormat(typeUrl);
         var result = doParse(typeUrl);
         return result;
     }
 
-    private static boolean isTypeUrl(String str) {
-        return str.contains(SEPARATOR);
+    private static void checkTypeUrlFormat(String str) {
+        if (!str.contains(SEPARATOR)) {
+            throw newIllegalArgumentException("Malformed type URL: `%s`.", str);
+        }
     }
 
     private static TypeUrl doParse(String typeUrl) {
@@ -183,7 +188,7 @@ public final class TypeUrl implements Serializable {
     }
 
     private static IllegalArgumentException malformedTypeUrl(String typeUrl) {
-        var errMsg = format("Invalid Protobuf type URL encountered: %s", typeUrl);
+        var errMsg = format("Invalid Protobuf type URL encountered: `%s`.", typeUrl);
         throw new IllegalArgumentException(new InvalidProtocolBufferException(errMsg));
     }
 
@@ -249,7 +254,7 @@ public final class TypeUrl implements Serializable {
      * @throws IllegalStateException if the type URL represents an enum
      */
     public <T extends Message> Class<T> getMessageClass() throws UnknownTypeException {
-        return toTypeName().toMessageClass();
+        return typeName().toMessageClass();
     }
 
     /**
@@ -259,6 +264,9 @@ public final class TypeUrl implements Serializable {
         return prefix;
     }
 
+    /**
+     * Obtains the value of the type URL.
+     */
     @Override
     public String toString() {
         return value();
@@ -266,8 +274,19 @@ public final class TypeUrl implements Serializable {
 
     /**
      * Converts the instance to {@code TypeName}.
+     *
+     * @deprecated Please use {@link #typeName()} and {@code typeName} in Kotlin.
      */
+    @Deprecated
+    @InlineMe(replacement = "this.typeName()")
     public TypeName toTypeName() {
+        return typeName();
+    }
+
+    /**
+     * Obtains the type name component of this type URL.
+     */
+    public TypeName typeName() {
         return typeName;
     }
 
@@ -280,7 +299,7 @@ public final class TypeUrl implements Serializable {
     }
 
     private Type<?, ?> type() throws UnknownTypeException {
-        return toTypeName().type();
+        return typeName().type();
     }
 
     @Override
@@ -307,7 +326,7 @@ public final class TypeUrl implements Serializable {
     public enum Prefix {
 
         /**
-         * Type prefix for standard Protobuf types.
+         * The prefix for standard Protobuf types.
          */
         @SuppressWarnings(
                 "DuplicateStringLiteralInspection" /* Duplicates are in the generated code. */
@@ -315,7 +334,7 @@ public final class TypeUrl implements Serializable {
         GOOGLE_APIS("type.googleapis.com"),
 
         /**
-         * Type prefix for types provided by the Spine framework.
+         * The prefix for types provided by the Spine framework.
          */
         SPINE("type.spine.io");
 

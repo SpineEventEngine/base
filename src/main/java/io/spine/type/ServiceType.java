@@ -80,7 +80,7 @@ public final class ServiceType extends Type<ServiceDescriptor, ServiceDescriptor
 
     @Override
     public TypeUrl url() {
-        return TypeUrl.of(descriptor());
+        return TypeUrl.from(descriptor());
     }
 
     @Override

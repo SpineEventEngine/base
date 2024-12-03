@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2024, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -190,8 +190,7 @@ public class KnownTypes implements Serializable {
      */
     public ClassName classNameOf(TypeUrl type) throws UnknownTypeException {
         if (!instance().contains(type)) {
-            throw new UnknownTypeException(type.toTypeName()
-                                               .value());
+            throw new UnknownTypeException(type.typeName().value());
         }
         var result = instance().get(type);
         return result;
@@ -234,8 +233,7 @@ public class KnownTypes implements Serializable {
      */
     public Set<TypeUrl> allFromPackage(String packageName) {
         var result = allUrls().stream()
-                .filter(url -> url.toTypeName()
-                                  .belongsTo(packageName))
+                .filter(url -> url.typeName().belongsTo(packageName))
                 .collect(toSet());
         return result;
     }
@@ -248,7 +246,7 @@ public class KnownTypes implements Serializable {
      * @return {@code true} if the given type is known, {@code false} otherwise
      */
     public boolean contains(TypeUrl typeUrl) {
-        var name = typeUrl.toTypeName();
+        var name = typeUrl.typeName();
         var result = typeSet.contains(name);
         return result;
     }
@@ -270,7 +268,7 @@ public class KnownTypes implements Serializable {
     }
 
     private ClassName get(TypeUrl typeUrl) {
-        var type = get(typeUrl.toTypeName());
+        var type = get(typeUrl.typeName());
         var result = type.javaClassName();
         return result;
     }

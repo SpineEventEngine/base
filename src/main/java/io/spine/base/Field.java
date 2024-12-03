@@ -398,13 +398,13 @@ public final class Field extends ValueHolder<FieldPath> {
     }
 
     /** Obtains the type of the values stored in the field. */
-    private static Class<?> classOf(FieldDescriptor field) {
+    static Class<?> classOf(FieldDescriptor field) {
         var type = field.getType();
         if (type == MESSAGE) {
-            var cls = TypeUrl.of(field.getMessageType()).toJavaClass();
+            var cls = TypeUrl.from(field.getMessageType()).toJavaClass();
             return cls;
         } else if (type == ENUM) {
-            var cls = TypeUrl.of(field.getEnumType()).toJavaClass();
+            var cls = TypeUrl.from(field.getEnumType()).toJavaClass();
             return cls;
         } else {
             var result = ScalarType.javaType(field.toProto().getType());

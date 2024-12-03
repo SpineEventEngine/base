@@ -74,7 +74,7 @@ class MessageClassTest {
     @DisplayName("obtain the name of the type")
     void typeName() {
         assertThat(new TestMessageClass(MSG_CLASS).typeName())
-                .isEqualTo(MSG_TYPE.toTypeName());
+                .isEqualTo(MSG_TYPE.typeName());
     }
 
     /**
