@@ -89,14 +89,17 @@ extend google.protobuf.FieldOptions {
 
     // The option to mark a field as required.
     //
-    // If the field type is a `message`, it must be set to a non-default instance.
-    // If it is `string` or `bytes`, the value must not be an empty string or an array.
-    // Other field types are not applicable.
-    // If the field is repeated, it must have at least one element.
+    // When this option is set:
     //
-    // Unlike the `required` keyword used in Protobuf 2, the option does not affect the transfer
-    // layer. Even if a message content violates the requirement set by the option, it would still
-    // be a valid message for the Protobuf library.
+    // 1. For message or enum fields, the field must be set to a non-default instance.
+    // 2. For `string` and `bytes` fields, the value must be set to a non-empty string or an array.
+    // 3. For repeated fields and maps, at least one element must be present.
+    //
+    // Other field types are not supported by the option.
+    //
+    // Unlike the `required` keyword in Protobuf 2, this option does not affect message
+    // serialization or deserialization. Even if a message content violates the requirement
+    // set by the option, it would still be a valid message for the Protobuf library.
     //
     // Example: Using `(required)` field validation constraint.
     //
@@ -857,11 +860,18 @@ message IfInvalidOption {
     string error_msg = 2;
 }
 
-// Specifies that a message field can be present only if another field is present.
+// Specifies that another field must be present if the option's target field is present.
 //
 // Unlike the `required_field` that handles combination of required fields, this option is useful
-// when it is needed to say that an optional field makes sense only when another optional field is
-// present.
+// when it is needed to say that an optional field makes sense only when another optional field
+// is present.
+//
+// This option can be applied to the same field types as `(required)`, including both the
+// target field and its companion. Supported field types are:
+//
+// - Messages and enums.
+// - Repeated fields and maps.
+// - `string` and `bytes`.
 //
 // Example: Requiring mutual presence of optional fields.
 //
@@ -873,23 +883,23 @@ message IfInvalidOption {
 //
 message GoesOption {
 
-    // The default error message format string.
-    //
-    // The first parameter is the name of the field for which we specify the option.
-    // The second parameter is the name of the field set in the "with" value.
-    //
-    option (default_message) = "The field `%s` can only be set when the field `%s` is defined.";
+    // The default error message used when the companion field specified in `with` is not present
+    // alongside the target field.
+    option (default_message) = "The field `{fieldName}` can only be set when `{companionName}` field is defined.";
 
-    // A name of the field required for presence of the field for which we set the option.
+    // The name of the companion field whose presence is required for this field to be valid.
     string with = 1;
 
     // A user-defined validation error format message.
     string msg_format = 2 [deprecated = true];
 
-    // A user-defined validation error format message.
+    // A user-defined error message.
     //
-    // May include the token `{value}` for the actual value of the field. The token will be replaced
-    // at runtime when the error is constructed.
+    // The specified message may include the following placeholders:
+    // 1. `{fieldName}` – the name of the field to which this option is applied.
+    // 2. `{companionName}` – the name of the companion field specified in `with`.
+    //
+    // The tokens will be replaced at runtime when the error is constructed.
     //
     string error_msg = 3;
 }
@@ -1067,12 +1077,12 @@ message IfSetAgainOption {
 
     // A user-defined error message.
     //
-    // The specified message may include the following tokens:
+    // The specified message may include the following placeholders:
     // 1. `{fieldName}` — the field name.
     // 2. `{currentValue}` — the current field value.
     // 3. `{proposedValue}` — the value that was attempted to be set.
     //
-    // The tokens will be replaced at runtime when the error is constructed.
+    // The placeholders will be replaced at runtime when the error is constructed.
     //
     // Example: Using the `(set_once)` option.
     //
