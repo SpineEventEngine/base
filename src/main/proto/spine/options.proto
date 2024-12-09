@@ -89,14 +89,17 @@ extend google.protobuf.FieldOptions {
 
     // The option to mark a field as required.
     //
-    // If the field type is a `message`, it must be set to a non-default instance.
-    // If it is `string` or `bytes`, the value must not be an empty string or an array.
-    // Other field types are not applicable.
-    // If the field is repeated, it must have at least one element.
+    // When this option is set:
     //
-    // Unlike the `required` keyword used in Protobuf 2, the option does not affect the transfer
-    // layer. Even if a message content violates the requirement set by the option, it would still
-    // be a valid message for the Protobuf library.
+    // 1. For message or enum fields, the field must be set to a non-default instance.
+    // 2. For `string` and `bytes` fields, the value must be set to a non-empty string or an array.
+    // 3. For repeated fields and maps, at least one element must be present.
+    //
+    // Other field types are not supported by the option.
+    //
+    // Unlike the `required` keyword in Protobuf 2, this option does not affect message
+    // serialization or deserialization. Even if a message content violates the requirement
+    // set by the option, it would still be a valid message for the Protobuf library.
     //
     // Example: Using `(required)` field validation constraint.
     //
