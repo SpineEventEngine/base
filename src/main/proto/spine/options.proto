@@ -637,7 +637,7 @@ extend google.protobuf.ServiceOptions {
 message IfMissingOption {
 
     // The default error message.
-    option (default_message) = "The field '{field.name}' of type '{field.type}' in '{field.declaringType}' must have a value.";
+    option (default_message) = "The field '{field.path}' of type '{field.type}' must have a value.";
 
     // A user-defined validation error format message.
     //
@@ -651,13 +651,14 @@ message IfMissingOption {
     //
     // 1. `{field.name}` – the field name.
     // 2. `{field.type}` – the field type.
-    // 3. `{field.declaringType}` – the name of the field's declaring type.
+    // 3. `{field.path}` – the field name along with the name of its declaring type.
+    // 4. `{parent.type}` – the field declaring type.
     //
     // Example: Using the `(if_missing)` option.
     //
     //    message Student {
     //        Name name = 1 [(required) = true,
-    //                       (if_missing).error_msg = "The `{field.name}` field is mandatory for `{field.declaringType}`."];
+    //                       (if_missing).error_msg = "The `{field.name}` field is mandatory for `{parent.type}`."];
     //    }
     //
     string error_msg = 2;
@@ -722,7 +723,7 @@ message MinOption {
 message MaxOption {
 
     // The default error message.
-    option (default_message) = "The field '{field.name}' in '{field.declaringType}' must be {predicate} {threshold}.";
+    option (default_message) = "The field '{field.path}' must be {predicate} {threshold}.";
 
     // The string representation of the maximum field value.
     string value = 1;
@@ -742,8 +743,9 @@ message MaxOption {
     //
     // 1. `{field.name}` – the field name.
     // 2. `{field.type}` – the field type.
-    // 3. `{field.declaringType}` – the name of the field's declaring type.
-    // 4. `{threshold}` – the maximum threshold value for the field.
+    // 3. `{field.path}` – the field name along with the name of its declaring type.
+    // 3. `{parent.type}` – the field declaring type.
+    // 4. `{threshold}` – the specified maximum threshold `value`.
     // 5. `{predicate}` – string representation of the used predicate. It equals to
     //    "less than or equal to" when `exclusive` is not set. Otherwise, "less than".
     //
@@ -751,7 +753,7 @@ message MaxOption {
     //
     //     message TowerCrane {
     //         double load = 1 [(max).value = "4.2"
-    //                          (max).error_msg = "The crane `load` in `{field.declaringType}` can not exceed `{threshold}` tons!"];
+    //                          (max).error_msg = "The crane load in `{parent.type}` can not exceed `{threshold}` tons!"];
     //     }
     //
     string error_msg = 4;
