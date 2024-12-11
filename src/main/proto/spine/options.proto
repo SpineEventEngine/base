@@ -655,9 +655,9 @@ message IfMissingOption {
     //
     // Example: Using the `(if_missing)` option.
     //
-    //    message Holder {
-    //        MyMessage field = 1 [(required) = true,
-    //                             (if_missing).error_msg = "This field is required."];
+    //    message Student {
+    //        Name name = 1 [(required) = true,
+    //                       (if_missing).error_msg = "The `{field.name}` field is mandatory for `{field.declaringType}`."];
     //    }
     //
     string error_msg = 2;
@@ -710,24 +710,19 @@ message MinOption {
 
 // The field value must be less than or equal to the given maximum number.
 //
-// Is applicable only to numbers.
+// Is applicable only to number fields.
 // Repeated fields are supported.
 //
 // Example: Defining upper boundary for a numeric field.
 //
-//     message Elevation {
-//         double value = 1 [(max).value = "8848.86"];
+//     message TowerCrane {
+//         double load = 1 [(max).value = "4.2"];
 //     }
 //
 message MaxOption {
 
-    // The default error message format string.
-    //
-    // The format parameters are:
-    //   1) "or equal to " string (if the `exclusive` parameter is false) or an empty string;
-    //   2) the maximum number.
-    //
-    option (default_message) = "The number must be less than %s%s.";
+    // The default error message.
+    option (default_message) = "The field '{field.name}' in '{field.declaringType}' must be {predicate} {threshold}.";
 
     // The string representation of the maximum field value.
     string value = 1;
@@ -741,10 +736,23 @@ message MaxOption {
     // A user-defined validation error format message.
     string msg_format = 3 [deprecated = true];
 
-    // A user-defined validation error format message.
+    // A user-defined error message.
     //
-    // May include tokens `{value}`—for the actual value of the field, and `{other}`—for
-    // the threshold value. The tokens will be replaced at runtime when the error is constructed.
+    // The specified message may include the following placeholders:
+    //
+    // 1. `{field.name}` – the field name.
+    // 2. `{field.type}` – the field type.
+    // 3. `{field.declaringType}` – the name of the field's declaring type.
+    // 4. `{threshold}` – the maximum threshold value for the field.
+    // 5. `{predicate}` – string representation of the used predicate. It equals to
+    //    "less than or equal to" when `exclusive` is not set. Otherwise, "less than".
+    //
+    // Example: Using the `(max)` option with a custom error message.
+    //
+    //     message TowerCrane {
+    //         double load = 1 [(max).value = "4.2"
+    //                          (max).error_msg = "The crane `load` in `{field.declaringType}` can not exceed `{threshold}` tons!"];
+    //     }
     //
     string error_msg = 4;
 }
