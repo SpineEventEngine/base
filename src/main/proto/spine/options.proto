@@ -630,22 +630,14 @@ extend google.protobuf.ServiceOptions {
 // Validation Option Types
 //---------------------------
 
-// Defines the error handling for `required` field with no value set.
+// Defines the error message for `required` field with no value set.
 //
 // Applies only to the fields marked as `required`.
-// Validation error message is composed according to the rules defined by this option.
-//
-// Example: Using the `(if_missing)` option.
-//
-//    message Holder {
-//        MyMessage field = 1 [(required) = true,
-//                             (if_missing).error_msg = "This field is required."];
-//    }
 //
 message IfMissingOption {
 
     // The default error message.
-    option (default_message) = "A value must be set.";
+    option (default_message) = "The field '{field.name}' of type '{field.type}' in '{field.declaringType}' must have a value.";
 
     // A user-defined validation error format message.
     //
@@ -654,6 +646,20 @@ message IfMissingOption {
     string msg_format = 1 [deprecated = true];
 
     // A user-defined error message.
+    //
+    // The specified message may include the following placeholders:
+    //
+    // 1. `{field.name}` – the field name.
+    // 2. `{field.type}` – the field type.
+    // 3. `{field.declaringType}` – the name of the field's declaring type.
+    //
+    // Example: Using the `(if_missing)` option.
+    //
+    //    message Holder {
+    //        MyMessage field = 1 [(required) = true,
+    //                             (if_missing).error_msg = "This field is required."];
+    //    }
+    //
     string error_msg = 2;
 }
 
