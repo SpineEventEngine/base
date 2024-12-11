@@ -654,6 +654,8 @@ message IfMissingOption {
     // 3. `{field.path}` – the field name along with the name of its declaring type.
     // 4. `{parent.type}` – the field declaring type.
     //
+    // The placeholders will be replaced at runtime when the error is constructed.
+    //
     // Example: Using the `(if_missing)` option.
     //
     //    message Student {
@@ -666,7 +668,7 @@ message IfMissingOption {
 
 // The field value must be greater than or equal to the given minimum number.
 //
-// Is applicable only to numbers.
+// Is applicable only to number fields.
 // Repeated fields are supported.
 //
 // Example: Defining lower boundary for a numeric field.
@@ -681,13 +683,8 @@ message IfMissingOption {
 //
 message MinOption {
 
-    // The default error message format string.
-    //
-    // The format parameters are:
-    //   1) "or equal to " string (if the `exclusive` parameter is false) or an empty string;
-    //   2) the minimum number.
-    //
-    option (default_message) = "The number must be greater than %s%s.";
+    // The default error message.
+    option (default_message) = "The field '{field.path}' must be {predicate} {threshold}.";
 
     // The string representation of the minimum field value.
     string value = 1;
@@ -701,10 +698,19 @@ message MinOption {
     // A user-defined validation error format message.
     string msg_format = 3 [deprecated = true];
 
-    // A user-defined validation error format message.
+    // A user-defined error message.
     //
-    // May include tokens `{value}`—for the actual value of the field, and `{other}`—for
-    // the threshold value. The tokens will be replaced at runtime when the error is constructed.
+    // The specified message may include the following placeholders:
+    //
+    // 1. `{field.name}` – the field name.
+    // 2. `{field.type}` – the field type.
+    // 3. `{field.path}` – the field name along with the name of its declaring type.
+    // 3. `{parent.type}` – the field declaring type.
+    // 4. `{threshold}` – the specified minimum threshold `value`.
+    // 5. `{predicate}` – string representation of the used predicate. It equals to
+    //    "greater than or equal to" when `exclusive` is not set. Otherwise, "greater than".
+    //
+    // The placeholders will be replaced at runtime when the error is constructed.
     //
     string error_msg = 4;
 }
@@ -717,7 +723,8 @@ message MinOption {
 // Example: Defining upper boundary for a numeric field.
 //
 //     message TowerCrane {
-//         double load = 1 [(max).value = "4.2"];
+//         double load = 1 [(max).value = "4.2",
+//                          (max).error_msg = "The crane load in `{parent.type}` can not exceed `{threshold}` tons!"];
 //     }
 //
 message MaxOption {
@@ -749,12 +756,7 @@ message MaxOption {
     // 5. `{predicate}` – string representation of the used predicate. It equals to
     //    "less than or equal to" when `exclusive` is not set. Otherwise, "less than".
     //
-    // Example: Using the `(max)` option with a custom error message.
-    //
-    //     message TowerCrane {
-    //         double load = 1 [(max).value = "4.2"
-    //                          (max).error_msg = "The crane load in `{parent.type}` can not exceed `{threshold}` tons!"];
-    //     }
+    // The placeholders will be replaced at runtime when the error is constructed.
     //
     string error_msg = 4;
 }
