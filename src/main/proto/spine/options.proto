@@ -1078,12 +1078,13 @@ message CompareByOption {
 //
 message IfSetAgainOption {
 
-    // The default error message used when the field value is re-assigned.
+    // The default error message.
     option (default_message) = "The field `{fieldName}` already has the value `{currentValue}` and cannot be reassigned to `{proposedValue}`.";
 
     // A user-defined error message.
     //
     // The specified message may include the following placeholders:
+    //
     // 1. `{fieldName}` — the field name.
     // 2. `{currentValue}` — the current field value.
     // 3. `{proposedValue}` — the value that was attempted to be set.
