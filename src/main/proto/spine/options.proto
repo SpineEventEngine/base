@@ -676,14 +676,14 @@ message IfMissingOption {
 //         double value = 1 [(min) = {
 //             value: "0.0",
 //             exclusive: true,
-//             error_msg: "The temperature cannot reach `{min.threshold}K`, but provided `{field.value}`."
+//             error_msg: "The temperature cannot reach `{min.value}K`, but provided `{field.value}`."
 //         }];
 //     }
 //
 message MinOption {
 
     // The default error message.
-    option (default_message) = "The field `{parent.type}.{field.name}` must be {max.comparison} {min.threshold}.";
+    option (default_message) = "The field `{parent.type}.{field.name}` must be {max.comparison} {min.value}.";
 
     // The string representation of the minimum field value.
     string value = 1;
@@ -705,7 +705,7 @@ message MinOption {
     // 2. `{field.name}` – the field name.
     // 3. `{field.type}` – the fully qualified name of the field type.
     // 4. `{parent.type}` – the fully qualified name of the field declaring type.
-    // 5. `{min.threshold}` – the specified minimum threshold `value`.
+    // 5. `{min.value}` – the specified minimum `value`.
     // 6. `{min.comparison}` – if `exclusive` is set to `true`, this placeholder equals
     //    to "greater than". Otherwise, "greater than or equal to".
     //
@@ -723,13 +723,13 @@ message MinOption {
 //
 //     message TowerCrane {
 //         double load = 1 [(max).value = "4.2",
-//                          (max).error_msg = "The crane load in `{parent.type}` can not exceed `{max.threshold}` tons, but provided `{field.value}`."];
+//                          (max).error_msg = "The crane load in `{parent.type}` can not exceed `{max.value}` tons, but provided `{field.value}`."];
 //     }
 //
 message MaxOption {
 
     // The default error message.
-    option (default_message) = "The field `{parent.type}.{field.name}` must be {max.comparison} {max.threshold}.";
+    option (default_message) = "The field `{parent.type}.{field.name}` must be {max.comparison} {max.value}.";
 
     // The string representation of the maximum field value.
     string value = 1;
@@ -751,7 +751,7 @@ message MaxOption {
     // 2. `{field.value}` - the field value.
     // 3. `{field.type}` – the fully qualified name of the field type.
     // 4. `{parent.type}` – the fully qualified name of the field declaring type.
-    // 5. `{max.threshold}` – the specified maximum threshold `value`.
+    // 5. `{max.value}` – the specified maximum `value`.
     // 6. `{max.comparison}` – if `exclusive` is set to `true`, this placeholder equals
     //    to "less than". Otherwise, "less than or equal to".
     //
