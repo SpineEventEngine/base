@@ -1156,12 +1156,17 @@ message IfHasDuplicatesOption {
 }
 
 // The option to indicate that a numeric field is required to have a value which belongs
-// to the specified bounded range. For unbounded ranges, please use `(min)` and `(max) options.
+// to the specified bounded range.
+//
+// For unbounded ranges, please use `(min)` and `(max) options.
+//
 message RangeOption {
 
     // The default error message.
     option (default_message) = "The field `{parent.type}.{field.name}` must be within the following range: `{range.value}`.";
 
+    // The string representation of the range.
+    //
     // The range can be open (not including the endpoint) or closed (including the endpoint) on
     // each side. Open endpoints are indicated using a parenthesis (`(`, `)`). Closed endpoints are
     // indicated using a square bracket (`[`, `]`).
