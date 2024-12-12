@@ -238,7 +238,13 @@ extend google.protobuf.FieldOptions {
     //
     IfSetAgainOption if_set_again = 73827;
 
-    // Reserved 73827 to 73849 for future validation options.
+    // Defines the error message used if a `distinct` field has duplicates.
+    //
+    // Applies only to the repeated fields marked as `distinct`.
+    //
+    IfHasDuplicatesOption if_has_duplicates = 73828;
+
+    // Reserved 73829 to 73849 for future validation options.
 
     // API Annotations
     //-----------------
@@ -306,7 +312,7 @@ extend google.protobuf.FieldOptions {
     //
     bool column = 73854;
 
-    // Reserved 73856 to 73890 for future options.
+    // Reserved 73855 to 73890 for future options.
 
     // Reserved 73900 for removed `by` option.
 }
