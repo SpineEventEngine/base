@@ -683,7 +683,7 @@ message IfMissingOption {
 message MinOption {
 
     // The default error message.
-    option (default_message) = "The field `{field.name}` in `{parent.type}` must be {max.comparison} {min.threshold}.";
+    option (default_message) = "The field `{parent.type}.{field.name}` must be {max.comparison} {min.threshold}.";
 
     // The string representation of the minimum field value.
     string value = 1;
@@ -703,7 +703,7 @@ message MinOption {
     //
     // 1. `{field.value}` - the field value.
     // 2. `{field.name}` – the field name.
-    // 3. `{field.type}` – the field type.
+    // 3. `{field.type}` – the fully qualified name of the field type.
     // 4. `{parent.type}` – the fully qualified name of the field declaring type.
     // 5. `{min.threshold}` – the specified minimum threshold `value`.
     // 6. `{min.comparison}` – if `exclusive` is set to `true`, this placeholder equals
@@ -723,13 +723,13 @@ message MinOption {
 //
 //     message TowerCrane {
 //         double load = 1 [(max).value = "4.2",
-//                          (max).error_msg = "The crane load in `{parent.type}` can not exceed `{max.threshold}` tons!"];
+//                          (max).error_msg = "The `{field.name}` in `{parent.type}` can not exceed `{max.threshold}` tons, but provided `{field.value}`."];
 //     }
 //
 message MaxOption {
 
     // The default error message.
-    option (default_message) = "The field `{field.name}` in `{parent.type}` must be {max.comparison} {max.threshold}.";
+    option (default_message) = "The field `{parent.type}.{field.name}` must be {max.comparison} {max.threshold}.";
 
     // The string representation of the maximum field value.
     string value = 1;
@@ -747,9 +747,9 @@ message MaxOption {
     //
     // The specified message may include the following placeholders:
     //
-    // 1. `{field.value}` - the field value.
-    // 2. `{field.name}` – the field name.
-    // 3. `{field.type}` – the field type.
+    // 1. `{field.name}` – the field name.
+    // 2. `{field.value}` - the field value.
+    // 3. `{field.type}` – the fully qualified name of the field type.
     // 4. `{parent.type}` – the fully qualified name of the field declaring type.
     // 5. `{max.threshold}` – the specified maximum threshold `value`.
     // 6. `{max.comparison}` – if `exclusive` is set to `true`, this placeholder equals
@@ -769,13 +769,13 @@ message MaxOption {
 //
 //     message CreateAccount {
 //         string id = 1 [(pattern).regex = "^[A-Za-z0-9+]+$",
-//                        (pattern).error_msg = "ID must be alphanumerical. Provided: `{value}`."];
+//                        (pattern).error_msg = "ID must be alphanumerical in `{parent.type}`. Provided: `{field.value}`."];
 //     }
 //
 message PatternOption {
 
-    // The default error message format string.
-    option (default_message) = "The `{field.name}` in `{parent.type}` must match the regular expression `{regex}`. The passed value: `{field.value}`.";
+    // The default error message.
+    option (default_message) = "The `{parent.type}.{field.name}` field must match the regular expression `{regex.pattern}` (`{regex.modifiers}`). The passed value: `{field.value}`.";
 
     // The regular expression to match.
     string regex = 1;
@@ -793,11 +793,12 @@ message PatternOption {
     //
     // The specified message may include the following placeholders:
     //
-    // 1. `{field.value}` - the field value.
-    // 2. `{field.name}` – the field name.
-    // 3. `{parent.type}` – the fully qualified name of the field declaring type.
-    // 4. `{regex.pattern}` – the specified regex pattern.
-    // 5. `{regex.modifiers}` – the specified modifiers, if any. For example, `[dot_all, unicode]`.
+    // 1. `{field.name}` – the field name.
+    // 2. `{field.value}` - the field value.
+    // 3. `{field.type}` – the fully qualified name of the field type.
+    // 4. `{parent.type}` – the fully qualified name of the field declaring type.
+    // 5. `{regex.pattern}` – the specified regex pattern.
+    // 6. `{regex.modifiers}` – the specified modifiers, if any. For example, `[dot_all, unicode]`.
     //
     // The placeholders will be replaced at runtime when the error is constructed.
     //
@@ -916,8 +917,7 @@ message IfInvalidOption {
 //
 message GoesOption {
 
-    // The default error message used when the companion field specified in `with` is not present
-    // alongside the target field.
+    // The default error message.
     option (default_message) = "The field `{goes.companion}` must also be set when `{field.name}` is set in `{parent.type}`.";
 
     // The name of the companion field whose presence is required for this field to be valid.
@@ -932,7 +932,7 @@ message GoesOption {
     //
     // 1. `{field.name}` – the field name.
     // 2. `{field.value}` – the field value.
-    // 3. `{field.type}` – the field type.
+    // 3. `{field.type}` – the fully qualified name of the field type.
     // 4. `{parent.type}` – the fully qualified name of the field declaring type.
     // 5. `{goes.companion}` – the name of the companion specified in `with`.
     //
