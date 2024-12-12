@@ -933,7 +933,7 @@ message GoesOption {
     // 4. `{parent.type}` – the fully qualified name of the field declaring type.
     // 5. `{goes.companion}` – the name of the companion specified in `with`.
     //
-    // The tokens will be replaced at runtime when the error is constructed.
+    // The placeholders will be replaced at runtime when the error is constructed.
     //
     string error_msg = 3;
 }
@@ -1119,7 +1119,7 @@ message IfSetAgainOption {
     // 4. `{field.proposed_value}` – the value, which was attempted to be set for the field.
     // 5. `{parent.type}` – the fully qualified name of the field declaring type.
     //
-    // The tokens will be replaced at runtime when the error is constructed.
+    // The placeholders will be replaced at runtime when the error is constructed.
     //
     // Example: Using the `(set_once)` option.
     //
