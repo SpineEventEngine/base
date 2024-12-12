@@ -630,7 +630,7 @@ extend google.protobuf.ServiceOptions {
 // Validation Option Types
 //---------------------------
 
-// Defines the error message used if a `required` not set.
+// Defines the error message used if a `required` field is not set.
 //
 // Applies only to the fields marked as `required`.
 //
@@ -723,7 +723,7 @@ message MinOption {
 //
 //     message TowerCrane {
 //         double load = 1 [(max).value = "4.2",
-//                          (max).error_msg = "The `{field.name}` in `{parent.type}` can not exceed `{max.threshold}` tons, but provided `{field.value}`."];
+//                          (max).error_msg = "The crane load in `{parent.type}` can not exceed `{max.threshold}` tons, but provided `{field.value}`."];
 //     }
 //
 message MaxOption {
@@ -775,7 +775,7 @@ message MaxOption {
 message PatternOption {
 
     // The default error message.
-    option (default_message) = "The `{parent.type}.{field.name}` field must match the regular expression `{regex.pattern}` (`{regex.modifiers}`). The passed value: `{field.value}`.";
+    option (default_message) = "The `{parent.type}.{field.name}` field must match the regular expression `{regex.pattern}` (modifiers: `{regex.modifiers}`). The passed value: `{field.value}`.";
 
     // The regular expression to match.
     string regex = 1;
@@ -888,7 +888,7 @@ message IfInvalidOption {
     //
     //     message Transaction {
     //         TransactionDetails details = 1 [(validate) = true,
-    //                                         (if_invalid).error_msg = "The `detail` field is invalid."];
+    //                                         (if_invalid).error_msg = "The `{field.name}` field is invalid."];
     //    }
     //
     string error_msg = 2;
