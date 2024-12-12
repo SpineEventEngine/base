@@ -248,6 +248,12 @@ extend google.protobuf.FieldOptions {
     //
     string range = 73826;
 
+    // Defines the error message used if a `set_once` field is set again.
+    //
+    // Applies only to the fields marked as `set_once`.
+    //
+    IfSetAgainOption if_set_again = 73827;
+
     // Reserved 73827 to 73849 for future validation options.
 
     // API Annotations
@@ -315,12 +321,6 @@ extend google.protobuf.FieldOptions {
     // The `repeated` and `map` fields cannot be columns.
     //
     bool column = 73854;
-
-    // Defines the error message used if a `set_once` field is set again.
-    //
-    // Applies only to the fields marked as `set_once`.
-    //
-    IfSetAgainOption if_set_again = 73855;
 
     // Reserved 73856 to 73890 for future options.
 
