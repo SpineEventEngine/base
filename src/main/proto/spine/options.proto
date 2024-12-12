@@ -630,14 +630,14 @@ extend google.protobuf.ServiceOptions {
 // Validation Option Types
 //---------------------------
 
-// Defines the error message for `required` field with no value set.
+// Defines the error message used if a `required` not set.
 //
 // Applies only to the fields marked as `required`.
 //
 message IfMissingOption {
 
     // The default error message.
-    option (default_message) = "The field `{field.name}` in `{parent.type}` must have a value.";
+    option (default_message) = "The field `{parent.type}.{field.name}` of type `{field.type}` must have a value.";
 
     // A user-defined validation error format message.
     //
@@ -650,7 +650,7 @@ message IfMissingOption {
     // The specified message may include the following placeholders:
     //
     // 1. `{field.name}` – the field name.
-    // 2. `{field.type}` – the field type.
+    // 2. `{field.type}` – the fully qualified name of the field type.
     // 3. `{parent.type}` – the fully qualified name of the field declaring type.
     //
     // The placeholders will be replaced at runtime when the error is constructed.
@@ -857,35 +857,38 @@ message PatternOption {
 
 // Specifies the message to show if a validated field happens to be invalid.
 //
-// It is applicable only to message fields.
+// It is applicable only to message fields marked with `(validate)`.
 // Repeated fields are supported.
-//
-// Example: Using the `(if_invalid)` option.
-//
-//     message Holder {
-//         MyMessage field = 1 [(validate) = true,
-//                              (if_invalid).error_msg = "The field is invalid."];
-//    }
 //
 message IfInvalidOption {
 
-    // The default error message for the field.
-    option (default_message) = "The field `{field.path}` in `{parent.type}` is invalid.";
+    // The default error message.
+    option (default_message) = "The field `{parent.type}.{field.path}` of type `{field.type}` is invalid. The field value: `{field.value}`.";
 
     // A user-defined validation error format message.
+    //
+    // Use `error_msg` instead.
+    //
     string msg_format = 1 [deprecated = true];
 
     // A user-defined error message.
     //
     // The specified message may include the following placeholders:
     //
-    // 1. `{field.value}` - the field value.
-    // 2. `{field.type}` – the field type.
-    // 3. `{field.path}` – if the invalid field is nested, this placeholder will contain the full
+    // 1. `{field.path}` – if the invalid field is nested, this placeholder will contain the full
     //    path from the root message to the invalid field. Otherwise, just a field name.
+    // 2. `{field.value}` - the field value.
+    // 3. `{field.type}` – the fully qualified name of the field type.
     // 4. `{parent.type}` – the fully qualified name of the field declaring type.
     //
     // The placeholders will be replaced at runtime when the error is constructed.
+    //
+    // Example: Using the `(if_invalid)` option.
+    //
+    //     message Transaction {
+    //         TransactionDetails details = 1 [(validate) = true,
+    //                                         (if_invalid).error_msg = "The `detail` field is invalid."];
+    //    }
     //
     string error_msg = 2;
 }
@@ -1107,16 +1110,16 @@ message CompareByOption {
 message IfSetAgainOption {
 
     // The default error message.
-    option (default_message) = "The field `{field.name}` in `{parent.type}` already has the value `{field.value}` and cannot be reassigned to `{field.proposed_value}`.";
+    option (default_message) = "The field `{parent.type}.{field.name}` of `{field.type}` already has the value `{field.value}` and cannot be reassigned to `{field.proposed_value}`.";
 
     // A user-defined error message.
     //
     // The specified message may include the following placeholders:
     //
     // 1. `{field.name}` – the field name.
-    // 2. `{field.value}` – the field value.
-    // 3. `{field.type}` – the field type.
-    // 4. `{field.proposed_value}` – the value, which was attempted to be set for the field.
+    // 2. `{field.type}` – the fully qualified name of the field type.
+    // 3. `{field.value}` – the current field value.
+    // 4. `{field.proposed_value}` – the value, which was attempted to be set.
     // 5. `{parent.type}` – the fully qualified name of the field declaring type.
     //
     // The placeholders will be replaced at runtime when the error is constructed.
