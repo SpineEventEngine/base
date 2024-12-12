@@ -860,7 +860,8 @@ message PatternOption {
 }
 
 // Specifies the message to show if a validated field happens to be invalid.
-// Is applicable only to messages.
+//
+// It is applicable only to message fields.
 // Repeated fields are supported.
 //
 // Example: Using the `(if_invalid)` option.
@@ -873,15 +874,22 @@ message PatternOption {
 message IfInvalidOption {
 
     // The default error message for the field.
-    option (default_message) = "The message must have valid properties.";
+    option (default_message) = "The field '{field.path}' in '{parent.type}' is invalid.";
 
     // A user-defined validation error format message.
     string msg_format = 1 [deprecated = true];
 
-    // A user-defined validation error format message.
+    // A user-defined error message.
     //
-    // May include the token `{value}` for the actual value of the field.
-    // The token will be replaced at runtime when the error is constructed.
+    // The specified message may include the following placeholders:
+    //
+    // 1. `{field.value}` - the field value.
+    // 2. `{field.type}` – the field type.
+    // 3. `{field.path}` – if the invalid field is nested, this placeholder will contain the full
+    //    path from the root message to the invalid field. Otherwise, just a field name.
+    // 4. `{parent.type}` – the field declaring type.
+    //
+    // The placeholders will be replaced at runtime when the error is constructed.
     //
     string error_msg = 2;
 }
