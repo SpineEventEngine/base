@@ -926,7 +926,7 @@ message GoesOption {
     // A user-defined error message.
     //
     // The specified message may include the following placeholders:
-
+    //
     // 1. `{field.name}` – the field name.
     // 2. `{field.value}` – the field value.
     // 3. `{field.type}` – the field type.
@@ -1107,17 +1107,19 @@ message CompareByOption {
 message IfSetAgainOption {
 
     // The default error message.
-    option (default_message) = "The field `{fieldName}` already has the value `{currentValue}` and cannot be reassigned to `{proposedValue}`.";
+    option (default_message) = "The field `{field.name}` in `{parent.type}` already has the value `{field.value}` and cannot be reassigned to `{field.proposed_value}`.";
 
     // A user-defined error message.
     //
     // The specified message may include the following placeholders:
     //
-    // 1. `{fieldName}` — the field name.
-    // 2. `{currentValue}` — the current field value.
-    // 3. `{proposedValue}` — the value that was attempted to be set.
+    // 1. `{field.name}` – the field name.
+    // 2. `{field.value}` – the field value.
+    // 3. `{field.type}` – the field type.
+    // 4. `{field.proposed_value}` – the value, which was attempted to be set for the field.
+    // 5. `{parent.type}` – the fully qualified name of the field declaring type.
     //
-    // The placeholders will be replaced at runtime when the error is constructed.
+    // The tokens will be replaced at runtime when the error is constructed.
     //
     // Example: Using the `(set_once)` option.
     //
