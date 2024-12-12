@@ -683,7 +683,7 @@ message IfMissingOption {
 message MinOption {
 
     // The default error message.
-    option (default_message) = "The field `{parent.type}.{field.name}` must be {max.comparison} {min.value}.";
+    option (default_message) = "The field `{parent.type}.{field.name}` must be {max.operator} {min.value}.";
 
     // The string representation of the minimum field value.
     string value = 1;
@@ -706,8 +706,8 @@ message MinOption {
     // 3. `{field.type}` – the fully qualified name of the field type.
     // 4. `{parent.type}` – the fully qualified name of the field declaring type.
     // 5. `{min.value}` – the specified minimum `value`.
-    // 6. `{min.comparison}` – if `exclusive` is set to `true`, this placeholder equals
-    //    to "greater than". Otherwise, "greater than or equal to".
+    // 6. `{min.operator}` – if `exclusive` is set to `true`, this placeholder equals to ">".
+    //    Otherwise, ">=".
     //
     // The placeholders will be replaced at runtime when the error is constructed.
     //
@@ -729,7 +729,7 @@ message MinOption {
 message MaxOption {
 
     // The default error message.
-    option (default_message) = "The field `{parent.type}.{field.name}` must be {max.comparison} {max.value}.";
+    option (default_message) = "The field `{parent.type}.{field.name}` must be {max.operator} {max.value}.";
 
     // The string representation of the maximum field value.
     string value = 1;
@@ -752,8 +752,8 @@ message MaxOption {
     // 3. `{field.type}` – the fully qualified name of the field type.
     // 4. `{parent.type}` – the fully qualified name of the field declaring type.
     // 5. `{max.value}` – the specified maximum `value`.
-    // 6. `{max.comparison}` – if `exclusive` is set to `true`, this placeholder equals
-    //    to "less than". Otherwise, "less than or equal to".
+    // 6. `{max.operator}` – if `exclusive` is set to `true`, this placeholder equals to "<".
+    //    Otherwise, "<=".
     //
     // The placeholders will be replaced at runtime when the error is constructed.
     //
