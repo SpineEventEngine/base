@@ -226,27 +226,11 @@ extend google.protobuf.FieldOptions {
     bool distinct = 73825;
 
     // The option to indicate that a numeric field is required to have a value which belongs
-    // to the specified bounded range. For unbounded ranges, please use `(min)` and `(max) options.
+    // to the specified bounded range.
     //
-    // The range can be open (not including the endpoint) or closed (including the endpoint) on
-    // each side. Open endpoints are indicated using a parenthesis (`(`, `)`). Closed endpoints are
-    // indicated using a square bracket (`[`, `]`).
+    // For unbounded ranges, please use `(min)` and `(max) options.
     //
-    // Example: Defining ranges of numeric values.
-    //
-    //     message NumRanges {
-    //         int32 hour = 1 [(range) = "[0..24)"];
-    //         uint32 minute = 2 [(range) = "[0..59]"];
-    //         float degree = 3 [(range) = "[0.0..360.0)"];
-    //         double angle = 4 [(range) = "(0.0..180.0)"];
-    //     }
-    //
-    // NOTE: That definition of ranges must be consistent with the type they constrain.
-    //       An range for an integer field must be defined with integer endpoints.
-    //       A range for a floating point field must be defined with decimal separator (`.`),
-    //       even if the endpoint value does not have a fractional part.
-    //
-    string range = 73826;
+    RangeOption range = 73826;
 
     // Defines the error message used if a `set_once` field is set again.
     //
@@ -1163,4 +1147,46 @@ message IfHasDuplicatesOption {
     //    }
     //
     string error_msg = 1;
+}
+
+// The option to indicate that a numeric field is required to have a value which belongs
+// to the specified bounded range. For unbounded ranges, please use `(min)` and `(max) options.
+message RangeOption {
+
+    // The default error message.
+    option (default_message) = "The field `{parent.type}.{field.name}` must be within the following range: `{range.value}`.";
+
+    // The range can be open (not including the endpoint) or closed (including the endpoint) on
+    // each side. Open endpoints are indicated using a parenthesis (`(`, `)`). Closed endpoints are
+    // indicated using a square bracket (`[`, `]`).
+    //
+    // Example: Defining ranges of numeric values.
+    //
+    //     message NumRanges {
+    //         int32 hour = 1 [(range).value = "[0..24)"];
+    //         uint32 minute = 2 [(range).value = "[0..59]"];
+    //         float degree = 3 [(range).value = "[0.0..360.0)"];
+    //         double angle = 4 [(range).value = "(0.0..180.0)"];
+    //     }
+    //
+    // NOTE: That definition of ranges must be consistent with the type they constrain.
+    //       An range for an integer field must be defined with integer endpoints.
+    //       A range for a floating point field must be defined with decimal separator (`.`),
+    //       even if the endpoint value does not have a fractional part.
+    //
+    string value = 1;
+
+    // A user-defined error message.
+    //
+    // The specified message may include the following placeholders:
+    //
+    // 1. `{field.name}` – the field name.
+    // 2. `{field.value}` - the field value.
+    // 3. `{field.type}` – the fully qualified name of the field type.
+    // 4. `{parent.type}` – the fully qualified name of the field declaring type.
+    // 5. `{range.value}` – the specified range.
+    //
+    // The placeholders will be replaced at runtime when the error is constructed.
+    //
+    string error_msg = 2;
 }
