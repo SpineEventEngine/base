@@ -1133,3 +1133,34 @@ message IfSetAgainOption {
     //
     string error_msg = 1;
 }
+
+// Defines the error message used if a `distinct` field has duplicates.
+//
+// Applies only to the repeated fields marked as `distinct`.
+//
+message IfHasDuplicatesOption {
+
+    // The default error message.
+    option (default_message) = "The field `{parent.type}.{field.name}` of `{field.type}` must not contain duplicates. The found duplicates: `{field.duplicates}`.";
+
+    // A user-defined error message.
+    //
+    // The specified message may include the following placeholders:
+    //
+    // 1. `{field.name}` – the field name.
+    // 2. `{field.type}` – the fully qualified name of the field type.
+    // 3. `{field.value}` – the field value (the whole collection).
+    // 4. `{field.duplicates}` – the found duplicates (elements that occur more than once).
+    // 5. `{parent.type}` – the fully qualified name of the field declaring type.
+    //
+    // The placeholders will be replaced at runtime when the error is constructed.
+    //
+    // Example: Using the `(distinct)` option.
+    //
+    //    message Blizzard {
+    //        repeated Snowflake = 1 [(distinct) = true,
+    //                                (if_has_duplicates).error_msg = "Every snowflake must be unique! The found duplicates: `{field.duplicates}`."];
+    //    }
+    //
+    string error_msg = 1;
+}
