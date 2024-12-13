@@ -854,7 +854,7 @@ message PatternOption {
 message IfInvalidOption {
 
     // The default error message.
-    option (default_message) = "The field `{parent.type}.{field.path}` of the type `{field.type}` is invalid. The field value: `{field.value}`.";
+    option (default_message) = "The field `{parent.type}.{field.name}` of the type `{field.type}` is invalid. The field value: `{field.value}`.";
 
     // A user-defined validation error format message.
     //
@@ -866,8 +866,7 @@ message IfInvalidOption {
     //
     // The specified message may include the following placeholders:
     //
-    // 1. `{field.path}` – if the invalid field is nested, this placeholder will contain the full
-    //    path from the root message to the invalid field. Otherwise, just a field name.
+    // 1. `{field.name}` – the field name.
     // 2. `{field.value}` - the field value.
     // 3. `{field.type}` – the fully qualified name of the field type.
     // 4. `{parent.type}` – the fully qualified name of the field declaring type.
