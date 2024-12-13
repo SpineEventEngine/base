@@ -217,6 +217,12 @@ extend google.protobuf.FieldOptions {
 
     // The option to mark a `repeated` field as a collection of unique elements.
     //
+    // When this option is set to `true`, all elements in the `repeated` field must be unique.
+    // Uniqueness is determined by comparing the elements themselves, using their full equality.
+    // For example, in Java, it is defined by the `equals()` method.
+    //
+    // No special cases are applied, such as comparing only specific fields like IDs.
+    //
     // Example: Using `(distinct)` constraint for a repeated field.
     //
     //    message Blizzard {
