@@ -237,12 +237,7 @@ extend google.protobuf.FieldOptions {
     //
     bool distinct = 73825;
 
-    // The option to indicate that a numeric field is required to have a value which belongs
-    // to the specified bounded range.
-    //
-    // For unbounded ranges, please use `(min)` and `(max) options.
-    //
-    RangeOption range = 73826;
+    // Reserved 73826 for deleted `range` option, which had `string` type.
 
     // Defines the error message used if a `set_once` field is set again.
     //
@@ -256,7 +251,14 @@ extend google.protobuf.FieldOptions {
     //
     IfHasDuplicatesOption if_has_duplicates = 73828;
 
-    // Reserved 73829 to 73849 for future validation options.
+    // The option to indicate that a numeric field is required to have a value which belongs
+    // to the specified bounded range.
+    //
+    // For unbounded ranges, please use `(min)` and `(max) options.
+    //
+    RangeOption range = 73829;
+
+    // Reserved 73830 to 73849 for future validation options.
 
     // API Annotations
     //-----------------
