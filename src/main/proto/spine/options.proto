@@ -127,16 +127,24 @@ extend google.protobuf.FieldOptions {
     // See `PatternOption`.
     PatternOption pattern = 73820;
 
-    // Turns on validation constraint checking for a value of a message, a map, or a repeated field.
+    // Enables validation constraint checking for fields that refer to a message.
     //
-    // Default value is `false`.
+    // Default value: `false`.
     //
-    // If set to `true`, the outer message declaring the annotated field would be valid if:
+    // This option can only be applied to fields that refer to a message. Such fields include:
     //
-    //   1. A message field value satisfies the validation constraints defined in the corresponding
-    //      message type of the field.
-    //   2. Each value of a map entry satisfies validation constraints.
-    //   3. Each item of a repeated field satisfies validation constraints.
+    //   1. Message fields.
+    //   2. Map fields with message types as values.
+    //   3. Repeated fields of message types.
+    //
+    // When set to `true`, the marked field is considered valid only if the field's value satisfies
+    // the validation constraints defined in the corresponding message type. This means:
+    //
+    //   1. For message fields: the message value itself must meet its constraints.
+    //   2. For map fields: each value within the map entries must meet the constraints defined
+    //      for its type. Note: Protobuf does not allow messages to be used as map keys.
+    //   3. For repeated fields: every item in the repeated field must satisfy the constraints
+    //      defined for the message type it refers to.
     //
     bool validate = 73821;
 
@@ -846,8 +854,7 @@ message PatternOption {
 
 // Specifies the message to show if a validated field happens to be invalid.
 //
-// It is applicable only to message fields marked with `(validate)`.
-// Repeated fields are supported.
+// It is applicable only to fields marked with `(validate)`.
 //
 message IfInvalidOption {
 
