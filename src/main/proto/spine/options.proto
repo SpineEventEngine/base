@@ -127,18 +127,24 @@ extend google.protobuf.FieldOptions {
     // See `PatternOption`.
     PatternOption pattern = 73820;
 
-    // Turns on validation constraint checking for a value of a message, a map, or a repeated field.
+    // Enables validation constraint checking for fields that refer to a message.
     //
-    // Default value is `false`.
+    // Default value: `false`.
     //
-    // If set to `true`, the outer message declaring the annotated field would be valid if:
+    // This option can only be applied to fields that refer to a message. Such fields include:
     //
-    //   1. A message field value satisfies the validation constraints defined in the corresponding
-    //      message type of the field.
+    //   1. Message fields.
+    //   2. Map fields with message types as values.
+    //   3. Repeated fields of message types.
     //
-    //   2. Each value of a map entry satisfies validation constraints.
+    // When set to `true`, the marked field is considered valid only if the field's value satisfies
+    // the validation constraints defined in the corresponding message type. This means:
     //
-    //   3. Each item of a repeated field satisfies validation constraints.
+    //   1. For message fields: the message value itself must meet its constraints.
+    //   2. For map fields: each value within the map entries must meet the constraints defined
+    //      for its type. Note: Protobuf does not allow messages to be used as map keys.
+    //   3. For repeated fields: every item in the repeated field must satisfy the constraints
+    //      defined for the message type it refers to.
     //
     bool validate = 73821;
 
@@ -211,6 +217,12 @@ extend google.protobuf.FieldOptions {
 
     // The option to mark a `repeated` field as a collection of unique elements.
     //
+    // When this option is set to `true`, all elements in the `repeated` field must be unique.
+    // Uniqueness is determined by comparing the elements themselves, using their full equality.
+    // For example, in Java, it is defined by the `equals()` method.
+    //
+    // No special cases are applied, such as comparing only specific fields like IDs.
+    //
     // Example: Using `(distinct)` constraint for a repeated field.
     //
     //    message Blizzard {
@@ -226,29 +238,25 @@ extend google.protobuf.FieldOptions {
     bool distinct = 73825;
 
     // The option to indicate that a numeric field is required to have a value which belongs
-    // to the specified bounded range. For unbounded ranges, please use `(min)` and `(max) options.
+    // to the specified bounded range.
     //
-    // The range can be open (not including the endpoint) or closed (including the endpoint) on
-    // each side. Open endpoints are indicated using a parenthesis (`(`, `)`). Closed endpoints are
-    // indicated using a square bracket (`[`, `]`).
+    // For unbounded ranges, please use `(min)` and `(max) options.
     //
-    // Example: Defining ranges of numeric values.
-    //
-    //     message NumRanges {
-    //         int32 hour = 1 [(range) = "[0..24)"];
-    //         uint32 minute = 2 [(range) = "[0..59]"];
-    //         float degree = 3 [(range) = "[0.0..360.0)"];
-    //         double angle = 4 [(range) = "(0.0..180.0)"];
-    //     }
-    //
-    // NOTE: That definition of ranges must be consistent with the type they constrain.
-    //       An range for an integer field must be defined with integer endpoints.
-    //       A range for a floating point field must be defined with decimal separator (`.`),
-    //       even if the endpoint value does not have a fractional part.
-    //
-    string range = 73826;
+    RangeOption range = 73826;
 
-    // Reserved 73827 to 73849 for future validation options.
+    // Defines the error message used if a `set_once` field is set again.
+    //
+    // Applies only to the fields marked as `set_once`.
+    //
+    IfSetAgainOption if_set_again = 73827;
+
+    // Defines the error message used if a `distinct` field has duplicates.
+    //
+    // Applies only to the repeated fields marked as `distinct`.
+    //
+    IfHasDuplicatesOption if_has_duplicates = 73828;
+
+    // Reserved 73829 to 73849 for future validation options.
 
     // API Annotations
     //-----------------
@@ -316,13 +324,7 @@ extend google.protobuf.FieldOptions {
     //
     bool column = 73854;
 
-    // Defines the error message used if a `set_once` field is set again.
-    //
-    // Applies only to the fields marked as `set_once`.
-    //
-    IfSetAgainOption if_set_again = 73855;
-
-    // Reserved 73856 to 73890 for future options.
+    // Reserved 73855 to 73890 for future options.
 
     // Reserved 73900 for removed `by` option.
 }
@@ -630,22 +632,14 @@ extend google.protobuf.ServiceOptions {
 // Validation Option Types
 //---------------------------
 
-// Defines the error handling for `required` field with no value set.
+// Defines the error message used if a `required` field is not set.
 //
 // Applies only to the fields marked as `required`.
-// Validation error message is composed according to the rules defined by this option.
-//
-// Example: Using the `(if_missing)` option.
-//
-//    message Holder {
-//        MyMessage field = 1 [(required) = true,
-//                             (if_missing).error_msg = "This field is required."];
-//    }
 //
 message IfMissingOption {
 
     // The default error message.
-    option (default_message) = "A value must be set.";
+    option (default_message) = "The field `{parent.type}.{field.name}` of the type `{field.type}` must have a value.";
 
     // A user-defined validation error format message.
     //
@@ -654,12 +648,28 @@ message IfMissingOption {
     string msg_format = 1 [deprecated = true];
 
     // A user-defined error message.
+    //
+    // The specified message may include the following placeholders:
+    //
+    // 1. `{field.name}` – the field name.
+    // 2. `{field.type}` – the fully qualified name of the field type.
+    // 3. `{parent.type}` – the fully qualified name of the field declaring type.
+    //
+    // The placeholders will be replaced at runtime when the error is constructed.
+    //
+    // Example: Using the `(if_missing)` option.
+    //
+    //    message Student {
+    //        Name name = 1 [(required) = true,
+    //                       (if_missing).error_msg = "The `{field.name}` field is mandatory for `{parent.type}`."];
+    //    }
+    //
     string error_msg = 2;
 }
 
 // The field value must be greater than or equal to the given minimum number.
 //
-// Is applicable only to numbers.
+// Is applicable only to number fields.
 // Repeated fields are supported.
 //
 // Example: Defining lower boundary for a numeric field.
@@ -668,19 +678,14 @@ message IfMissingOption {
 //         double value = 1 [(min) = {
 //             value: "0.0",
 //             exclusive: true,
-//             error_msg: "Temperature cannot reach {other}K, but provided {value}."
+//             error_msg: "The temperature cannot reach `{min.value}K`, but provided `{field.value}`."
 //         }];
 //     }
 //
 message MinOption {
 
-    // The default error message format string.
-    //
-    // The format parameters are:
-    //   1) "or equal to " string (if the `exclusive` parameter is false) or an empty string;
-    //   2) the minimum number.
-    //
-    option (default_message) = "The number must be greater than %s%s.";
+    // The default error message.
+    option (default_message) = "The field `{parent.type}.{field.name}` must be {max.operator} {min.value}.";
 
     // The string representation of the minimum field value.
     string value = 1;
@@ -694,34 +699,39 @@ message MinOption {
     // A user-defined validation error format message.
     string msg_format = 3 [deprecated = true];
 
-    // A user-defined validation error format message.
+    // A user-defined error message.
     //
-    // May include tokens `{value}`—for the actual value of the field, and `{other}`—for
-    // the threshold value. The tokens will be replaced at runtime when the error is constructed.
+    // The specified message may include the following placeholders:
+    //
+    // 1. `{field.value}` - the field value.
+    // 2. `{field.name}` – the field name.
+    // 3. `{field.type}` – the fully qualified name of the field type.
+    // 4. `{parent.type}` – the fully qualified name of the field declaring type.
+    // 5. `{min.value}` – the specified minimum `value`.
+    // 6. `{min.operator}` – if `exclusive` is set to `true`, this placeholder equals to ">".
+    //    Otherwise, ">=".
+    //
+    // The placeholders will be replaced at runtime when the error is constructed.
     //
     string error_msg = 4;
 }
 
 // The field value must be less than or equal to the given maximum number.
 //
-// Is applicable only to numbers.
+// Is applicable only to number fields.
 // Repeated fields are supported.
 //
 // Example: Defining upper boundary for a numeric field.
 //
-//     message Elevation {
-//         double value = 1 [(max).value = "8848.86"];
+//     message TowerCrane {
+//         double load = 1 [(max).value = "4.2",
+//                          (max).error_msg = "The crane load in `{parent.type}` can not exceed `{max.value}` tons, but provided `{field.value}`."];
 //     }
 //
 message MaxOption {
 
-    // The default error message format string.
-    //
-    // The format parameters are:
-    //   1) "or equal to " string (if the `exclusive` parameter is false) or an empty string;
-    //   2) the maximum number.
-    //
-    option (default_message) = "The number must be less than %s%s.";
+    // The default error message.
+    option (default_message) = "The field `{parent.type}.{field.name}` must be {max.operator} {max.value}.";
 
     // The string representation of the maximum field value.
     string value = 1;
@@ -735,32 +745,39 @@ message MaxOption {
     // A user-defined validation error format message.
     string msg_format = 3 [deprecated = true];
 
-    // A user-defined validation error format message.
+    // A user-defined error message.
     //
-    // May include tokens `{value}`—for the actual value of the field, and `{other}`—for
-    // the threshold value. The tokens will be replaced at runtime when the error is constructed.
+    // The specified message may include the following placeholders:
+    //
+    // 1. `{field.name}` – the field name.
+    // 2. `{field.value}` - the field value.
+    // 3. `{field.type}` – the fully qualified name of the field type.
+    // 4. `{parent.type}` – the fully qualified name of the field declaring type.
+    // 5. `{max.value}` – the specified maximum `value`.
+    // 6. `{max.operator}` – if `exclusive` is set to `true`, this placeholder equals to "<".
+    //    Otherwise, "<=".
+    //
+    // The placeholders will be replaced at runtime when the error is constructed.
     //
     string error_msg = 4;
 }
 
 // A string field value must match the given regular expression.
-// Is applicable only to strings.
+//
+// Is applicable only to string fields.
 // Repeated fields are supported.
 //
 // Example: Using the `(pattern)` option.
 //
 //     message CreateAccount {
 //         string id = 1 [(pattern).regex = "^[A-Za-z0-9+]+$",
-//                        (pattern).error_msg = "ID must be alphanumerical. Provided: `{value}`."];
+//                        (pattern).error_msg = "ID must be alphanumerical in `{parent.type}`. Provided: `{field.value}`."];
 //     }
 //
 message PatternOption {
 
-    // The default error message format string.
-    //
-    // The format parameter is the regular expression to which the value must match.
-    //
-    option (default_message) = "The string must match the regular expression `%s`.";
+    // The default error message.
+    option (default_message) = "The `{parent.type}.{field.name}` field must match the regular expression `{regex.pattern}` (modifiers: `{regex.modifiers}`). The passed value: `{field.value}`.";
 
     // The regular expression to match.
     string regex = 1;
@@ -776,8 +793,16 @@ message PatternOption {
 
     // A user-defined validation error format message.
     //
-    // May include tokens `{value}`—for the actual value of the field, and `{other}`—for
-    // the threshold value. The tokens will be replaced at runtime when the error is constructed.
+    // The specified message may include the following placeholders:
+    //
+    // 1. `{field.name}` – the field name.
+    // 2. `{field.value}` - the field value.
+    // 3. `{field.type}` – the fully qualified name of the field type.
+    // 4. `{parent.type}` – the fully qualified name of the field declaring type.
+    // 5. `{regex.pattern}` – the specified regex pattern.
+    // 6. `{regex.modifiers}` – the specified modifiers, if any. For example, `[dot_all, unicode]`.
+    //
+    // The placeholders will be replaced at runtime when the error is constructed.
     //
     string error_msg = 5;
 
@@ -834,28 +859,37 @@ message PatternOption {
 }
 
 // Specifies the message to show if a validated field happens to be invalid.
-// Is applicable only to messages.
-// Repeated fields are supported.
 //
-// Example: Using the `(if_invalid)` option.
-//
-//     message Holder {
-//         MyMessage field = 1 [(validate) = true,
-//                              (if_invalid).error_msg = "The field is invalid."];
-//    }
+// It is applicable only to fields marked with `(validate)`.
 //
 message IfInvalidOption {
 
-    // The default error message for the field.
-    option (default_message) = "The message must have valid properties.";
-
-    // A user-defined validation error format message.
-    string msg_format = 1 [deprecated = true];
+    // The default error message.
+    option (default_message) = "The field `{parent.type}.{field.name}` of the type `{field.type}` is invalid. The field value: `{field.value}`.";
 
     // A user-defined validation error format message.
     //
-    // May include the token `{value}` for the actual value of the field.
-    // The token will be replaced at runtime when the error is constructed.
+    // Use `error_msg` instead.
+    //
+    string msg_format = 1 [deprecated = true];
+
+    // A user-defined error message.
+    //
+    // The specified message may include the following placeholders:
+    //
+    // 1. `{field.name}` – the field name.
+    // 2. `{field.value}` - the field value.
+    // 3. `{field.type}` – the fully qualified name of the field type.
+    // 4. `{parent.type}` – the fully qualified name of the field declaring type.
+    //
+    // The placeholders will be replaced at runtime when the error is constructed.
+    //
+    // Example: Using the `(if_invalid)` option.
+    //
+    //     message Transaction {
+    //         TransactionDetails details = 1 [(validate) = true,
+    //                                         (if_invalid).error_msg = "The `{field.name}` field is invalid."];
+    //    }
     //
     string error_msg = 2;
 }
@@ -883,9 +917,8 @@ message IfInvalidOption {
 //
 message GoesOption {
 
-    // The default error message used when the companion field specified in `with` is not present
-    // alongside the target field.
-    option (default_message) = "The field `{fieldName}` can only be set when `{companionName}` field is defined.";
+    // The default error message.
+    option (default_message) = "The field `{goes.companion}` must also be set when `{field.name}` is set in `{parent.type}`.";
 
     // The name of the companion field whose presence is required for this field to be valid.
     string with = 1;
@@ -896,10 +929,14 @@ message GoesOption {
     // A user-defined error message.
     //
     // The specified message may include the following placeholders:
-    // 1. `{fieldName}` – the name of the field to which this option is applied.
-    // 2. `{companionName}` – the name of the companion field specified in `with`.
     //
-    // The tokens will be replaced at runtime when the error is constructed.
+    // 1. `{field.name}` – the field name.
+    // 2. `{field.value}` – the field value.
+    // 3. `{field.type}` – the fully qualified name of the field type.
+    // 4. `{parent.type}` – the fully qualified name of the field declaring type.
+    // 5. `{goes.companion}` – the name of the companion specified in `with`.
+    //
+    // The placeholders will be replaced at runtime when the error is constructed.
     //
     string error_msg = 3;
 }
@@ -1072,15 +1109,18 @@ message CompareByOption {
 //
 message IfSetAgainOption {
 
-    // The default error message used when the field value is re-assigned.
-    option (default_message) = "The field `{fieldName}` already has the value `{currentValue}` and cannot be reassigned to `{proposedValue}`.";
+    // The default error message.
+    option (default_message) = "The field `{parent.type}.{field.name}` of the type `{field.type}` already has the value `{field.value}` and cannot be reassigned to `{field.proposed_value}`.";
 
     // A user-defined error message.
     //
     // The specified message may include the following placeholders:
-    // 1. `{fieldName}` — the field name.
-    // 2. `{currentValue}` — the current field value.
-    // 3. `{proposedValue}` — the value that was attempted to be set.
+    //
+    // 1. `{field.name}` – the field name.
+    // 2. `{field.type}` – the fully qualified name of the field type.
+    // 3. `{field.value}` – the current field value.
+    // 4. `{field.proposed_value}` – the value, which was attempted to be set.
+    // 5. `{parent.type}` – the fully qualified name of the field declaring type.
     //
     // The placeholders will be replaced at runtime when the error is constructed.
     //
@@ -1092,4 +1132,82 @@ message IfSetAgainOption {
     //     }
     //
     string error_msg = 1;
+}
+
+// Defines the error message used if a `distinct` field has duplicates.
+//
+// Applies only to the repeated fields marked as `distinct`.
+//
+message IfHasDuplicatesOption {
+
+    // The default error message.
+    option (default_message) = "The field `{parent.type}.{field.name}` of the type `{field.type}` must not contain duplicates. The duplicates found: `{field.duplicates}`.";
+
+    // A user-defined error message.
+    //
+    // The specified message may include the following placeholders:
+    //
+    // 1. `{field.name}` – the field name.
+    // 2. `{field.type}` – the fully qualified name of the field type.
+    // 3. `{field.value}` – the field value (the whole collection).
+    // 4. `{field.duplicates}` – the duplicates found (elements that occur more than once).
+    // 5. `{parent.type}` – the fully qualified name of the field declaring type.
+    //
+    // The placeholders will be replaced at runtime when the error is constructed.
+    //
+    // Example: Using the `(distinct)` option.
+    //
+    //    message Blizzard {
+    //        repeated Snowflake = 1 [(distinct) = true,
+    //                                (if_has_duplicates).error_msg = "Every snowflake must be unique! The duplicates found: `{field.duplicates}`."];
+    //    }
+    //
+    string error_msg = 1;
+}
+
+// The option to indicate that a numeric field is required to have a value which belongs
+// to the specified bounded range.
+//
+// For unbounded ranges, please use `(min)` and `(max) options.
+//
+message RangeOption {
+
+    // The default error message.
+    option (default_message) = "The field `{parent.type}.{field.name}` must be within the following range: `{range.value}`.";
+
+    // The string representation of the range.
+    //
+    // The range can be open (not including the endpoint) or closed (including the endpoint) on
+    // each side. Open endpoints are indicated using a parenthesis (`(`, `)`). Closed endpoints are
+    // indicated using a square bracket (`[`, `]`).
+    //
+    // Example: Defining ranges of numeric values.
+    //
+    //     message NumRanges {
+    //         int32 hour = 1 [(range).value = "[0..24)"];
+    //         uint32 minute = 2 [(range).value = "[0..59]"];
+    //         float degree = 3 [(range).value = "[0.0..360.0)"];
+    //         double angle = 4 [(range).value = "(0.0..180.0)"];
+    //     }
+    //
+    // NOTE: That definition of ranges must be consistent with the type they describe.
+    //       An range for an integer field must be defined with integer endpoints.
+    //       A range for a floating point field must be defined with decimal separator (`.`),
+    //       even if the endpoint value does not have a fractional part.
+    //
+    string value = 1;
+
+    // A user-defined error message.
+    //
+    // The specified message may include the following placeholders:
+    //
+    // 1. `{field.name}` – the field name.
+    // 2. `{field.value}` - the field value.
+    // 3. `{field.type}` – the fully qualified name of the field type.
+    // 4. `{parent.type}` – the fully qualified name of the field declaring type.
+    // 5. `{range.value}` – the specified range.
+    //
+    // The placeholders will be replaced at runtime when the error is constructed.
+    //
+    string error_msg = 2;
 }
