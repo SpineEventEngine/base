@@ -135,9 +135,7 @@ extend google.protobuf.FieldOptions {
     //
     //   1. A message field value satisfies the validation constraints defined in the corresponding
     //      message type of the field.
-    //
     //   2. Each value of a map entry satisfies validation constraints.
-    //
     //   3. Each item of a repeated field satisfies validation constraints.
     //
     bool validate = 73821;
@@ -1130,7 +1128,7 @@ message IfSetAgainOption {
 message IfHasDuplicatesOption {
 
     // The default error message.
-    option (default_message) = "The field `{parent.type}.{field.name}` of the type `{field.type}` must not contain duplicates. The found duplicates: `{field.duplicates}`.";
+    option (default_message) = "The field `{parent.type}.{field.name}` of the type `{field.type}` must not contain duplicates. The duplicates found: `{field.duplicates}`.";
 
     // A user-defined error message.
     //
@@ -1139,7 +1137,7 @@ message IfHasDuplicatesOption {
     // 1. `{field.name}` – the field name.
     // 2. `{field.type}` – the fully qualified name of the field type.
     // 3. `{field.value}` – the field value (the whole collection).
-    // 4. `{field.duplicates}` – the found duplicates (elements that occur more than once).
+    // 4. `{field.duplicates}` – the duplicates found (elements that occur more than once).
     // 5. `{parent.type}` – the fully qualified name of the field declaring type.
     //
     // The placeholders will be replaced at runtime when the error is constructed.
@@ -1148,7 +1146,7 @@ message IfHasDuplicatesOption {
     //
     //    message Blizzard {
     //        repeated Snowflake = 1 [(distinct) = true,
-    //                                (if_has_duplicates).error_msg = "Every snowflake must be unique! The found duplicates: `{field.duplicates}`."];
+    //                                (if_has_duplicates).error_msg = "Every snowflake must be unique! The duplicates found: `{field.duplicates}`."];
     //    }
     //
     string error_msg = 1;
@@ -1179,7 +1177,7 @@ message RangeOption {
     //         double angle = 4 [(range).value = "(0.0..180.0)"];
     //     }
     //
-    // NOTE: That definition of ranges must be consistent with the type they constrain.
+    // NOTE: That definition of ranges must be consistent with the type they describe.
     //       An range for an integer field must be defined with integer endpoints.
     //       A range for a floating point field must be defined with decimal separator (`.`),
     //       even if the endpoint value does not have a fractional part.
