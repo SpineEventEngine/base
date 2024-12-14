@@ -25,6 +25,7 @@
  */
 
 import BuildSettings.javaVersion
+import Jvm_module_gradle.Module
 import io.spine.dependency.build.CheckerFramework
 import io.spine.dependency.build.Dokka
 import io.spine.dependency.build.ErrorProne
@@ -32,7 +33,8 @@ import io.spine.dependency.lib.Guava
 import io.spine.dependency.lib.JavaX
 import io.spine.dependency.lib.Protobuf
 import io.spine.dependency.local.Logging
-import io.spine.dependency.local.Spine
+import io.spine.dependency.local.Reflect
+import io.spine.dependency.local.TestLib
 import io.spine.dependency.test.JUnit
 import io.spine.dependency.test.Jacoco
 import io.spine.dependency.test.Kotest
@@ -144,7 +146,7 @@ fun Module.addDependencies() = dependencies {
     testImplementation(JUnit.pioneer)
     JUnit.api.forEach { testImplementation(it) }
 
-    testImplementation(Spine.testlib)
+    testImplementation(TestLib.lib)
     testImplementation(Kotest.frameworkEngine)
     testImplementation(Kotest.datatest)
     testImplementation(Kotest.runnerJUnit5Jvm)
@@ -161,7 +163,7 @@ fun Module.forceConfigurations() {
                     JUnit.bom,
                     JUnit.runner,
                     Dokka.BasePlugin.lib,
-                    Spine.reflect
+                    Reflect.lib,
                 )
             }
         }
