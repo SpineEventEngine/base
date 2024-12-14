@@ -24,4 +24,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.232")
+package io.spine.base;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@DisplayName("`Mistake` Java API should")
+class MistakeJavaSpec {
+
+    @Test
+    @DisplayName("not require `throws` clause in a method")
+    void noThrowsClause() {
+        assertThrows(JMistake.class, MistakeJavaSpec::throwsMistake);
+    }
+
+    private static void throwsMistake() {
+        throw new JMistake();
+    }
+
+    @SuppressWarnings("ExceptionClassNameDoesntEndWithException")
+    private static class JMistake extends Mistake {
+
+        private static final long serialVersionUID = 0L;
+    }
+}

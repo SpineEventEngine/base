@@ -24,4 +24,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.232")
+package io.spine.dependency.local
+
+/**
+ * Spine Reflect library.
+ *
+ * @see <a href="https://github.com/SpineEventEngine/text">spine-text</a>
+ */
+@Suppress("ConstPropertyName")
+object Text {
+    const val version = "2.0.0-SNAPSHOT.6"
+    const val group = Spine.group
+    const val artifact = "spine-text"
+    const val lib = "$group:$artifact:$version"
+}

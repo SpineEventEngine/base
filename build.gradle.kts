@@ -31,7 +31,8 @@ import io.spine.dependency.lib.AutoServiceKsp
 import io.spine.dependency.lib.Kotlin
 import io.spine.dependency.lib.Protobuf
 import io.spine.dependency.local.Logging
-import io.spine.dependency.local.Spine
+import io.spine.dependency.local.Reflect
+import io.spine.dependency.local.TestLib
 import io.spine.gradle.publish.IncrementGuard
 import io.spine.gradle.publish.PublishingRepos
 import io.spine.gradle.publish.excludeGoogleProtoFromArtifacts
@@ -80,7 +81,7 @@ dependencies {
     ksp(AutoServiceKsp.processor)
 
     implementation(Logging.lib)
-    implementation(Spine.reflect)
+    implementation(Reflect.lib)
     implementation(Kotlin.reflect)
 
     /* Have `protobuf` dependency instead of `api` or `implementation` so that proto
@@ -92,13 +93,13 @@ dependencies {
     */
     protobuf(Protobuf.protoSrcLib)
 
-    testImplementation(Spine.testlib)
+    testImplementation(TestLib.lib)
     testImplementation(Logging.smokeTest)
 }
 
 configurations.all {
     resolutionStrategy {
-        force(Spine.reflect)
+        force(Reflect.lib)
         force(Logging.lib)
         force(Logging.libJvm)
     }

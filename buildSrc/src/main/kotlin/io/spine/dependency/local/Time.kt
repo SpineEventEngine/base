@@ -24,4 +24,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.232")
+package io.spine.dependency.local
+
+/**
+ * Spine Time library.
+ *
+ * @see <a href="https://github.com/SpineEventEngine/time">spine-time</a>
+ */
+@Suppress("ConstPropertyName")
+object Time {
+    const val version = "2.0.0-SNAPSHOT.135"
+    const val group = Spine.group
+    const val artifact = "spine-time"
+    const val lib = "$group:$artifact:$version"
+
+    //TODO:2024-11-29:alexander.yevsyukov: Change the artifact name to `spine-time-testlib`.
+    const val testLib = "${Spine.toolsGroup}:spine-testutil-time:$version"
+}

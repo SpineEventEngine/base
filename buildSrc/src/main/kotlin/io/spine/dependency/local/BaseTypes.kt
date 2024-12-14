@@ -24,4 +24,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.232")
+package io.spine.dependency.local
+
+/**
+ * Spine Base module.
+ *
+ * @see <a href="https://github.com/SpineEventEngine/base-types">spine-base-types</a>
+ */
+@Suppress("ConstPropertyName")
+object BaseTypes {
+    const val version = "2.0.0-SNAPSHOT.126"
+    const val group = Spine.group
+    const val artifact = "spine-base-types"
+    const val lib = "$group:$artifact:$version"
+}

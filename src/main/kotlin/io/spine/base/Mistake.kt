@@ -24,4 +24,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.232")
+package io.spine.base
+
+/**
+ * A special kind of [RuntimeException] that represents an error, such as a programming or
+ * a system configuration error made by a human or a software agent.
+ *
+ * Unlike [java.lang.Error], descendants of this class are meant to be caught.
+ * Also, mistakes are going to be treated differently than other exceptions in
+ * terms of catching, propagating, or logging.
+ *
+ * @param message The human-readable text with the details on the problem.
+ * @param cause The cause of this mistake.
+ */
+public abstract class Mistake(message: String?, cause: Throwable?) :
+    RuntimeException(message, cause) {
+
+    /**
+     * Creates an instance with an optional message.
+     */
+    public constructor(message: String?) : this(message, null)
+
+    /**
+     * Creates an instance with an optional cause.
+     *
+     * If the cause is provided its string form serves as a message.
+     */
+    public constructor(cause: Throwable?) : this(cause?.toString(), cause)
+
+    /**
+     * Creates an instance without a message or a cause.
+     */
+    public constructor() : this(null, null)
+
+    public companion object {
+        private const val serialVersionUID: Long = 0L
+    }
+}
