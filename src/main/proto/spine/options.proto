@@ -348,18 +348,27 @@ extend google.protobuf.MessageOptions {
     // Validation Constraints
     //------------------------
 
-    // The default format string for validation error message text.
+    // The default validation error message.
     //
-    // This option extends message types that extend `FieldOptions`
-    // The number of parameters and their types are determined by the type of field options.
+    // Please note, this option is intended for INTERNAL USE only. It applies to message types
+    // that extend `FieldOptions` and is not intended for external usage.
     //
-    // Usage of this value is deprecated. Along with the old `msg_format`s, it exists to support
-    // the old version of the Validation library.
-    // The new version of the Validation library, which does not lie in the `base` repository,
-    // constructs the default error messages separately when creating language-agnostic
-    // validation rules.
+    // If a validation option detects a constraint violation and no custom error message is defined
+    // for that specific option, it will fall back to the message specified by `(default_message)`.
     //
-    string default_message = 73901 [deprecated = true];
+    // For example, here is how to declare the default message for `(goes)` option:
+    //
+    // ```
+    // message GoesOption {
+    //   // The default error message.
+    //   option (default_message) = "The field `{goes.companion}` must also be set when `{field.name}` is set.";
+    // }
+    // ```
+    //
+    // Note: The placeholders available within `(default_message)` depend solely on the particular
+    // validation option that uses it. Each option may define its own set of placeholders, or none.
+    //
+    string default_message = 73901 [(internal) = true];
 
     // The constraint to require at least one of the fields or a combination of fields.
     //
