@@ -361,7 +361,7 @@ extend google.protobuf.MessageOptions {
     // ```
     // message GoesOption {
     //   // The default error message.
-    //   option (default_message) = "The field `${goes.companion}` must also be set when `${field.name}` is set.";
+    //   option (default_message) = "The field `${goes.companion}` must also be set when `${field.path}` is set.";
     // }
     // ```
     //
@@ -372,7 +372,7 @@ extend google.protobuf.MessageOptions {
 
     // The constraint to require at least one of the fields or a combination of fields.
     //
-    // Unlike the `required` field constraint which always require corresponding field,
+    // Unlike the `required` field constraint which always requires corresponding field,
     // this message option allows to require alternative fields or a combination of them as
     // an alternative. Field names and `oneof` group names are acceptable.
     //
@@ -650,7 +650,7 @@ extend google.protobuf.ServiceOptions {
 message IfMissingOption {
 
     // The default error message.
-    option (default_message) = "The field `${parent.type}.${field.name}` of the type `${field.type}` must have a value.";
+    option (default_message) = "The field `${parent.type}.${field.path}` of the type `${field.type}` must have a value.";
 
     // A user-defined validation error format message.
     //
@@ -662,7 +662,7 @@ message IfMissingOption {
     //
     // The specified message may include the following placeholders:
     //
-    // 1. `${field.name}` – the field name.
+    // 1. `${field.path}` – the field path.
     // 2. `${field.type}` – the fully qualified name of the field type.
     // 3. `${parent.type}` – the fully qualified name of the field declaring type.
     //
@@ -672,7 +672,7 @@ message IfMissingOption {
     //
     //    message Student {
     //        Name name = 1 [(required) = true,
-    //                       (if_missing).error_msg = "The `${field.name}` field is mandatory for `${parent.type}`."];
+    //                       (if_missing).error_msg = "The `${field.path}` field is mandatory for `${parent.type}`."];
     //    }
     //
     string error_msg = 2;
@@ -696,7 +696,7 @@ message IfMissingOption {
 message MinOption {
 
     // The default error message.
-    option (default_message) = "The field `${parent.type}.${field.name}` must be ${max.operator} ${min.value}.";
+    option (default_message) = "The field `${parent.type}.${field.path}` must be ${max.operator} ${min.value}.";
 
     // The string representation of the minimum field value.
     string value = 1;
@@ -715,7 +715,7 @@ message MinOption {
     // The specified message may include the following placeholders:
     //
     // 1. `${field.value}` - the field value.
-    // 2. `${field.name}` – the field name.
+    // 2. `${field.path}` – the field path.
     // 3. `${field.type}` – the fully qualified name of the field type.
     // 4. `${parent.type}` – the fully qualified name of the field declaring type.
     // 5. `${min.value}` – the specified minimum `value`.
@@ -742,7 +742,7 @@ message MinOption {
 message MaxOption {
 
     // The default error message.
-    option (default_message) = "The field `${parent.type}.${field.name}` must be ${max.operator} ${max.value}.";
+    option (default_message) = "The field `${parent.type}.${field.path}` must be ${max.operator} ${max.value}.";
 
     // The string representation of the maximum field value.
     string value = 1;
@@ -760,7 +760,7 @@ message MaxOption {
     //
     // The specified message may include the following placeholders:
     //
-    // 1. `${field.name}` – the field name.
+    // 1. `${field.path}` – the field path.
     // 2. `${field.value}` - the field value.
     // 3. `${field.type}` – the fully qualified name of the field type.
     // 4. `${parent.type}` – the fully qualified name of the field declaring type.
@@ -788,7 +788,7 @@ message MaxOption {
 message PatternOption {
 
     // The default error message.
-    option (default_message) = "The `${parent.type}.${field.name}` field must match the regular expression `${regex.pattern}` (modifiers: `${regex.modifiers}`). The passed value: `${field.value}`.";
+    option (default_message) = "The `${parent.type}.${field.path}` field must match the regular expression `${regex.pattern}` (modifiers: `${regex.modifiers}`). The passed value: `${field.value}`.";
 
     // The regular expression to match.
     string regex = 1;
@@ -806,7 +806,7 @@ message PatternOption {
     //
     // The specified message may include the following placeholders:
     //
-    // 1. `${field.name}` – the field name.
+    // 1. `${field.path}` – the field path.
     // 2. `${field.value}` - the field value.
     // 3. `${field.type}` – the fully qualified name of the field type.
     // 4. `${parent.type}` – the fully qualified name of the field declaring type.
@@ -876,7 +876,7 @@ message PatternOption {
 message IfInvalidOption {
 
     // The default error message.
-    option (default_message) = "The field `${parent.type}.${field.name}` of the type `${field.type}` is invalid. The field value: `${field.value}`.";
+    option (default_message) = "The field `${parent.type}.${field.path}` of the type `${field.type}` is invalid. The field value: `${field.value}`.";
 
     // A user-defined validation error format message.
     //
@@ -888,7 +888,7 @@ message IfInvalidOption {
     //
     // The specified message may include the following placeholders:
     //
-    // 1. `${field.name}` – the field name.
+    // 1. `${field.path}` – the field path.
     // 2. `${field.value}` - the field value.
     // 3. `${field.type}` – the fully qualified name of the field type.
     // 4. `${parent.type}` – the fully qualified name of the field declaring type.
@@ -899,7 +899,7 @@ message IfInvalidOption {
     //
     //     message Transaction {
     //         TransactionDetails details = 1 [(validate) = true,
-    //                                         (if_invalid).error_msg = "The `${field.name}` field is invalid."];
+    //                                         (if_invalid).error_msg = "The `${field.path}` field is invalid."];
     //    }
     //
     string error_msg = 2;
@@ -929,7 +929,7 @@ message IfInvalidOption {
 message GoesOption {
 
     // The default error message.
-    option (default_message) = "The field `${goes.companion}` must also be set when `${field.name}` is set in `${parent.type}`.";
+    option (default_message) = "The field `${goes.companion}` must also be set when `${field.path}` is set in `${parent.type}`.";
 
     // The name of the companion field whose presence is required for this field to be valid.
     string with = 1;
@@ -941,7 +941,7 @@ message GoesOption {
     //
     // The specified message may include the following placeholders:
     //
-    // 1. `${field.name}` – the field name.
+    // 1. `${field.path}` – the field path.
     // 2. `${field.value}` – the field value.
     // 3. `${field.type}` – the fully qualified name of the field type.
     // 4. `${parent.type}` – the fully qualified name of the field declaring type.
@@ -1121,13 +1121,13 @@ message CompareByOption {
 message IfSetAgainOption {
 
     // The default error message.
-    option (default_message) = "The field `${parent.type}.${field.name}` of the type `${field.type}` already has the value `${field.value}` and cannot be reassigned to `${field.proposed_value}`.";
+    option (default_message) = "The field `${parent.type}.${field.path}` of the type `${field.type}` already has the value `${field.value}` and cannot be reassigned to `${field.proposed_value}`.";
 
     // A user-defined error message.
     //
     // The specified message may include the following placeholders:
     //
-    // 1. `${field.name}` – the field name.
+    // 1. `${field.path}` – the field path.
     // 2. `${field.type}` – the fully qualified name of the field type.
     // 3. `${field.value}` – the current field value.
     // 4. `${field.proposed_value}` – the value, which was attempted to be set.
@@ -1152,13 +1152,13 @@ message IfSetAgainOption {
 message IfHasDuplicatesOption {
 
     // The default error message.
-    option (default_message) = "The field `${parent.type}.${field.name}` of the type `${field.type}` must not contain duplicates. The duplicates found: `${field.duplicates}`.";
+    option (default_message) = "The field `${parent.type}.${field.path}` of the type `${field.type}` must not contain duplicates. The duplicates found: `${field.duplicates}`.";
 
     // A user-defined error message.
     //
     // The specified message may include the following placeholders:
     //
-    // 1. `${field.name}` – the field name.
+    // 1. `${field.path}` – the field path.
     // 2. `${field.type}` – the fully qualified name of the field type.
     // 3. `${field.value}` – the field value (the whole collection).
     // 4. `${field.duplicates}` – the duplicates found (elements that occur more than once).
@@ -1184,7 +1184,7 @@ message IfHasDuplicatesOption {
 message RangeOption {
 
     // The default error message.
-    option (default_message) = "The field `${parent.type}.${field.name}` must be within the following range: `${range.value}`.";
+    option (default_message) = "The field `${parent.type}.${field.path}` must be within the following range: `${range.value}`.";
 
     // The string representation of the range.
     //
@@ -1212,7 +1212,7 @@ message RangeOption {
     //
     // The specified message may include the following placeholders:
     //
-    // 1. `${field.name}` – the field name.
+    // 1. `${field.path}` – the field path.
     // 2. `${field.value}` - the field value.
     // 3. `${field.type}` – the fully qualified name of the field type.
     // 4. `${parent.type}` – the fully qualified name of the field declaring type.
