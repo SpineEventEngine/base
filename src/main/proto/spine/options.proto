@@ -148,8 +148,7 @@ extend google.protobuf.FieldOptions {
     //
     bool validate = 73821;
 
-    // See `IfInvalidOption`.
-    IfInvalidOption if_invalid = 73822;
+    // Reserved 73822 for deleted `(if_invalid)` option.
 
     // See `GoesOption`.
     GoesOption goes = 73823;
@@ -867,42 +866,6 @@ message PatternOption {
         //
         bool partial_match = 5;
     }
-}
-
-// Specifies the message to show if a validated field happens to be invalid.
-//
-// It is applicable only to fields marked with `(validate)`.
-//
-message IfInvalidOption {
-
-    // The default error message.
-    option (default_message) = "The field `${parent.type}.${field.path}` of the type `${field.type}` is invalid. The field value: `${field.value}`.";
-
-    // A user-defined validation error format message.
-    //
-    // Use `error_msg` instead.
-    //
-    string msg_format = 1 [deprecated = true];
-
-    // A user-defined error message.
-    //
-    // The specified message may include the following placeholders:
-    //
-    // 1. `${field.path}` – the field path.
-    // 2. `${field.value}` - the field value.
-    // 3. `${field.type}` – the fully qualified name of the field type.
-    // 4. `${parent.type}` – the fully qualified name of the field declaring type.
-    //
-    // The placeholders will be replaced at runtime when the error is constructed.
-    //
-    // Example: Using the `(if_invalid)` option.
-    //
-    //     message Transaction {
-    //         TransactionDetails details = 1 [(validate) = true,
-    //                                         (if_invalid).error_msg = "The `${field.path}` field is invalid."];
-    //    }
-    //
-    string error_msg = 2;
 }
 
 // Specifies that another field must be present if the option's target field is present.
