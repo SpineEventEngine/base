@@ -663,7 +663,7 @@ message IfMissingOption {
     //
     // 1. `${field.path}` – the field path.
     // 2. `${field.type}` – the fully qualified name of the field type.
-    // 3. `${parent.type}` – the fully qualified name of the field declaring type.
+    // 3. `${parent.type}` – the fully qualified name of the validated message.
     //
     // The placeholders will be replaced at runtime when the error is constructed.
     //
@@ -716,7 +716,7 @@ message MinOption {
     // 1. `${field.value}` - the field value.
     // 2. `${field.path}` – the field path.
     // 3. `${field.type}` – the fully qualified name of the field type.
-    // 4. `${parent.type}` – the fully qualified name of the field declaring type.
+    // 4. `${parent.type}` – the fully qualified name of the validated message.
     // 5. `${min.value}` – the specified minimum `value`.
     // 6. `${min.operator}` – if `exclusive` is set to `true`, this placeholder equals to ">".
     //    Otherwise, ">=".
@@ -762,7 +762,7 @@ message MaxOption {
     // 1. `${field.path}` – the field path.
     // 2. `${field.value}` - the field value.
     // 3. `${field.type}` – the fully qualified name of the field type.
-    // 4. `${parent.type}` – the fully qualified name of the field declaring type.
+    // 4. `${parent.type}` – the fully qualified name of the validated message.
     // 5. `${max.value}` – the specified maximum `value`.
     // 6. `${max.operator}` – if `exclusive` is set to `true`, this placeholder equals to "<".
     //    Otherwise, "<=".
@@ -808,7 +808,7 @@ message PatternOption {
     // 1. `${field.path}` – the field path.
     // 2. `${field.value}` - the field value.
     // 3. `${field.type}` – the fully qualified name of the field type.
-    // 4. `${parent.type}` – the fully qualified name of the field declaring type.
+    // 4. `${parent.type}` – the fully qualified name of the validated message.
     // 5. `${regex.pattern}` – the specified regex pattern.
     // 6. `${regex.modifiers}` – the specified modifiers, if any. For example, `[dot_all, unicode]`.
     //
@@ -907,7 +907,7 @@ message GoesOption {
     // 1. `${field.path}` – the field path.
     // 2. `${field.value}` – the field value.
     // 3. `${field.type}` – the fully qualified name of the field type.
-    // 4. `${parent.type}` – the fully qualified name of the field declaring type.
+    // 4. `${parent.type}` – the fully qualified name of the validated message.
     // 5. `${goes.companion}` – the name of the companion specified in `with`.
     //
     // The placeholders will be replaced at runtime when the error is constructed.
@@ -1094,7 +1094,7 @@ message IfSetAgainOption {
     // 2. `${field.type}` – the fully qualified name of the field type.
     // 3. `${field.value}` – the current field value.
     // 4. `${field.proposed_value}` – the value, which was attempted to be set.
-    // 5. `${parent.type}` – the fully qualified name of the field declaring type.
+    // 5. `${parent.type}` – the fully qualified name of the validated message.
     //
     // The placeholders will be replaced at runtime when the error is constructed.
     //
@@ -1125,7 +1125,7 @@ message IfHasDuplicatesOption {
     // 2. `${field.type}` – the fully qualified name of the field type.
     // 3. `${field.value}` – the field value (the whole collection).
     // 4. `${field.duplicates}` – the duplicates found (elements that occur more than once).
-    // 5. `${parent.type}` – the fully qualified name of the field declaring type.
+    // 5. `${parent.type}` – the fully qualified name of the validated message.
     //
     // The placeholders will be replaced at runtime when the error is constructed.
     //
@@ -1178,7 +1178,7 @@ message RangeOption {
     // 1. `${field.path}` – the field path.
     // 2. `${field.value}` - the field value.
     // 3. `${field.type}` – the fully qualified name of the field type.
-    // 4. `${parent.type}` – the fully qualified name of the field declaring type.
+    // 4. `${parent.type}` – the fully qualified name of the validated message.
     // 5. `${range.value}` – the specified range.
     //
     // The placeholders will be replaced at runtime when the error is constructed.
