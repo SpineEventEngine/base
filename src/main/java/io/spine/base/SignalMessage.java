@@ -33,6 +33,5 @@ import io.spine.annotation.GeneratedMixin;
  * A message of a signal, such as an event or a command.
  */
 @Immutable
-@GeneratedMixin
 public interface SignalMessage extends Routable {
 }
