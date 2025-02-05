@@ -34,7 +34,7 @@ import javax.annotation.concurrent.Immutable;
  * A message which can be dispatched to one or more entities.
  *
  * <p>The IDs of destination entities are determined by the content of a message
- * implementing this interface and by the {@linkplain MessageContext context of the message},
+ * implementing this interface and by the context of the message,
  * which may be optionally passed to a routing function.
  *
  * @see MessageContext
