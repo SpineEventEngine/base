@@ -650,7 +650,7 @@ extend google.protobuf.ServiceOptions {
 message IfMissingOption {
 
     // The default error message.
-    option (default_message) = "The field `${parent.type}.${field.path}` of the type `${field.type}` must have a value.";
+    option (default_message) = "The field `${parent.type}.${field.path}` of the type `${field.type}` must have a non-default value.";
 
     // A user-defined validation error format message.
     //
