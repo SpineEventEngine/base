@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -27,8 +27,6 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.annotation.GeneratedMixin;
-import io.spine.type.KnownMessage;
 
 /**
  * A common interface for entity state messages.
@@ -41,7 +39,7 @@ import io.spine.type.KnownMessage;
  *
  * <ol>
  *     <li>The definition of an entity state always starts with its ID with no extra Protobuf
- *     options. This way it's feels easy and more natural to read the code.
+ *     options. This way it feels easier and more natural to read the code.
 
  *     <li>Developers don't forget to specify which of the fields declared in Protobuf corresponds
  *     to the entity ID.
@@ -54,7 +52,6 @@ import io.spine.type.KnownMessage;
  *         the type of entity identifiers
  */
 @Immutable
-@GeneratedMixin
 @SuppressWarnings("unused") /* The parameter type <I> is meant to be used in the generated code. */
-public interface EntityState<I> extends KnownMessage {
+public interface EntityState<I> extends Routable {
 }
