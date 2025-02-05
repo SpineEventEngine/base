@@ -31,7 +31,7 @@ import io.spine.type.KnownMessage;
 
 /**
  * The base interface for messages that provide additional information common
- * for {@link Routable} messages.
+ * for a certain type of messages.
  */
 @Immutable
 public interface MessageContext extends KnownMessage {
