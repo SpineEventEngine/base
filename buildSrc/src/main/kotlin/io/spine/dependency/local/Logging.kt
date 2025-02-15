@@ -1,5 +1,5 @@
 /*
- * Copyright 2024, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ object Logging {
     // Transitive dependencies.
     // Make `public` and use them to force a version in a particular repository, if needed.
     internal const val julBackend = "$group:spine-logging-jul-backend:$version"
-    internal const val middleware = "$group:spine-logging-middleware:$version"
+    const val middleware = "$group:spine-logging-middleware:$version"
     internal const val platformGenerator = "$group:spine-logging-platform-generator:$version"
     internal const val jvmDefaultPlatform = "$group:spine-logging-jvm-default-platform:$version"
 }

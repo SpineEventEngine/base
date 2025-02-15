@@ -1,5 +1,5 @@
 /*
- * Copyright 2024, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,10 +31,23 @@ package io.spine.dependency.build
  *
  * @see <a href="https://github.com/google/ksp">KSP GitHub repository</a>
  */
+@Suppress("ConstPropertyName")
 object Ksp {
+
     /**
      * The latest version compatible with Kotlin v1.8.22, which is bundled with Gradle 7.6.4.
+     *
+     * We need to stick to this version until we migrate to newer Gradle.
+     * Trying to use a newer version results in the following console output:
+     * ```
+     * ksp-1.9.24-1.0.20 is too new for kotlin-1.8.22. Please upgrade kotlin-gradle-plugin to 1.9.24.
+     * ```
+     *
+     * The version compatible with Kotlin v1.9.24 compiler is 1.9.24-1.0.20.
      */
     const val version = "1.8.22-1.0.11"
     const val id = "com.google.devtools.ksp"
+    const val group = "com.google.devtools.ksp"
+    const val symbolProcessingApi = "$group:symbol-processing-api:$version"
+    const val symbolProcessing = "$group:symbol-processing:$version"
 }

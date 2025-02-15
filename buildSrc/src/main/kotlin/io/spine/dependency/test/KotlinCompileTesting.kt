@@ -24,25 +24,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dependency.local
+package io.spine.dependency.test
 
 /**
- * Dependencies on `core-java` modules.
+ * A library for in-process compilation of Kotlin and Java code compilation.
  *
- * See [`SpineEventEngine/core-java`](https://github.com/SpineEventEngine/core-java/).
+ * @see <a href="https://github.com/tschuchortdev/kotlin-compile-testing">GitHub repo</a>
  */
-@Suppress("ConstPropertyName", "unused")
-object CoreJava {
-    const val group = Spine.group
-    const val version = "2.0.0-SNAPSHOT.201"
-
-    const val coreArtifact = "spine-core"
-    const val clientArtifact = "spine-client"
-    const val serverArtifact = "spine-server"
-
-    const val core = "$group:$coreArtifact:$version"
-    const val client = "$group:$clientArtifact:$version"
-    const val server = "$group:$serverArtifact:$version"
-
-    const val testUtilServer = "${Spine.toolsGroup}:spine-testutil-server:$version"
+@Suppress("unused", "ConstPropertyName")
+object KotlinCompileTesting {
+    private const val version = "1.5.0" // Compatible with Kotlin Compiler 1.8.22.
+    private const val group = "com.github.tschuchortdev"
+    const val lib = "$group:kotlin-compile-testing:$version"
+    const val libKsp = "$group:kotlin-compile-testing-ksp:$version"
 }
