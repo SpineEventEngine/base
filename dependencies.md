@@ -1,6 +1,6 @@
 
 
-# Dependencies of `io.spine:spine-base:2.0.0-SNAPSHOT.240`
+# Dependencies of `io.spine:spine-base:2.0.0-SNAPSHOT.241`
 
 ## Runtime
 1.  **Group** : com.google.code.findbugs. **Name** : jsr305. **Version** : 3.0.2.
@@ -49,19 +49,19 @@
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 1.9.23.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 1.9.24.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 1.9.23.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 1.9.24.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 1.9.23.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 1.9.24.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 1.9.23.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 1.9.24.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -251,7 +251,11 @@
      * **Project URL:** [https://checkstyle.org/](https://checkstyle.org/)
      * **License:** [LGPL-2.1+](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 1.14.2.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 1.17.0.
+     * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 1.17.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -267,7 +271,7 @@
      * **Project URL:** [http://commons.apache.org/collections/](http://commons.apache.org/collections/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : dev.zacsweers.autoservice. **Name** : auto-service-ksp. **Version** : 1.1.0.
+1.  **Group** : dev.zacsweers.autoservice. **Name** : auto-service-ksp. **Version** : 1.2.0.
      * **Project URL:** [https://github.com/ZacSweers/auto-service-ksp](https://github.com/ZacSweers/auto-service-ksp)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -654,7 +658,7 @@
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 1.9.23.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 1.9.24.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -682,19 +686,19 @@
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 1.9.23.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 1.9.24.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-common. **Version** : 1.9.23.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-common. **Version** : 1.9.24.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 1.9.23.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 1.9.24.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 1.9.23.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 1.9.24.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -845,4 +849,4 @@
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Feb 05 18:04:21 WET 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Sat Feb 15 15:55:03 WET 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
