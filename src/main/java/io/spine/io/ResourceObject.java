@@ -48,7 +48,7 @@ abstract class ResourceObject {
     private final ClassLoader classLoader;
 
     /**
-     * Creates a new resource with given path and classloader.
+     * Creates a new resource with the given path and classloader.
      */
     ResourceObject(String path, ClassLoader classLoader) {
         this.path = checkNotNull(path);
@@ -95,7 +95,7 @@ abstract class ResourceObject {
      * Crate an exception stating that the resource cannot be found.
      */
     final IllegalStateException cannotFind() {
-        return newIllegalStateException("Unable to find `%s`.", this);
+        return newIllegalStateException("Unable to find %s.", this);
     }
 
     /**
@@ -124,6 +124,6 @@ abstract class ResourceObject {
 
     @Override
     public String toString() {
-        return format("`%s` via ClassLoader `%s`", path, classLoader);
+        return format("`%s` via `ClassLoader` `%s`", path, classLoader);
     }
 }

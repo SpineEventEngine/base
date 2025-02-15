@@ -75,21 +75,20 @@ object PomGenerator {
             plugin(BasePlugin::class.java)
         }
 
-        project.tasks.register("generatePom") {
-            doLast {
-                val pomFile = project.projectDir.resolve("pom.xml")
-                project.delete(pomFile)
+        val task = project.tasks.create("generatePom")
+        task.doLast {
+            val pomFile = project.projectDir.resolve("pom.xml")
+            project.delete(pomFile)
 
-                val projectData = project.metadata()
-                val writer = PomXmlWriter(projectData)
-                writer.writeTo(pomFile)
-            }
-
-            val buildTask = project.tasks.findByName("build")!!
-            buildTask.finalizedBy(this)
-
-            val assembleTask = project.tasks.findByName("assemble")!!
-            dependsOn(assembleTask)
+            val projectData = project.metadata()
+            val writer = PomXmlWriter(projectData)
+            writer.writeTo(pomFile)
         }
+
+        val buildTask = project.tasks.findByName("build")!!
+        buildTask.finalizedBy(task)
+
+        val assembleTask = project.tasks.findByName("assemble")!!
+        task.dependsOn(assembleTask)
     }
 }
