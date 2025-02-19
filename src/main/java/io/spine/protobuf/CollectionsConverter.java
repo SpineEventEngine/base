@@ -76,7 +76,7 @@ public final class CollectionsConverter {
     @SuppressWarnings("ResultOfMethodCallIgnored")  /* Calling `builder` methods. */
     private static ListOfAnys toProto(Iterable<?> values) {
         var builder = ListOfAnys.newBuilder();
-        for (Object value : values) {
+        for (var value : values) {
             builder.addValue(TypeConverter.toAny(value));
         }
         return builder.build();
