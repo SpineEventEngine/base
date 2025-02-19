@@ -41,14 +41,19 @@ import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
+import io.spine.base.ListOfAnys;
+import io.spine.base.MapOfAnys;
 import io.spine.test.protobuf.TaskStatus;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.protobuf.AnyPacker.pack;
+import static io.spine.protobuf.AnyPacker.unpack;
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.protobuf.TypeConverter.toObject;
 import static io.spine.test.protobuf.TaskStatus.EXECUTING;
@@ -56,6 +61,7 @@ import static io.spine.test.protobuf.TaskStatus.FAILED;
 import static io.spine.test.protobuf.TaskStatus.SUCCESS;
 import static io.spine.test.protobuf.TaskStatus.UNRECOGNIZED;
 import static io.spine.testing.Assertions.assertIllegalArgument;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("`TypeConverter` utility class should")
@@ -143,7 +149,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         void uint32ToInt() {
             var value = 42;
             var wrapped = UInt32Value.of(value);
-            var packed = AnyPacker.pack(wrapped);
+            var packed = pack(wrapped);
             int mapped = TypeConverter.toObject(packed, Integer.class);
             assertEquals(value, mapped);
         }
@@ -153,17 +159,17 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         void uint64ToLong() {
             var value = 42L;
             var wrapped = UInt64Value.of(value);
-            var packed = AnyPacker.pack(wrapped);
+            var packed = pack(wrapped);
             long mapped = TypeConverter.toObject(packed, Long.class);
             assertEquals(value, mapped);
         }
 
         private void checkMapping(Object javaObject, Message protoObject) {
-            var wrapped = AnyPacker.pack(protoObject);
+            var wrapped = pack(protoObject);
             var mappedJavaObject = TypeConverter.toObject(wrapped, javaObject.getClass());
             assertEquals(javaObject, mappedJavaObject);
             var restoredWrapped = TypeConverter.toAny(mappedJavaObject);
-            var restored = AnyPacker.unpack(restoredWrapped);
+            var restored = unpack(restoredWrapped);
             assertEquals(protoObject, restored);
         }
     }
@@ -220,7 +226,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         }
 
         private void checkConverts(EnumValue enumValue, Enum<?> expected) {
-            var wrapped = AnyPacker.pack(enumValue);
+            var wrapped = pack(enumValue);
             var mappedJavaObject = TypeConverter.toObject(wrapped, expected.getDeclaringClass());
             assertEquals(expected, mappedJavaObject);
         }
@@ -264,21 +270,55 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         }
     }
 
-    @Test
-    @DisplayName("convert `Enum` to `EnumValue`")
-    void convertEnumToEnumValue() {
-        var restoredWrapped = TypeConverter.toAny(SUCCESS);
-        var restored = AnyPacker.unpack(restoredWrapped);
-        var expected = EnumValue.newBuilder()
-                .setName(SUCCESS.name())
-                .setNumber(SUCCESS.getNumber())
-                .build();
-        assertEquals(expected, restored);
-    }
-
     @Nested
     @DisplayName("convert")
     class Convert {
+
+        @Test
+        @DisplayName("`List` to `Any`")
+        void listToAny() {
+            var list = List.of("s1", "s2", "s3");
+            var anys = list.stream()
+                    .map(s -> pack(StringValue.of(s)))
+                    .collect(toList());
+            var expected = ListOfAnys.newBuilder()
+                    .addAllValue(anys)
+                    .build();
+            assertEquals(expected, unpack(TypeConverter.toAny(list)));
+        }
+
+        @Test
+        @DisplayName("`Map` to `Any`")
+        void mapToAny() {
+            var map = java.util.Map.of("k1", "v1",  "k2", "v2",  "k3", "v3");
+            var entries = map.entrySet()
+                    .stream()
+                    .map(e -> {
+                        var key = pack(StringValue.of(e.getKey()));
+                        var value = pack(StringValue.of(e.getValue()));
+                        return MapOfAnys.Entry.newBuilder()
+                                .setKey(key)
+                                .setValue(value)
+                                .build();
+                    })
+                    .collect(toList());
+            var expected = MapOfAnys.newBuilder()
+                            .addAllEntry(entries)
+                                    .build();
+            assertEquals(expected, unpack(TypeConverter.toAny(map)));
+        }
+
+        @Test
+        @DisplayName("`Enum` to `EnumValue`")
+        void convertEnumToEnumValue() {
+            var restoredWrapped = TypeConverter.toAny(SUCCESS);
+            var restored = unpack(restoredWrapped);
+            var expected = EnumValue.newBuilder()
+                    .setName(SUCCESS.name())
+                    .setNumber(SUCCESS.getNumber())
+                    .build();
+            assertEquals(expected, restored);
+        }
 
         @Test
         @DisplayName("a value to a particular message")
