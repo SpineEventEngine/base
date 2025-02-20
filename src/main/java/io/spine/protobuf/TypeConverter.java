@@ -72,7 +72,7 @@ import static java.util.Objects.requireNonNull;
  * </ul>
  *
  * <p>An attempt to convert a collection type that is not listed above, or to convert a supported
- * collection type back to a Java object, results in a {@link UnsupportedOperationException}.
+ * collection type back to a Java object, results in an {@link UnsupportedOperationException}.
  */
 @Internal
 public final class TypeConverter {
