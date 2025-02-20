@@ -28,6 +28,7 @@ package io.spine.protobuf;
 
 import com.google.common.base.Converter;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.BoolValue;
 import com.google.protobuf.DoubleValue;
 import com.google.protobuf.FloatValue;
@@ -78,6 +79,13 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
                     .put(Boolean.class, new BoolConverter())
                     .put(String.class, new StringConverter())
                     .build();
+
+    /**
+     * Returns a set of primitive Protobuf wrappers this converter can handle.
+     */
+    static ImmutableSet<Class<?>> primitiveProtoTypes() {
+        return PROTO_WRAPPER_TO_CONVERTER.keySet();
+    }
 
     @Override
     protected T toObject(M input) {

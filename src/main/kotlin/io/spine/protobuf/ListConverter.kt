@@ -32,6 +32,13 @@ import io.spine.protobuf.TypeConverter.toAny
 
 /**
  * Converts Kotlin's list of [Any] to [ListOfAnys] proto message.
+ *
+ * Note that the backward conversion from [ListOfAnys] to Kotlin's list
+ * is not supported. The converter throws [UnsupportedOperationException]
+ * in this case.
+ *
+ * When used from Java, `Any` becomes `? extends Object`. Thus, Kotlin's list of
+ * [Any] becomes Java's list of [Object]. It doesn't affect the conversion.
  */
 @Internal
 internal class ListConverter : ProtoConverter<ListOfAnys, List<Any>>() {

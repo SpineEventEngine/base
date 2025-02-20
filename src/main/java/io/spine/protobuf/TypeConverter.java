@@ -63,6 +63,9 @@ import static java.util.Objects.requireNonNull;
  *     <li>{@link java.util.List Java List} types via {@link ListConverter}.
  *     <li>{@link java.util.Map Java Map} types via {@link MapConverter}.
  * </ul>
+ *
+ * <p>The converter throws {@link UnsupportedOperationException} if asked to perform
+ * an unsupported conversion.
  */
 @Internal
 public final class TypeConverter {
