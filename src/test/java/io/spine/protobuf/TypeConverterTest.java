@@ -41,26 +41,27 @@ import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
-import io.spine.base.ListOfAnys;
-import io.spine.base.MapOfAnys;
 import io.spine.test.protobuf.TaskStatus;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.protobuf.TypeConverter.toObject;
+import static io.spine.protobuf.env.TypeConverterTestEnv.toProtoList;
+import static io.spine.protobuf.env.TypeConverterTestEnv.toProtoMap;
 import static io.spine.test.protobuf.TaskStatus.EXECUTING;
 import static io.spine.test.protobuf.TaskStatus.FAILED;
 import static io.spine.test.protobuf.TaskStatus.SUCCESS;
 import static io.spine.test.protobuf.TaskStatus.UNRECOGNIZED;
 import static io.spine.testing.Assertions.assertIllegalArgument;
-import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`TypeConverter` utility class should")
 class TypeConverterTest extends UtilityClassTest<TypeConverter> {
@@ -276,34 +277,16 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @DisplayName("`List` to `Any`")
         void listToAny() {
             var list = List.of("s1", "s2", "s3");
-            var anys = list.stream()
-                    .map(s -> AnyPacker.pack(StringValue.of(s)))
-                    .collect(toList());
-            var expected = ListOfAnys.newBuilder()
-                    .addAllValue(anys)
-                    .build();
-            assertEquals(expected, AnyPacker.unpack(TypeConverter.toAny(list)));
+            var protoList = toProtoList(list);
+            assertEquals(protoList, AnyPacker.unpack(TypeConverter.toAny(list)));
         }
 
         @Test
         @DisplayName("`Map` to `Any`")
         void mapToAny() {
-            var map = java.util.Map.of("k1", "v1",  "k2", "v2",  "k3", "v3");
-            var entries = map.entrySet()
-                    .stream()
-                    .map(e -> {
-                        var key = AnyPacker.pack(StringValue.of(e.getKey()));
-                        var value = AnyPacker.pack(StringValue.of(e.getValue()));
-                        return MapOfAnys.Entry.newBuilder()
-                                .setKey(key)
-                                .setValue(value)
-                                .build();
-                    })
-                    .collect(toList());
-            var expected = MapOfAnys.newBuilder()
-                            .addAllEntry(entries)
-                            .build();
-            assertEquals(expected, AnyPacker.unpack(TypeConverter.toAny(map)));
+            var map = java.util.Map.of("k1", "v1", "k2", "v2", "k3", "v3");
+            var protoMap = toProtoMap(map);
+            assertEquals(protoMap, AnyPacker.unpack(TypeConverter.toAny(map)));
         }
 
         @Test
@@ -324,6 +307,42 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
             var stringValue = "a string value";
             var convertedValue = toMessage(stringValue, StringValue.class);
             assertEquals(stringValue, convertedValue.getValue());
+        }
+    }
+
+    @Nested
+    @DisplayName("throw `UnsupportedOperationException` when")
+    class ThrowUnsupportedOperationWhen {
+
+        @Test
+        @DisplayName("converting an unsupported type")
+        void convertingUnsupportedType() {
+            var dataTime = LocalDateTime.now();
+            assertThrows(
+                    UnsupportedOperationException.class,
+                    () -> TypeConverter.toAny(dataTime)
+            );
+        }
+
+        @Test
+        @DisplayName("converting `Any` to `List`")
+        void convertingAnyToList() {
+            var protoList = toProtoList(List.of("s1", "s2", "s3"));
+            assertThrows(
+                    UnsupportedOperationException.class,
+                    () -> TypeConverter.toObject(AnyPacker.pack(protoList), List.class)
+            );
+        }
+
+        @Test
+        @DisplayName("converting `Any` to `Map`")
+        void convertingAnyToMap() {
+            var map =  java.util.Map.of("k1", "v1", "k2", "v2", "k3", "v3");
+            var protoMap = toProtoMap(map);
+            assertThrows(
+                    UnsupportedOperationException.class,
+                    () -> TypeConverter.toObject(AnyPacker.pack(protoMap), Map.class)
+            );
         }
     }
 }
