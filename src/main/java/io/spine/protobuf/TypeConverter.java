@@ -40,7 +40,7 @@ import static io.spine.protobuf.AnyPacker.unpack;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A utility for converting {@linkplain Message Protobuf Messages} (wrapped as {@link Any})
+ * A utility for converting {@linkplain Message Protobuf Messages} (in form of {@link Any})
  * to arbitrary {@linkplain Object Java Objects} and, where applicable, back to {@link Any}.
  *
  <p>The following types support two-way conversion:
