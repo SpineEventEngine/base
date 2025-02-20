@@ -40,10 +40,12 @@ import static io.spine.protobuf.AnyPacker.unpack;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A utility for converting the {@linkplain Message Protobuf Messages} (in form of {@link Any}) into
- * arbitrary {@linkplain Object Java Objects} and vice versa.
+ * A utility for converting {@linkplain Message Protobuf Messages} (in form of {@link Any})
+ * to arbitrary {@linkplain Object Java Objects} and, where applicable, back to {@link Any}.
  *
- * <p>Currently, the supported types are the following:
+ * <h2>Conversion of Singular Types</h2>
+ *
+ * <p>The following singular types can be converted in both directions:
  * <ul>
  *     <li>{@link Message} - converted via {@link AnyPacker}.
  *     <li>Java primitives - the passed {@link Any} is unpacked into one of the types
@@ -56,6 +58,21 @@ import static java.util.Objects.requireNonNull;
  *         EnumValue} type and then is converted to the Java Enum through the value {@linkplain
  *         EnumValue#getName() name} or {@linkplain EnumValue#getNumber() number}.
  * </ul>
+ *
+ * <p>An attempt to convert a singular type that is not listed above results in a
+ * {@link UnsupportedOperationException}.
+ *
+ * <h2>Conversion of Collection Types</h2>
+ *
+ * <p>The following collection types can only be converted in one direction,
+ * from {@linkplain Object Java Objects} to {@link Any}:
+ * <ul>
+ *     <li>{@link java.util.List Java List} types via {@link ListConverter}.
+ *     <li>{@link java.util.Map Java Map} types via {@link MapConverter}.
+ * </ul>
+ *
+ * <p>An attempt to convert a collection type that is not listed above, or to convert a supported
+ * collection type back to a Java object, results in an {@link UnsupportedOperationException}.
  */
 @Internal
 public final class TypeConverter {

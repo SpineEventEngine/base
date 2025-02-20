@@ -37,8 +37,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Converts instances of {@code List} and {@code Map} into {@link Any}.
+ *
+ * @deprecated Use {@link TypeConverter} instead.
  */
 @Internal
+@Deprecated
 public final class CollectionsConverter {
 
     /**
@@ -76,7 +79,7 @@ public final class CollectionsConverter {
     @SuppressWarnings("ResultOfMethodCallIgnored")  /* Calling `builder` methods. */
     private static ListOfAnys toProto(Iterable<?> values) {
         var builder = ListOfAnys.newBuilder();
-        for (Object value : values) {
+        for (var value : values) {
             builder.addValue(TypeConverter.toAny(value));
         }
         return builder.build();

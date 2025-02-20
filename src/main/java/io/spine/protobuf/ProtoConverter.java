@@ -31,7 +31,11 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;
 
+import java.util.List;
+import java.util.Map;
+
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.protobuf.PrimitiveConverter.supportedPrimitives;
 
 /**
  * Performs conversion of a {@linkplain Message Protobuf Message} to its Java counterpart and back.
@@ -56,6 +60,10 @@ abstract class ProtoConverter<M extends Message, T> extends Converter<M, T> {
      * <p>{@linkplain ProtocolMessageEnum Protobuf enums} are converted using a dedicated
      * {@link EnumConverter} which handles conversions by name or by number.
      *
+     * <p>{@linkplain List Java lists} are converted to {@link io.spine.base.ListOfAnys}.</p>
+     *
+     * <p>{@linkplain Map Java maps} are converted to {@link io.spine.base.MapOfAnys}.</p>
+     *
      * <p>All other types are considered primitives and are {@linkplain PrimitiveConverter handled}
      * respectively.
      */
@@ -68,8 +76,17 @@ abstract class ProtoConverter<M extends Message, T> extends Converter<M, T> {
             converter = new BytesConverter();
         } else if (isProtoEnum(type)) {
             converter = new EnumConverter(asProtoEnum(type));
-        } else {
+        } else if (List.class.isAssignableFrom(type)) {
+            converter = new ListConverter();
+        } else if (Map.class.isAssignableFrom(type)) {
+            converter = new MapConverter();
+        } else if (supportedPrimitives().contains(type)) {
             converter = new PrimitiveConverter<>();
+        } else {
+            var requestedType = '`' + type.getCanonicalName() + '`';
+            throw new UnsupportedOperationException(
+                    "Cannot find a `ProtoConverter` for Protobuf type: " + requestedType + '.'
+            );
         }
         @SuppressWarnings("unchecked") // Logically checked.
         var result = (Converter<M, T>) converter;
