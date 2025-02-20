@@ -40,10 +40,10 @@ import static io.spine.protobuf.AnyPacker.unpack;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A utility for converting the {@linkplain Message Protobuf Messages} (in form of {@link Any})
- * into arbitrary {@linkplain Object Java Objects} and vice versa.
+ * A utility for converting {@linkplain Message Protobuf Messages} (wrapped as {@link Any})
+ * to arbitrary {@linkplain Object Java Objects} and, where applicable, back to {@link Any}.
  *
- * <p>Currently, the supported types are the following:
+ <p>The following types support two-way conversion:
  * <ul>
  *     <li>{@link Message} - converted via {@link AnyPacker}.
  *     <li>Java primitives - the passed {@link Any} is unpacked into one of the types
@@ -57,8 +57,8 @@ import static java.util.Objects.requireNonNull;
  *         EnumValue#getName() name} or {@linkplain EnumValue#getNumber() number}.
  * </ul>
  *
- * <p>The types below can be converted only into one direction,
- * from {@linkplain Object Java Objects} to {@link  Any}:</p>
+ * <p>Note that the following types can only be converted in one direction,
+ * from {@linkplain Object Java Objects} to {@link Any}:
  * <ul>
  *     <li>{@link java.util.List Java List} types via {@link ListConverter}.
  *     <li>{@link java.util.Map Java Map} types via {@link MapConverter}.
