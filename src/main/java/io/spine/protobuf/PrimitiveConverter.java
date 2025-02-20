@@ -81,10 +81,10 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
                     .build();
 
     /**
-     * Returns a set of primitive Protobuf wrappers this converter can handle.
+     * Returns a set of Java primitive classes, which this converter can handle.
      */
-    static ImmutableSet<Class<?>> primitiveProtoTypes() {
-        return PROTO_WRAPPER_TO_CONVERTER.keySet();
+    static ImmutableSet<Class<?>> supportedPrimitives() {
+        return PRIMITIVE_TO_CONVERTER.keySet();
     }
 
     @Override

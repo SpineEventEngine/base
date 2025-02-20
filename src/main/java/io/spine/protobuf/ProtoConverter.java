@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.protobuf.PrimitiveConverter.primitiveProtoTypes;
+import static io.spine.protobuf.PrimitiveConverter.supportedPrimitives;
 
 /**
  * Performs conversion of a {@linkplain Message Protobuf Message} to its Java counterpart and back.
@@ -80,7 +80,7 @@ abstract class ProtoConverter<M extends Message, T> extends Converter<M, T> {
             converter = new ListConverter();
         } else if (Map.class.isAssignableFrom(type)) {
             converter = new MapConverter();
-        } else if (primitiveProtoTypes().contains(type)) {
+        } else if (supportedPrimitives().contains(type)) {
             converter = new PrimitiveConverter<>();
         } else {
             var requestedType = '`' + type.getCanonicalName() + '`';
