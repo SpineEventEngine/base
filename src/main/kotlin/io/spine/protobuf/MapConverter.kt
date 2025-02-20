@@ -33,20 +33,22 @@ import io.spine.base.mapOfAnys
 import io.spine.protobuf.TypeConverter.toAny
 
 /**
- *
+ * Converts Kotlin's map of [Any] to [MapOfAnys] proto message.
  */
 @Internal
 internal class MapConverter : ProtoConverter<MapOfAnys, Map<Any, Any>>() {
 
     override fun toObject(input: MapOfAnys): Map<Any, Any> =
         throw UnsupportedOperationException(
-            "`${javaClass.name}` does not support conversion of Proto messages to `Map`."
+            "`${javaClass.name}` does not support conversion of Protobuf messages to `Map`."
         )
 
-    override fun toMessage(input: Map<Any, Any>): MapOfAnys =
-        mapOfAnys {
-            entry.addAll(input.map { it.toProtoEntry() })
+    override fun toMessage(input: Map<Any, Any>): MapOfAnys {
+        val entries = input.map { it.toProtoEntry() }
+        return mapOfAnys {
+            entry.addAll(entries)
         }
+    }
 }
 
 private fun Map.Entry<Any, Any>.toProtoEntry() = entry {

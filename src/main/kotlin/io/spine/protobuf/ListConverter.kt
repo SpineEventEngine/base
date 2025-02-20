@@ -31,19 +31,20 @@ import io.spine.base.listOfAnys
 import io.spine.protobuf.TypeConverter.toAny
 
 /**
- *
+ * Converts Kotlin's list of [Any] to [ListOfAnys] proto message.
  */
 @Internal
 internal class ListConverter : ProtoConverter<ListOfAnys, List<Any>>() {
 
     override fun toObject(input: ListOfAnys): List<Any> =
         throw UnsupportedOperationException(
-            "`${javaClass.name}` does not support conversion of Proto messages to `List`."
+            "`${javaClass.name}` does not support conversion of Protobuf messages to `List`."
         )
 
-    override fun toMessage(input: List<Any>): ListOfAnys =
-        listOfAnys {
-            value.addAll(input.map { toAny(it) })
+    override fun toMessage(input: List<Any>): ListOfAnys {
+        val values = input.map { toAny(it) }
+        return listOfAnys {
+            value.addAll(values)
         }
+    }
 }
-
