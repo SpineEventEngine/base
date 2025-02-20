@@ -33,14 +33,10 @@ import io.spine.base.mapOfAnys
 import io.spine.protobuf.TypeConverter.toAny
 
 /**
- * Converts Kotlin's map of [Any] to [MapOfAnys] proto message.
+ * Converts a map of [kotlin.Any] to [MapOfAnys] proto message.
  *
- * Note that the backward conversion from [MapOfAnys] to Kotlin's map
- * is not supported. The converter throws [UnsupportedOperationException]
- * in this case.
- *
- * When used from Java, `Any` becomes `? extends Object`. Thus, Kotlin's map of
- * [Any] becomes Java's map of [Object]. It doesn't affect the conversion.
+ * Note that the [backward conversion][toObject] from [MapOfAnys]
+ * to a map of [kotlin.Any] is not supported.
  */
 @Internal
 internal class MapConverter : ProtoConverter<MapOfAnys, Map<Any, Any>>() {
