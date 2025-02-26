@@ -103,7 +103,7 @@ val manifestAttributes = mapOf(
  * when running tests. We cannot depend on the `Jar` from `resources` because it would
  * form a circular dependency.
  */
-val exposeManifestForTests by tasks.creating {
+val exposeManifestForTests by tasks.registering {
 
     val outputFile = layout.buildDirectory.file("resources/main/META-INF/MANIFEST.MF")
     outputs.file(outputFile).withPropertyName("manifestFile")
