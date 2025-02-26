@@ -215,24 +215,42 @@ extend google.protobuf.FieldOptions {
     //
     bool set_once = 73824;
 
-    // The option to mark a `repeated` field as a collection of unique elements.
+    // The option to enforce uniqueness for collection fields.
     //
-    // When this option is set to `true`, all elements in the `repeated` field must be unique.
+    // When the option is set to `true`, the behavior is as follows:
+    //
+    // 1. For `repeated` fields: all elements must be unique.
+    // 2. For `map` fields: while the map keys are inherently unique, all associated values
+    //    must also be unique.
+    //
+    // Other field types are not supported.
+    //
     // Uniqueness is determined by comparing the elements themselves, using their full equality.
-    // For example, in Java, it is defined by the `equals()` method.
+    // For example, in Java, it is defined by the `equals()` method. No special cases are applied,
+    // such as comparing only specific fields like IDs.
     //
-    // No special cases are applied, such as comparing only specific fields like IDs.
-    //
-    // Example: Using `(distinct)` constraint for a repeated field.
+    // Example: Using `(distinct)` constraint for a `repeated` field.
     //
     //    message Blizzard {
     //
     //        // All snowflakes must be unique in this blizzard.
     //        //
     //        // Attempting to add a snowflake that is equal to an existing one would result
-    //        // in constraint violation error.
+    //        // in a constraint violation error.
     //        //
-    //        repeated Snowflake = 1 [(distinct) = true];
+    //        repeated Snowflake snowflakes = 1 [(distinct) = true];
+    //    }
+    //
+    // Example: Using `(distinct)` constraint for a `map` field.
+    //
+    //    message UniqueEmails {
+    //
+    //        // The associated email values must be unique.
+    //        //
+    //        // Attempting to add a key/value pair where the `Email` value duplicates
+    //        // an existing one would result in a constraint violation error.
+    //        //
+    //        map<string, Email> emails = 1 [(distinct) = true];
     //    }
     //
     bool distinct = 73825;
@@ -1151,7 +1169,7 @@ message IfSetAgainOption {
 
 // Defines the error message used if a `distinct` field has duplicates.
 //
-// Applies only to the repeated fields marked as `distinct`.
+// Applies only to the `repeated` and `map` fields marked with the `(distinct)` option.
 //
 message IfHasDuplicatesOption {
 
