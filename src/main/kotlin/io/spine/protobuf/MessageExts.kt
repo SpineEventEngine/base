@@ -35,6 +35,7 @@ import com.google.protobuf.Any
 import com.google.protobuf.Message
 import io.spine.annotation.Internal
 import java.lang.reflect.Type
+import kotlin.reflect.KClass
 
 /**
  * Obtains the default instance of the passed message class.
@@ -71,7 +72,7 @@ private class MessageCacheLoader : CacheLoader<Class<out Message>, Message>() {
 }
 
 /**
- * Returns the builder for the passed message class.
+ * Creates a new builder for the passed message class.
  */
 @Internal
 public fun <M : Message> builderFor(cls: Class<M>): Message.Builder {
@@ -83,6 +84,16 @@ public fun <M : Message> builderFor(cls: Class<M>): Message.Builder {
         )
     }
 }
+
+/**
+ * Creates a new builder for this message [Class].
+ */
+public fun Class<out Message>.newBuilder(): Message.Builder = builderFor(this)
+
+/**
+ * Creates a new builder for this message [KClass].
+ */
+public fun KClass<out Message>.newBuilder(): Message.Builder = builderFor(java)
 
 /**
  * Ensures that the passed instance of `Message` is not an instance

@@ -41,11 +41,12 @@ import org.junit.jupiter.api.Test
 internal class MessageExtsSpec {
 
     @Test
-    fun `return builder for the message`() {
+    fun `create a new builder for the message`() {
         val messageBuilder = builderFor(MessageWithStringValue::class.java)
 
         messageBuilder shouldNotBe null
         messageBuilder.build().javaClass shouldBe MessageWithStringValue::class.java
+        messageBuilder shouldNotBe builderFor(MessageWithStringValue::class.java)
     }
 
     @Test
@@ -63,9 +64,8 @@ internal class MessageExtsSpec {
         value.ensureUnpacked() shouldBe value
     }
 
-    @Nested
-    @DisplayName("verify that")
-    internal inner class VerifyThat {
+    @Nested inner class
+    `verify that` {
 
         @Test
         fun `a message is not in the default state`() {
