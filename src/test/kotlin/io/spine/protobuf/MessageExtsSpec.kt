@@ -45,8 +45,8 @@ internal class MessageExtsSpec {
         val messageBuilder = builderFor(MessageWithStringValue::class.java)
 
         messageBuilder shouldNotBe null
-        messageBuilder.build().javaClass shouldBe MessageWithStringValue::class.java
         messageBuilder shouldNotBe builderFor(MessageWithStringValue::class.java)
+        messageBuilder.build().javaClass shouldBe MessageWithStringValue::class.java
     }
 
     @Test
