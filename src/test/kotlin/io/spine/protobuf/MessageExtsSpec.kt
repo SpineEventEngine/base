@@ -40,12 +40,23 @@ import org.junit.jupiter.api.Test
 @DisplayName("Extensions for `Message`-related types should")
 internal class MessageExtsSpec {
 
-    @Test
-    fun `return builder for the message`() {
-        val messageBuilder = builderFor(MessageWithStringValue::class.java)
+    @Nested inner class
+    `create a new builder` {
 
-        messageBuilder shouldNotBe null
-        messageBuilder.build().javaClass shouldBe MessageWithStringValue::class.java
+        @Test
+        fun `for the passed Java message class`() = assertMessageBuilder {
+            builderFor(MessageWithStringValue::class.java)
+        }
+
+        @Test
+        fun `for this Java message class`() = assertMessageBuilder {
+            MessageWithStringValue::class.java.newBuilder()
+        }
+
+        @Test
+        fun `for this Kotlin message class`() = assertMessageBuilder {
+            MessageWithStringValue::class.newBuilder()
+        }
     }
 
     @Test
@@ -63,9 +74,8 @@ internal class MessageExtsSpec {
         value.ensureUnpacked() shouldBe value
     }
 
-    @Nested
-    @DisplayName("verify that")
-    internal inner class VerifyThat {
+    @Nested inner class
+    `verify that` {
 
         @Test
         fun `a message is not in the default state`() {
@@ -105,4 +115,10 @@ internal class MessageExtsSpec {
 private enum class TaskStatus {
     OPEN,
     DONE
+}
+
+private fun assertMessageBuilder(newBuilder: () -> Message.Builder) {
+    val builder = newBuilder()
+    builder.build()::class shouldBe MessageWithStringValue::class
+    newBuilder() shouldNotBe newBuilder() // A new instance should always be created.
 }
