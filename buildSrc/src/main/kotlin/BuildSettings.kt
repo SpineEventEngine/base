@@ -31,7 +31,7 @@ import org.gradle.jvm.toolchain.JavaLanguageVersion
  * throughout the project.
  */
 object BuildSettings {
-    private const val JVM_VERSION = 11
+    private const val JVM_VERSION = 17
     val javaVersion: JavaLanguageVersion = JavaLanguageVersion.of(JVM_VERSION)
     const val REMOTE_DEBUG_PORT = 5566
 }
