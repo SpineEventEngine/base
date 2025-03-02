@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # Configure the checkout of all branches, so that it is possible to run the comparison.
+          # Configure the checkout of all branches so that it is possible to run the comparison.
           fetch-depth: 0
           # Check out the `config` submodule to fetch the required script file.
           submodules: true

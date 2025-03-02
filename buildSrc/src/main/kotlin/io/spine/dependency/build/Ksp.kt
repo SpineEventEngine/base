@@ -45,7 +45,7 @@ object Ksp {
      *
      * The version compatible with Kotlin v1.9.24 compiler is 1.9.24-1.0.20.
      */
-    const val version = "1.8.22-1.0.11"
+    const val version = "2.1.10-1.0.31"
     const val id = "com.google.devtools.ksp"
     const val group = "com.google.devtools.ksp"
     const val symbolProcessingApi = "$group:symbol-processing-api:$version"

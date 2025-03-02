@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,39 +24,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.security;
+package io.spine.security
+
+import java.lang.StackWalker.Option.RETAIN_CLASS_REFERENCE
 
 /**
  * Provides information about the class calling a method.
  */
-final class CallerProvider extends SecurityManager {
+internal object CallerProvider {
 
-    private static final CallerProvider INSTANCE = new CallerProvider();
+    private val stackWalker: StackWalker = StackWalker.getInstance(RETAIN_CLASS_REFERENCE)
 
     /**
-     * Obtains the instance.
+     * Obtains the class of the object which calls the method from which
+     * this method is being called.
      */
-    static CallerProvider instance() {
-        return INSTANCE;
+    fun callerClass(): Class<*> {
+        return stackWalker.walk { frames ->
+            frames.skip(2)
+                .findFirst()
+                .map { frame -> frame.declaringClass }
+                .get() // We're safe because the stacktrace will be deeper than 3.
+        }
     }
 
     /**
-     * Obtains the class of the object which calls the method from which this method
-     * is being called.
+     * Obtains the class preceding in the call chain the class which calls
+     * the method from which this method is being called.
      */
-    Class<?> callerClass() {
-        var context = getClassContext();
-        var result = context[2];
-        return result;
-    }
-
-    /**
-     * Obtains the class preceding in call chain the class which calls the
-     * method from which this method is being called.
-     */
-    Class<?> previousCallerClass() {
-        var context = getClassContext();
-        var result = context[3];
-        return result;
+    fun previousCallerClass(): Class<*> {
+        return stackWalker.walk { frames ->
+            frames.skip(3)
+                .findFirst()
+                .map { frame -> frame.declaringClass }
+                .get() // We're safe because the stacktrace will be deeper than 3.
+        }
     }
 }
