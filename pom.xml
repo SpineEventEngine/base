@@ -80,19 +80,19 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.kotest</groupId>
     <artifactId>kotest-framework-datatest</artifactId>
-    <version>5.8.0</version>
+    <version>5.9.1</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>io.kotest</groupId>
     <artifactId>kotest-framework-engine</artifactId>
-    <version>5.8.0</version>
+    <version>5.9.1</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>io.kotest</groupId>
     <artifactId>kotest-runner-junit5-jvm</artifactId>
-    <version>5.8.0</version>
+    <version>5.9.1</version>
     <scope>test</scope>
   </dependency>
   <dependency>
@@ -161,18 +161,18 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.errorprone</groupId>
     <artifactId>error_prone_annotations</artifactId>
-    <version>2.23.0</version>
+    <version>2.36.0</version>
     <scope>provided</scope>
   </dependency>
   <dependency>
     <groupId>com.google.errorprone</groupId>
     <artifactId>error_prone_core</artifactId>
-    <version>2.23.0</version>
+    <version>2.36.0</version>
   </dependency>
   <dependency>
     <groupId>com.google.errorprone</groupId>
     <artifactId>error_prone_type_annotations</artifactId>
-    <version>2.23.0</version>
+    <version>2.36.0</version>
     <scope>provided</scope>
   </dependency>
   <dependency>
