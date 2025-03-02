@@ -48,6 +48,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import static io.spine.base.Identifier.newUuid;
@@ -317,7 +318,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @Test
         @DisplayName("converting an unsupported type")
         void convertingUnsupportedType() {
-            var dataTime = LocalDateTime.now();
+            var dataTime = LocalDateTime.now(ZoneId.systemDefault());
             assertThrows(
                     UnsupportedOperationException.class,
                     () -> TypeConverter.toAny(dataTime)
