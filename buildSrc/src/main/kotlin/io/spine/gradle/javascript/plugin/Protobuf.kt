@@ -50,8 +50,6 @@ fun JsPlugins.protobuf() {
     val protobufExt = project.extensions.getByType(ProtobufExtension::class.java)
     protobufExt.apply {
 
-        generatedFilesBaseDir = projectDir.path
-
         protoc {
             artifact = Protobuf.compiler
         }

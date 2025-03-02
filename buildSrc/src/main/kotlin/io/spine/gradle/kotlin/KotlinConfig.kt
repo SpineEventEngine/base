@@ -32,7 +32,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 /**
  * Sets [Java toolchain](https://kotlinlang.org/docs/gradle.html#gradle-java-toolchains-support)
- * to the specified version (e.g. 11 or 8).
+ * to the specified version (e.g., 11 or 8).
  */
 fun KotlinJvmProjectExtension.applyJvmToolchain(version: Int) {
     jvmToolchain {
@@ -59,8 +59,8 @@ fun KotlinCompile.setFreeCompilerArgs() {
         if (isAtLeast(1, 9, 20) && major < 2) "-Xexpect-actual-classes"
         else ""
     }
-    kotlinOptions {
-        freeCompilerArgs = listOf(
+    compilerOptions.freeCompilerArgs.addAll(
+        listOf(
             "-Xskip-prerelease-check",
             "-Xjvm-default=all",
             "-Xinline-classes",
@@ -72,5 +72,5 @@ fun KotlinCompile.setFreeCompilerArgs() {
                     "kotlin.ExperimentalStdlibApi," +
                     "kotlin.experimental.ExperimentalTypeInference",
         ).filter { it.isNotBlank() }
-    }
+    )
 }
