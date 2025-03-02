@@ -51,6 +51,7 @@ import org.gradle.process.CommandLineArgumentProvider
  */
 @Suppress("unused")
 fun JavaCompile.configureErrorProne() {
+    options.compilerArgs.add("--should-stop=ifError=FLOW")
     options.errorprone
         .errorproneArgumentProviders
         .add(ErrorProneConfig.ARGUMENTS)
