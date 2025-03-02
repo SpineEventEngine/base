@@ -25,6 +25,7 @@
  */
 
 import BuildSettings.javaVersion
+import Jvm_module_gradle.Module
 import io.spine.dependency.build.CheckerFramework
 import io.spine.dependency.build.Dokka
 import io.spine.dependency.build.ErrorProne
@@ -47,7 +48,6 @@ import io.spine.gradle.kotlin.setFreeCompilerArgs
 import io.spine.gradle.report.license.LicenseReporter
 import io.spine.gradle.testing.configureLogging
 import io.spine.gradle.testing.registerTestTasks
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     `java-library`
