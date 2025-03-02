@@ -99,11 +99,8 @@ fun Module.configureKotlin(javaVersion: JavaLanguageVersion) {
     kotlin {
         applyJvmToolchain(javaVersion.asInt())
         explicitApi()
-    }
-
-    tasks {
-        withType<KotlinCompile>().configureEach {
-            kotlinOptions.jvmTarget = javaVersion.toString()
+        compilerOptions {
+            jvmTarget.set(BuildSettings.jvmTarget)
             setFreeCompilerArgs()
         }
     }

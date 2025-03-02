@@ -25,6 +25,7 @@
  */
 
 import org.gradle.jvm.toolchain.JavaLanguageVersion
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 /**
  * This object provides high-level constants, like the version of JVM, to be used
@@ -33,5 +34,6 @@ import org.gradle.jvm.toolchain.JavaLanguageVersion
 object BuildSettings {
     private const val JVM_VERSION = 17
     val javaVersion: JavaLanguageVersion = JavaLanguageVersion.of(JVM_VERSION)
+    val jvmTarget = JvmTarget.JVM_17
     const val REMOTE_DEBUG_PORT = 5566
 }
