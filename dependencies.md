@@ -79,10 +79,6 @@
      * **Project URL:** [http://beust.com/jcommander](http://beust.com/jcommander)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.beust. **Name** : jcommander. **Version** : 1.82.
-     * **Project URL:** [https://jcommander.org](https://jcommander.org)
-     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1.  **Group** : com.fasterxml.jackson. **Name** : jackson-bom. **Version** : 2.15.3.
      * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -271,6 +267,14 @@
      * **Project URL:** [http://commons.apache.org/collections/](http://commons.apache.org/collections/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1.  **Group** : dev.drewhamilton.poko. **Name** : poko-annotations. **Version** : 0.17.1.
+     * **Project URL:** [https://github.com/drewhamilton/Poko](https://github.com/drewhamilton/Poko)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : dev.drewhamilton.poko. **Name** : poko-annotations-jvm. **Version** : 0.17.1.
+     * **Project URL:** [https://github.com/drewhamilton/Poko](https://github.com/drewhamilton/Poko)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1.  **Group** : dev.zacsweers.autoservice. **Name** : auto-service-ksp. **Version** : 1.2.0.
      * **Project URL:** [https://github.com/ZacSweers/auto-service-ksp](https://github.com/ZacSweers/auto-service-ksp)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -287,11 +291,11 @@
      * **Project URL:** [https://github.com/davidburstrom/contester](https://github.com/davidburstrom/contester)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.github.detekt.sarif4k. **Name** : sarif4k. **Version** : 0.4.0.
+1.  **Group** : io.github.detekt.sarif4k. **Name** : sarif4k. **Version** : 0.6.0.
      * **Project URL:** [https://detekt.github.io/detekt](https://detekt.github.io/detekt)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.github.detekt.sarif4k. **Name** : sarif4k-jvm. **Version** : 0.4.0.
+1.  **Group** : io.github.detekt.sarif4k. **Name** : sarif4k-jvm. **Version** : 0.6.0.
      * **Project URL:** [https://detekt.github.io/detekt](https://detekt.github.io/detekt)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -302,95 +306,95 @@
 1.  **Group** : io.github.java-diff-utils. **Name** : java-diff-utils. **Version** : 4.12.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-api. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-api. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-cli. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-cli. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-core. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-core. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-metrics. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-metrics. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-parser. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-parser. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-psi-utils. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-psi-utils. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-report-html. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-report-html. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-report-md. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-report-md. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-report-sarif. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-report-sarif. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-report-txt. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-report-txt. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-report-xml. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-report-xml. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-rules. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-rules. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-rules-complexity. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-rules-complexity. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-rules-coroutines. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-rules-coroutines. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-rules-documentation. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-rules-documentation. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-rules-empty. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-rules-empty. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-rules-errorprone. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-rules-errorprone. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-rules-exceptions. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-rules-exceptions. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-rules-naming. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-rules-naming. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-rules-performance. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-rules-performance. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-rules-style. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-rules-style. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-tooling. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-tooling. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-utils. **Version** : 1.23.0.
+1.  **Group** : io.gitlab.arturbosch.detekt. **Name** : detekt-utils. **Version** : 1.23.8.
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -500,11 +504,6 @@
 1.  **Group** : net.bytebuddy. **Name** : byte-buddy-agent. **Version** : 1.10.9.
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : net.java.dev.jna. **Name** : jna. **Version** : 5.6.0.
-     * **Project URL:** [https://github.com/java-native-access/jna](https://github.com/java-native-access/jna)
-     * **License:** [Apache License v2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [LGPL, version 2.1](http://www.gnu.org/licenses/licenses.html)
-
 1.  **Group** : net.java.dev.jna. **Name** : jna. **Version** : 5.9.0.
      * **Project URL:** [https://github.com/java-native-access/jna](https://github.com/java-native-access/jna)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -598,6 +597,10 @@
      * **License:** [LGPL 2.1](http://www.gnu.org/licenses/lgpl-2.1.html)
      * **License:** [MPL 1.1](http://www.mozilla.org/MPL/MPL-1.1.html)
 
+1.  **Group** : org.jcommander. **Name** : jcommander. **Version** : 1.85.
+     * **Project URL:** [https://jcommander.org](https://jcommander.org)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1.  **Group** : org.jetbrains. **Name** : annotations. **Version** : 24.0.1.
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -646,7 +649,7 @@
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 1.8.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.0.21.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -662,7 +665,7 @@
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 1.8.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.0.21.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -678,7 +681,7 @@
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 1.8.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.0.21.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -878,7 +881,7 @@
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [WTFPL](http://www.wtfpl.net/)
 
-1.  **Group** : org.snakeyaml. **Name** : snakeyaml-engine. **Version** : 2.6.
+1.  **Group** : org.snakeyaml. **Name** : snakeyaml-engine. **Version** : 2.7.
      * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml-engine](https://bitbucket.org/snakeyaml/snakeyaml-engine)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -889,4 +892,4 @@
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Sun Mar 02 19:42:10 WET 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Sun Mar 02 20:02:57 WET 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).

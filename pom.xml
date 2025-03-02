@@ -198,7 +198,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.gitlab.arturbosch.detekt</groupId>
     <artifactId>detekt-cli</artifactId>
-    <version>1.23.0</version>
+    <version>1.23.8</version>
   </dependency>
   <dependency>
     <groupId>io.spine.tools</groupId>
