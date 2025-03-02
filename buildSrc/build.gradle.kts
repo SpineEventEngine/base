@@ -96,7 +96,7 @@ val guavaVersion = "32.1.3-jre"
  * @see <a href="https://github.com/tbroyer/gradle-errorprone-plugin/releases">
  *     Error Prone Gradle Plugin Releases</a>
  */
-val errorPronePluginVersion = "3.1.0"
+val errorPronePluginVersion = "4.1.0"
 
 /**
  * The version of Protobuf Gradle Plugin.
@@ -159,12 +159,12 @@ configurations.all {
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(11))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
 
 kotlin {
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_11)
+        jvmTarget.set(JvmTarget.JVM_17)
     }
 }
 
