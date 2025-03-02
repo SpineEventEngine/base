@@ -32,10 +32,17 @@ package io.spine.dependency.lib
 object Kotlin {
 
     /**
-     * When changing the version, also change the version used in the `buildSrc/build.gradle.kts`.
+     * This is the version of Kotlin we use for writing code which does not
+     * depend on Gradle and the version of embedded Kotlin.
      */
     @Suppress("MemberVisibilityCanBePrivate") // used directly from the outside.
-    const val version = "1.9.24"
+    const val runtimeVersion = "2.1.10"
+
+    /**
+     * This is the version of
+     * [Kotlin embedded into Gradle](https://docs.gradle.org/current/userguide/compatibility.html#kotlin).
+     */
+    const val embeddedVersion = "2.0.21"
 
     /**
      * The version of the JetBrains annotations library, which is a transitive
@@ -47,25 +54,24 @@ object Kotlin {
 
     private const val group = "org.jetbrains.kotlin"
 
-    const val stdLib       = "$group:kotlin-stdlib:$version"
-    const val stdLibCommon = "$group:kotlin-stdlib-common:$version"
+    const val stdLib       = "$group:kotlin-stdlib:$runtimeVersion"
+    const val stdLibCommon = "$group:kotlin-stdlib-common:$runtimeVersion"
 
     @Deprecated("Please use `stdLib` instead.")
-    const val stdLibJdk7   = "$group:kotlin-stdlib-jdk7:$version"
+    const val stdLibJdk7   = "$group:kotlin-stdlib-jdk7:$runtimeVersion"
 
     @Deprecated("Please use `stdLib` instead.")
-    const val stdLibJdk8   = "$group:kotlin-stdlib-jdk8:$version"
+    const val stdLibJdk8   = "$group:kotlin-stdlib-jdk8:$runtimeVersion"
 
-    const val reflect    = "$group:kotlin-reflect:$version"
-    const val testJUnit5 = "$group:kotlin-test-junit5:$version"
+    const val reflect    = "$group:kotlin-reflect:$runtimeVersion"
+    const val testJUnit5 = "$group:kotlin-test-junit5:$runtimeVersion"
 
-    const val gradlePluginApi = "$group:kotlin-gradle-plugin-api:$version"
-    const val gradlePluginLib = "$group:kotlin-gradle-plugin:$version"
+    const val gradlePluginApi = "$group:kotlin-gradle-plugin-api:$runtimeVersion"
+    const val gradlePluginLib = "$group:kotlin-gradle-plugin:$runtimeVersion"
 
     const val jetbrainsAnnotations = "org.jetbrains:annotations:$annotationsVersion"
 
     object Compiler {
-        const val version = "1.8.22"
-        const val embeddable = "$group:kotlin-compiler-embeddable:$version"
+        const val embeddable = "$group:kotlin-compiler-embeddable:$embeddedVersion"
     }
 }

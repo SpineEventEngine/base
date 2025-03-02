@@ -73,12 +73,12 @@ val licenseReportVersion = "2.7"
 val grGitVersion = "4.1.1"
 
 /**
- * The version of the Kotlin Gradle plugin and Kotlin binaries used by the build process.
+ * The version of the Kotlin Gradle plugin used by the build process.
  *
  * This version may change from the [version of Kotlin][io.spine.dependency.lib.Kotlin.version]
  * used by the project.
  */
-val kotlinVersion = "1.8.22"
+val kotlinVersion = "2.1.10"
 
 /**
  * The version of Guava used in `buildSrc`.
