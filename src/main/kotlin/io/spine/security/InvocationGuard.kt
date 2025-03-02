@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,59 +24,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.security;
+package io.spine.security
 
-import com.google.common.collect.ImmutableSet;
-import org.checkerframework.checker.signature.qual.ClassGetName;
-import org.checkerframework.checker.signature.qual.FullyQualifiedName;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
+import io.spine.security.CallerProvider.previousCallerClass
+import org.checkerframework.checker.signature.qual.ClassGetName
+import org.checkerframework.checker.signature.qual.FullyQualifiedName
 
 /**
  * Controls which class can call a method.
  */
-public final class InvocationGuard {
-
-    /** Prevents instantiation of this utility class. */
-    private InvocationGuard() {
-    }
+public object InvocationGuard {
 
     /**
-     * Throws {@link SecurityException} of the calling class is not that passed.
+     * Throws [SecurityException] of the calling class is not that passed.
      */
-    public static void allowOnly(@FullyQualifiedName String allowedCallerClass) {
-        checkNotNull(allowedCallerClass);
-        var callingClass = CallerProvider.instance()
-                                         .previousCallerClass();
-        if (!allowedCallerClass.equals(callingClass.getName())) {
-            throw nonAllowedCaller(callingClass);
+    @JvmStatic
+    public fun allowOnly(allowedCallerClass: @FullyQualifiedName String) {
+        val callingClass = previousCallerClass()
+        if (allowedCallerClass != callingClass.name) {
+            throw nonAllowedCaller(callingClass)
         }
     }
 
     /**
-     * Throws {@link SecurityException} of the calling class is not among the named.
+     * Throws [SecurityException] of the calling class is not among the named.
      */
-    public static void allowOnly(@FullyQualifiedName String firstClass,
-                                 @FullyQualifiedName String... otherClasses) {
-        checkNotNull(firstClass);
-        checkNotNull(otherClasses);
-        var callingClass = CallerProvider.instance()
-                                         .previousCallerClass();
-        var allowedCallers = ImmutableSet
-                .<@FullyQualifiedName String>builder()
-                .add(firstClass)
-                .add(otherClasses)
-                .build();
-        if (!allowedCallers.contains(callingClass.getName())) {
-            throw nonAllowedCaller(callingClass);
+    @JvmStatic
+    public fun allowOnly(
+        firstClass: @FullyQualifiedName String,
+        vararg otherClasses: String
+    ) {
+        val callingClass = previousCallerClass()
+        val allowedCallers = buildSet {
+            add(firstClass)
+            addAll(otherClasses)
+        }
+        if (!allowedCallers.contains(callingClass.name)) {
+            throw nonAllowedCaller(callingClass)
         }
     }
 
-    private static SecurityException nonAllowedCaller(@ClassGetName Class<?> callingClass) {
-        var msg = format(
-                "The class `%s` is not allowed to perform this operation.", callingClass.getName()
-        );
-        throw new SecurityException(msg);
+    private fun nonAllowedCaller(callingClass: @ClassGetName Class<*>): SecurityException {
+        val msg = "The class `$callingClass.name` is not allowed to perform this operation."
+        throw SecurityException(msg)
     }
 }

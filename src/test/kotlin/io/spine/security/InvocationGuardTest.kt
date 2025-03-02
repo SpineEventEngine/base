@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,64 +24,54 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.security;
+package io.spine.security
 
-import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.fail
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.function.Executable
 
 @DisplayName("`InvocationGuard` should")
-class InvocationGuardTest extends UtilityClassTest<InvocationGuard> {
-
-    InvocationGuardTest() {
-        super(InvocationGuard.class);
-    }
+internal class InvocationGuardTest {
 
     @Nested
     @DisplayName("throw `SecurityException`")
-    class Throwing {
+    internal inner class Throwing {
 
         @Test
-        @DisplayName("if no classes are allowed")
-        void nobodyAllowed() {
-            assertThrowsOn(() -> InvocationGuard.allowOnly(""));
+        fun `if no classes are allowed`() {
+            assertThrowsOn { InvocationGuard.allowOnly("") }
         }
 
         @Test
-        @DisplayName("if a calling class is not that allowed")
-        void notAllowed() {
-            assertThrowsOn(() -> InvocationGuard.allowOnly("java.lang.Boolean"));
+        fun `if a calling class is not that allowed`() {
+            assertThrowsOn { InvocationGuard.allowOnly("java.lang.Boolean") }
         }
 
         @Test
-        @DisplayName("if a calling class is not among allowed")
-        void notAllowedFromMany() {
-            assertThrowsOn(() -> InvocationGuard.allowOnly(
+        fun `if a calling class is not among allowed`() {
+            assertThrowsOn {
+                InvocationGuard.allowOnly(
                     "java.lang.String",
-                    "org.junit.jupiter.api.Test")
-            );
+                    "org.junit.jupiter.api.Test"
+                )
+            }
         }
     }
 
     @Test
-    @DisplayName("do not throw on allowed class")
-    void pass() {
-        var callingClass = CallerProvider.instance()
-                                         .callerClass()
-                                         .getName();
+    fun `do not throw on allowed class`() {
+        val callingClass = CallerProvider.callerClass().getName()
         try {
-            InvocationGuard.allowOnly(callingClass);
-        } catch (Exception e) {
-            fail(e);
+            InvocationGuard.allowOnly(callingClass)
+        } catch (e: Exception) {
+            fail<Any>(e)
         }
     }
 
-    private static void assertThrowsOn(Executable executable) {
-        assertThrows(SecurityException.class, executable);
+    private fun assertThrowsOn(executable: Executable) {
+        assertThrows(SecurityException::class.java, executable)
     }
 }
