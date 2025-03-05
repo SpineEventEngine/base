@@ -793,8 +793,8 @@ message MaxOption {
 
 // A string field value must match the given regular expression.
 //
-// Is applicable only to string fields.
-// Repeated fields are supported.
+// This option is applicable only to string fields,
+// including those that are repeated.
 //
 // Example: Using the `(pattern)` option.
 //
@@ -808,7 +808,18 @@ message PatternOption {
     // The default error message.
     option (default_message) = "The `${parent.type}.${field.path}` field must match the regular expression `${regex.pattern}` (modifiers: `${regex.modifiers}`). The passed value: `${field.value}`.";
 
-    // The regular expression to match.
+    // The regular expression that the field value must match.
+    //
+    // Use the Java regex dialect for the syntax baseline:
+    // https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/regex/Pattern.html
+    //
+    // Note: in Java, regex patterns are not wrapped in explicit delimiters like in Perl or PHP.
+    // Instead, the pattern is provided as a string literal. Therefore, `/` symbol does not need
+    // to be escaped.
+    //
+    // The provided string literal is passed directly to the regex engine. So, it must be exactly
+    // what you would supply to the `java.util.regex.Pattern.compile()` method.
+    //
     string regex = 1;
 
     reserved 2;
