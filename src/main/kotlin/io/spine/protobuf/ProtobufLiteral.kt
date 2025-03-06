@@ -44,47 +44,41 @@ private val ProtobufEscapeSequences = mapOf(
 )
 
 /**
- * Restores the original literal as it was defined in the Protobuf source file.
+ * Restores the original literal as defined in the Protobuf source file.
  *
- * The method reverses the [escape sequences](https://protobuf.dev/reference/protobuf/textformat-spec/#string)
- * that the Protobuf compiler substituted with ASCII control characters during compilation.
- *
- * Because control characters are unprintable and cannot be directly typed from the keyboard,
+ * Since control characters are unprintable and cannot be directly typed from the keyboard,
  * most compilers (including Protobuf) use escape sequences (e.g., `\n`) to represent them.
  * An escape sequence consists of a backslash followed by one or more symbols. Note that while
  * the backslash is a printable character, it must be escaped too because it introduces
  * an escape sequence.
  *
- * When processing a string literal from the source file, the Protobuf compiler is expected
- * to substitute the escape sequences with the corresponding ASCII codes for runtime
- * representation of the string. The substitution [rules][ProtobufEscapeSequences] should be
- * the same for all target languages, though there is no official specification regarding this,
- * besides a reverse-engineered [draft spec](https://protobuf.dev/reference/protobuf/textformat-spec/#string),
- * for which they state the following:
+ * This method reverses the escape sequences that the Protobuf compiler substituted with
+ * ASCII control characters during the compilation. The substitution [rules][ProtobufEscapeSequences]
+ * are expected to be consistent across all target languages. However, no official documentation
+ * exists on this behavior, aside from a reverse-engineered [draft specification](https://protobuf.dev/reference/protobuf/textformat-spec/#string)
+ * that includes the following disclaimer:
  *
  * ```
  * While an effort has been made to keep text formats consistent across supported languages,
  * incompatibilities are likely to exist.
  * ```
  *
- * Restoring the escaped symbols can be useful for code generation tasks.
- * For example:
+ * Restoring the escaped symbols can be useful for code generation tasks, as it makes a string
+ * literal printable in generated source files (e.g., Java, Kotlin). For example:
  *
- * 1. Using a provided Regex expression as a literal in generated code. If the literal is
- *    pre-processed by the Protobuf compiler, it may no longer be renderable as intended,
- *    potentially containing unprintable characters instead of the escape sequences.
- * 2. Report a problematic Regex expressions in an error message exactly as the user provided it.
+ * 1. Using a Regex expression from a protobuf source file as a literal in generated code.
+ *    If the literal is pre-processed by the Protobuf compiler, it may no longer be printable
+ *    text as intended, potentially containing unprintable characters.
+ * 2. When reporting problematic Regex expressions in error messages exactly as the user
+ *    provided them.
  *
- * Note we don't modify question marks because the Protobuf compiler (particularly, for Java)
- * actually accepts both `?` and `\?` as a question mark. Therefore, it is unclear when
- * to prepend the leading `\` to restore the original literal. The method makes an assumption
- * that users prefer just a question mark.
+ * Please note that a string literal cannot be fully reconstructed after being processed by
+ * the Protobuf compiler due to the following limitations:
  *
- * Also, we are not restoring Unicode codes, or octal and hexadecimal byte values
- * due to the following assumptions:
- *
- * 1) Users will prefer specifying Unicode symbols with text. Protobuf source files support UTF-8.
- * 2) Octal and hexadecimal byte values are unlikely to participate in Regex expressions.
+ * 1. The question mark `?` always remains as is, since Protobuf accepts both `?` and `\?`.
+ * 2. Characters specified using Unicode codes, or as octal or hexadecimal byte values,
+ *    remain unchanged; the method cannot determine whether these were originally specified
+ *    as text or as escape sequences.
  */
 public fun restoreProtobufEscapes(value: String): String =
     buildString {
