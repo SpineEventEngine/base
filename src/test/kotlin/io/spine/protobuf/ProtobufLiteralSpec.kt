@@ -41,12 +41,12 @@ internal class ProtobufLiteralSpec {
         val asciiString = asciiCodes.map { it.toChar() }.joinToString()
 
         val expected = "\\a, \\b, e, f, \\t, \\n, \\v, H, I, \\f, \\r, o, \\\", \\', \\\\"
-        val printed = tapConsole {
+        val result = tapConsole {
             // With restored escape sequences, the test string becomes printable.
-            // Otherwise, the control characters would not be visible.
-            print(restoreProtobufEscapes(asciiString))
+            val escaped = restoreProtobufEscapes(asciiString)
+            print(escaped)
         }
 
-        printed shouldBe expected
+        result shouldBe expected
     }
 }

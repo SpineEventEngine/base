@@ -44,7 +44,7 @@ private val ProtobufEscapeSequences = mapOf(
 )
 
 /**
- * Restores the original literal as defined in the Protobuf source file.
+ * Restores the original literal as it was defined in the Protobuf source file.
  *
  * Since control characters are unprintable and cannot be directly typed from the keyboard,
  * most compilers (including Protobuf) use escape sequences (e.g., `\n`) to represent them.
@@ -68,7 +68,7 @@ private val ProtobufEscapeSequences = mapOf(
  *
  * 1. Using a Regex expression from a protobuf source file as a literal in generated code.
  *    If the literal is pre-processed by the Protobuf compiler, it may no longer be printable
- *    text as intended, potentially containing unprintable characters.
+ *    as intended, potentially containing unprintable characters.
  * 2. When reporting problematic Regex expressions in error messages exactly as the user
  *    provided them.
  *
@@ -77,7 +77,7 @@ private val ProtobufEscapeSequences = mapOf(
  *
  * 1. The question mark `?` always remains as is, since Protobuf accepts both `?` and `\?`.
  * 2. Characters specified using Unicode codes, or as octal or hexadecimal byte values,
- *    remain unchanged; the method cannot determine whether these were originally specified
+ *    remain as text; the method cannot determine whether these were originally specified
  *    as text or as escape sequences.
  */
 public fun restoreProtobufEscapes(value: String): String =
