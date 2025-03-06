@@ -27,11 +27,13 @@
 package io.spine.protobuf
 
 /**
- * ASCII control characters escaped by the Protobuf compiler when parsing string literals.
+ * A map of ASCII control characters to their escaping sequences.
  *
- * Escaping rules may differ from one compiler to another, so a more reliable approach
- * is to re-escape strings according to the specifications of the tool that originally
- * performed the escaping.
+ * When processing a string literal from a `.proto` source file, the Protobuf compiler
+ * is expected to substitute these sequences with the corresponding ASCII codes.
+ * This behavior should be the same for all target languages, though there is no official
+ * specification about this, besides a reverse-engineered
+ * [draft spec](https://protobuf.dev/reference/protobuf/textformat-spec/#string).
  *
  * Note we don't modify question marks because the Protobuf compiler actually accepts
  * both `?` and `\?` as a question mark. Therefore, it is unclear when to prepend
@@ -42,8 +44,6 @@ package io.spine.protobuf
  *
  * 1) They do not appear to be expected in our literals.
  * 2) Their escaping is more complex because they have variable length.
- *
- * Source: [Text Format Langauge Specification | String Literals](https://protobuf.dev/reference/protobuf/textformat-spec/#string).
  */
 @Suppress("MagicNumber") // ASCII codes.
 private val ProtobufEscapeSequences = mapOf(
@@ -60,7 +60,7 @@ private val ProtobufEscapeSequences = mapOf(
 )
 
 /**
- * Restores the original literal as it was defined in the source file.
+ * Restores the original literal as it was defined in the Protobuf source file.
  *
  * The method reverses the [escape sequences](https://protobuf.dev/reference/protobuf/textformat-spec/#string)
  * that the Protobuf compiler substituted with ASCII control characters during compilation.
