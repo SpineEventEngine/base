@@ -35,7 +35,7 @@ package io.spine.protobuf
  *
  * Note we don't modify question marks because the Protobuf compiler actually accepts
  * both `?` and `\?` as a question mark. Therefore, it is unclear when to prepend
- * the leading `/` to restore the original literal.
+ * the leading `\` to restore the original literal.
  *
  * Also, we are not restoring Unicode codes, or octal and hexadecimal byte values.
  * The reasons are as follows:
