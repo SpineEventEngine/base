@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.string
+package io.spine.protobuf
 
 /**
  * ASCII control characters escaped by the Protobuf compiler when parsing string literals.
@@ -49,14 +49,14 @@ package io.spine.string
 private val ProtobufEscapeSequences = mapOf(
     7 to "\\a",
     8 to "\\b",
-    12 to "\\f",
-    10 to "\\n",
-    13 to "\\r",
     9 to "\\t",
+    10 to "\\n",
     11 to "\\v",
-    92 to "\\\\",
+    12 to "\\f",
+    13 to "\\r",
+    34 to "\\\"",
     39 to "\\'",
-    34 to "\\\""
+    92 to "\\\\",
 )
 
 /**
@@ -75,16 +75,14 @@ private val ProtobufEscapeSequences = mapOf(
  * For example:
  *
  * 1. Report a problematic literal in an error message exactly as the user provided it.
- * 2. Using a provided Regex expression as a literal in generated code. If the literal is pre-processed
- *    by the Protobuf compiler, it may no longer be renderable as intended, potentially containing
- *    unprintable characters instead of the expected escape sequences. An unescaped backslash can
- *    also cause errors in many compilers.
+ * 2. Using a provided Regex expression as a literal in generated code. If the literal is
+ *    pre-processed by the Protobuf compiler, it may no longer be renderable as intended,
+ *    potentially containing unprintable characters instead of the escape sequences.
  *
- * Note that this method does not reverse the escaping for Unicode codes, or for octal
- * and hexadecimal byte values. It only restores ASCII control characters to their printable
- * escape sequences.
+ * Note that this method does not reverse the escaping for Unicode codes, octal and hexadecimal
+ * byte values. It only restores ASCII control characters to their printable escape sequences.
  */
-public fun restoreEscapedSymbols(value: String): String =
+public fun restoreProtobufEscapes(value: String): String =
     buildString {
         value.forEach {
             append(ProtobufEscapeSequences[it.code] ?: it)
