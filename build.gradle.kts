@@ -95,6 +95,7 @@ dependencies {
 
     testImplementation(TestLib.lib)
     testImplementation(Logging.smokeTest)
+    testImplementation(Logging.testLib)?.because("We need `tapConsole`.")
 }
 
 configurations.all {

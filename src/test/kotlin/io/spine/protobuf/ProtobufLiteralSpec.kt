@@ -24,4 +24,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.301")
+package io.spine.protobuf
+
+import io.kotest.matchers.shouldBe
+import io.spine.logging.testing.tapConsole
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+
+@DisplayName("Protobuf string functions should")
+internal class ProtobufLiteralSpec {
+
+    @Test
+    fun `restore escaped ASCII control characters`() {
+        // The test string contains a mix of control characters and English letters.
+        val asciiCodes = listOf(7, 8, 101, 102, 9, 10, 11, 72, 73, 12, 13, 111, 34, 39, 92)
+        val asciiString = asciiCodes.map { it.toChar() }.joinToString()
+
+        val expected = "\\a, \\b, e, f, \\t, \\n, \\v, H, I, \\f, \\r, o, \\\", \\', \\\\"
+        val result = tapConsole {
+            // With restored escape sequences, the test string becomes printable.
+            val escaped = restoreProtobufEscapes(asciiString)
+            print(escaped)
+        }
+
+        result shouldBe expected
+    }
+}
