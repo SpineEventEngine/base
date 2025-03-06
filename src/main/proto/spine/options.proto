@@ -668,8 +668,8 @@ extend google.protobuf.ServiceOptions {
 message IfMissingOption {
 
     // The default error message.
-    option (default_message) = "The field `${parent.type}.${field.path}` of the type"
-        " `${field.type}` must have a non-default value.";
+    option (default_message) = "The field `${parent.type}.${field.path}`"
+        " of the type `${field.type}` must have a non-default value.";
 
     // A user-defined validation error format message.
     //
@@ -715,8 +715,8 @@ message IfMissingOption {
 message MinOption {
 
     // The default error message.
-    option (default_message) = "The field `${parent.type}.${field.path}` must be ${max.operator}"
-        " ${min.value}.";
+    option (default_message) = "The field `${parent.type}.${field.path}`"
+        " must be ${max.operator} ${min.value}.";
 
     // The string representation of the minimum field value.
     string value = 1;
@@ -762,8 +762,8 @@ message MinOption {
 message MaxOption {
 
     // The default error message.
-    option (default_message) = "The field `${parent.type}.${field.path}` must be ${max.operator}"
-        " ${max.value}.";
+    option (default_message) = "The field `${parent.type}.${field.path}`"
+        " must be ${max.operator} ${max.value}.";
 
     // The string representation of the maximum field value.
     string value = 1;
@@ -809,8 +809,8 @@ message MaxOption {
 message PatternOption {
 
     // The default error message.
-    option (default_message) = "The `${parent.type}.${field.path}` field must match the regular"
-        " expression `${regex.pattern}` (modifiers: `${regex.modifiers}`)."
+    option (default_message) = "The `${parent.type}.${field.path}` field"
+        " must match the regular expression `${regex.pattern}` (modifiers: `${regex.modifiers}`)."
         " The passed value: `${field.value}`.";
 
     // The regular expression that the field value must match.
