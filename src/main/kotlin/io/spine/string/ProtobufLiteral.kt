@@ -27,15 +27,21 @@
 package io.spine.string
 
 /**
- * ASCII control characters escaped by Protobuf compiler when parsing string literals.
+ * ASCII control characters escaped by the Protobuf compiler when parsing string literals.
  *
- * Escaping rules may differ from compiler to compiler, so a more reliable approach is
- * to re-escape strings in accordance to the specs of a particular tool that previously
- * performed this escaping.
+ * Escaping rules may differ from one compiler to another, so a more reliable approach
+ * is to re-escape strings according to the specifications of the tool that originally
+ * performed the escaping.
  *
- * Note we don't touch question marks because Protobuf compiler actually accepts both `?`
- * and `\?` as a question mark. So, it is unclear when we should prepend the leading `/`
- * to restore the original literal.
+ * Note we don't modify question marks because the Protobuf compiler actually accepts
+ * both `?` and `\?` as a question mark. Therefore, it is unclear when to prepend
+ * the leading `/` to restore the original literal.
+ *
+ * Also, we are not restoring Unicode codes, or octal and hexadecimal byte values.
+ * The reasons are as follows:
+ *
+ * 1) They do not appear to be expected in our literals.
+ * 2) Their escaping is more complex because they have variable length.
  *
  * Source: [Text Format Langauge Specification | String Literals](https://protobuf.dev/reference/protobuf/textformat-spec/#string).
  */
@@ -54,29 +60,29 @@ private val ProtobufEscapeSequences = mapOf(
 )
 
 /**
- * Restores the original literal as it was defined in a source file.
+ * Restores the original literal as it was defined in the source file.
  *
- * The method restores [escape sequences](https://protobuf.dev/reference/protobuf/textformat-spec/#string),
- * which Protobuf compiler substituted with ASCII control characters during the compilation.
+ * The method reverses the [escape sequences](https://protobuf.dev/reference/protobuf/textformat-spec/#string)
+ * that the Protobuf compiler substituted with ASCII control characters during compilation.
  *
- * The control characters are unprintable, thus cannot be typed directly from the keyboard.
- * Most compilers, including Protobuf, use escape sequences to represent such symbols
- * in string literals (i.e., `\n`). An escape symbol consists of a backslash and another
- * one or more symbols. The backslash is a printable character itself, but since it is used
- * to introduce an escape sequence, it requires escaping itself.
+ * Because control characters are unprintable and cannot be directly typed from the keyboard,
+ * most compilers (including Protobuf) use escape sequences (e.g., `\n`) to represent them.
+ * An escape sequence consists of a backslash followed by one or more symbols. Note that while
+ * the backslash is a printable character, it must be escaped too because it introduces
+ * an escape sequence.
  *
- * For code generation tasks, this can come handy in the following cases:
+ * Restoring the escaped symbols can be useful for code generation tasks.
+ * For example:
  *
- * 1. Report the problematic literal in compilation or runtime error messages as it was
- *    passed by the user. It will help the user to locate the problematic declaration.
- * 2. Use the passed Regex expressions as literals in the generated code.
- *    If the passed literal was pre-processed by the compiler, it cannot be longer
- *    rendered in a source file as literal. Now, it contains unprintable characters instead
- *    of printable escape sequences, and may contain a non-escaped backslash, which is
- *    prohibited for literals.
+ * 1. Report a problematic literal in an error message exactly as the user provided it.
+ * 2. Using a provided Regex expression as a literal in generated code. If the literal is pre-processed
+ *    by the Protobuf compiler, it may no longer be renderable as intended, potentially containing
+ *    unprintable characters instead of the expected escape sequences. An unescaped backslash can
+ *    also cause errors in many compilers.
  *
- * Note that this method does not roll back Unicode codes, octal and hexadecimal byte values.
- * Only ASCII control characters are re-escaped.
+ * Note that this method does not reverse the escaping for Unicode codes, or for octal
+ * and hexadecimal byte values. It only restores ASCII control characters to their printable
+ * escape sequences.
  */
 public fun restoreEscapedSymbols(value: String): String =
     buildString {
