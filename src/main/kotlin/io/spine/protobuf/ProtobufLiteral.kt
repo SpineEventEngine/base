@@ -28,22 +28,6 @@ package io.spine.protobuf
 
 /**
  * A map of ASCII control characters to their escaping sequences.
- *
- * When processing a string literal from a `.proto` source file, the Protobuf compiler
- * is expected to substitute these sequences with the corresponding ASCII codes.
- * This behavior should be the same for all target languages, though there is no official
- * specification about this, besides a reverse-engineered
- * [draft spec](https://protobuf.dev/reference/protobuf/textformat-spec/#string).
- *
- * Note we don't modify question marks because the Protobuf compiler actually accepts
- * both `?` and `\?` as a question mark. Therefore, it is unclear when to prepend
- * the leading `\` to restore the original literal.
- *
- * Also, we are not restoring Unicode codes, or octal and hexadecimal byte values.
- * The reasons are as follows:
- *
- * 1) They do not appear to be expected in our literals.
- * 2) Their escaping is more complex because they have variable length.
  */
 @Suppress("MagicNumber") // ASCII codes.
 private val ProtobufEscapeSequences = mapOf(
@@ -71,16 +55,36 @@ private val ProtobufEscapeSequences = mapOf(
  * the backslash is a printable character, it must be escaped too because it introduces
  * an escape sequence.
  *
+ * When processing a string literal from the source file, the Protobuf compiler is expected
+ * to substitute the escape sequences with the corresponding ASCII codes for runtime
+ * representation of the string. The substitution [rules][ProtobufEscapeSequences] should be
+ * the same for all target languages, though there is no official specification regarding this,
+ * besides a reverse-engineered [draft spec](https://protobuf.dev/reference/protobuf/textformat-spec/#string),
+ * for which they state the following:
+ *
+ * ```
+ * While an effort has been made to keep text formats consistent across supported languages,
+ * incompatibilities are likely to exist.
+ * ```
+ *
  * Restoring the escaped symbols can be useful for code generation tasks.
  * For example:
  *
- * 1. Report a problematic literal in an error message exactly as the user provided it.
- * 2. Using a provided Regex expression as a literal in generated code. If the literal is
+ * 1. Using a provided Regex expression as a literal in generated code. If the literal is
  *    pre-processed by the Protobuf compiler, it may no longer be renderable as intended,
  *    potentially containing unprintable characters instead of the escape sequences.
+ * 2. Report a problematic Regex expressions in an error message exactly as the user provided it.
  *
- * Note that this method does not reverse the escaping for Unicode codes, octal and hexadecimal
- * byte values. It only restores ASCII control characters to their printable escape sequences.
+ * Note we don't modify question marks because the Protobuf compiler (particularly, for Java)
+ * actually accepts both `?` and `\?` as a question mark. Therefore, it is unclear when
+ * to prepend the leading `\` to restore the original literal. The method makes an assumption
+ * that users prefer just a question mark.
+ *
+ * Also, we are not restoring Unicode codes, or octal and hexadecimal byte values
+ * due to the following assumptions:
+ *
+ * 1) Users will prefer specifying Unicode symbols with text. Protobuf source files support UTF-8.
+ * 2) Octal and hexadecimal byte values are unlikely to participate in Regex expressions.
  */
 public fun restoreProtobufEscapes(value: String): String =
     buildString {
