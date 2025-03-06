@@ -38,7 +38,13 @@ internal class ProtobufLiteralSpec {
         // The test string contains a mix of control characters and English letters.
         val asciiCodes = listOf(7, 8, 101, 102, 9, 10, 11, 72, 73, 12, 13, 111, 34, 39, 92)
         val asciiString = asciiCodes.map { it.toChar() }.joinToString()
+
         val expected = "\\a, \\b, e, f, \\t, \\n, \\v, H, I, \\f, \\r, o, \\\", \\', \\\\"
-        restoreProtobufEscapes(asciiString) shouldBe expected
+        val escaped = restoreProtobufEscapes(asciiString)
+        escaped shouldBe expected
+
+        // Uncomment these lines to debug the test.
+        // println(asciiString) // Prints whitespaces and English letters.
+        // println(escaped) // => `\a, \b, e, f, \t, \n, \v, H, I, \f, \r, o, \", \', \\`.
     }
 }
