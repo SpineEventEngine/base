@@ -55,7 +55,8 @@ private val ProtobufEscapeSequences = mapOf(
  * This method reverses the escape sequences that the Protobuf compiler substituted with
  * ASCII control characters during the compilation. The substitution [rules][ProtobufEscapeSequences]
  * are expected to be consistent across all target languages. However, no official documentation
- * exists on this behavior, aside from a reverse-engineered [draft specification](https://protobuf.dev/reference/protobuf/textformat-spec/#string)
+ * exists on this behavior, aside from a reverse-engineered
+ * [draft specification](https://protobuf.dev/reference/protobuf/textformat-spec/#string)
  * that includes the following disclaimer:
  *
  * ```
