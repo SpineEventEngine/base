@@ -27,6 +27,7 @@
 package io.spine.protobuf
 
 import io.kotest.matchers.shouldBe
+import io.spine.logging.testing.tapConsole
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -40,11 +41,12 @@ internal class ProtobufLiteralSpec {
         val asciiString = asciiCodes.map { it.toChar() }.joinToString()
 
         val expected = "\\a, \\b, e, f, \\t, \\n, \\v, H, I, \\f, \\r, o, \\\", \\', \\\\"
-        val escaped = restoreProtobufEscapes(asciiString)
-        escaped shouldBe expected
+        val printed = tapConsole {
+            // With restored escape sequences, the test string becomes printable.
+            // Otherwise, the control characters would not be visible.
+            print(restoreProtobufEscapes(asciiString))
+        }
 
-        // Uncomment these lines to debug the test.
-        // println(asciiString) // Prints whitespaces and English letters.
-        // println(escaped) // => `\a, \b, e, f, \t, \n, \v, H, I, \f, \r, o, \", \', \\`.
+        printed shouldBe expected
     }
 }
