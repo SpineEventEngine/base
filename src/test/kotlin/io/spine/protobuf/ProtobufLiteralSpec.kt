@@ -30,7 +30,7 @@ import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
-@DisplayName("Protobuf string extensions should")
+@DisplayName("Protobuf string functions should")
 internal class ProtobufLiteralSpec {
 
     @Test
