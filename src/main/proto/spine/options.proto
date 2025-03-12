@@ -211,8 +211,14 @@ extend google.protobuf.FieldOptions {
     //
     //   1. The default instance of `Any` is always valid because there is nothing to unpack
     //      and validate.
-    //   2. Instances with unknown type URLs are considered valid because their Java class cannot
-    //      be determined from `io.spine.KnownTypes`.
+    //   2. Instances with type URLs that are unknown to the application are also valid.
+    //
+    //      Unpacking requires a corresponding Java class to deserialize the message, but if
+    //      the application does not recognize the type URL, it has no way to determine which
+    //      class to use.
+    //
+    //      Such may happen when the packed message comes from a newer app version, an external
+    //      system, or is simply not included in the application’s dependencies.
     //
     bool validate = 73821;
 
