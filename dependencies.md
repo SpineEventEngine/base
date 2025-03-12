@@ -1,6 +1,6 @@
 
 
-# Dependencies of `io.spine:spine-base:2.0.0-SNAPSHOT.301`
+# Dependencies of `io.spine:spine-base:2.0.0-SNAPSHOT.302`
 
 ## Runtime
 1.  **Group** : com.google.code.findbugs. **Name** : jsr305. **Version** : 3.0.2.
@@ -544,6 +544,14 @@
 1.  **Group** : org.apache.httpcomponents.core5. **Name** : httpcore5-h2. **Version** : 5.1.3.
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1.  **Group** : org.apache.logging.log4j. **Name** : log4j-api. **Version** : 2.20.0.
+     * **Project URL:** [https://www.apache.org/](https://www.apache.org/)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : org.apache.logging.log4j. **Name** : log4j-core. **Version** : 2.20.0.
+     * **Project URL:** [https://www.apache.org/](https://www.apache.org/)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1.  **Group** : org.apiguardian. **Name** : apiguardian-api. **Version** : 1.1.2.
      * **Project URL:** [https://github.com/apiguardian-team/apiguardian](https://github.com/apiguardian-team/apiguardian)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -891,4 +899,4 @@
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Thu Mar 06 12:07:08 CET 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Mar 12 15:11:11 CET 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
