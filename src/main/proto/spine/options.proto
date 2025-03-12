@@ -127,24 +127,98 @@ extend google.protobuf.FieldOptions {
     // See `PatternOption`.
     PatternOption pattern = 73820;
 
-    // Enables validation constraint checking for fields that refer to a message.
+    // Enables in-depth validation for fields that refer to a message.
     //
-    // Default value: `false`.
+    // This option applies only to fields that reference a message:
     //
-    // This option can only be applied to fields that refer to a message. Such fields include:
+    //   1. Singular message fields.
+    //   2. Repeated fields of message types.
+    //   3. Map fields with message types as values.
     //
-    //   1. Message fields.
-    //   2. Map fields with message types as values.
-    //   3. Repeated fields of message types.
+    // When set to `true`, the field is valid only if its value satisfies the validation
+    // constraints defined in the corresponding message type:
     //
-    // When set to `true`, the marked field is considered valid only if the field's value satisfies
-    // the validation constraints defined in the corresponding message type. This means:
+    //   1. For singular message fields: the message must meet its constraints.
     //
-    //   1. For message fields: the message value itself must meet its constraints.
-    //   2. For map fields: each value within the map entries must meet the constraints defined
-    //      for its type. Note: Protobuf does not allow messages to be used as map keys.
-    //   3. For repeated fields: every item in the repeated field must satisfy the constraints
-    //      defined for the message type it refers to.
+    //      Note: default instances are considered valid even if the message has required fields.
+    //      In such cases, it is unclear whether the field is set with an invalid instance or
+    //      simply unset.
+    //
+    //      Example:
+    //
+    //      ```
+    //      // Note that the default instance of `Address` is not valid because the `value` field
+    //      // is mandatory.
+    //      message Address {
+    //          string value = 1 [(required) = true];
+    //      }
+    //
+    //      // However, the default instance of `Address` in `Student.address` is valid, despite
+    //      // having `(validate)` constraint that forces the message to meet its constraints.
+    //      // Since the `address` field is optional for `Student`, `(validate)` would allow
+    //      // default instances for this field treating them as "no value set".
+    //      message Student {
+    //          Address address = 1 [(validate) = true]; // implicit `(required) = false`.
+    //      }
+    //
+    //      // Make the validated field required to avoid this behavior. In this case, `(validate)`
+    //      // continues to bypass default instances, but the `(required)` option will report them.
+    //      message Student {
+    //          Address address = 1 [(validate) = true, (required) = true];
+    //      }
+    //      ```
+    //
+    //   2. For repeated fields: every element in the repeated field must meet the constraints
+    //      of its message type.
+    //
+    //      Example:
+    //
+    //      ```
+    //      // Note that the default instance of `PhoneNumber` is not valid because the `value`
+    //      // field is mandatory.
+    //      message PhoneNumber {
+    //          string value = 1 [(required) = true, (pattern).regex = "^\+?[0-9\s\-()]{1,30}$"];
+    //      }
+    //
+    //      // In contrast to singular fields, the default instances in `repeated` will also be
+    //      // reported by the `(validate)` constraint, with those that do not match the pattern.
+    //      message Student {
+    //          repeated PhoneNumber number = 1 [(validate) = true];
+    //      }
+    //      ```
+    //
+    //   3. For map fields: each value in the map must meet the constraints of message type.
+    //      Note: Protobuf does not allow messages to be used as map keys.
+    //
+    //      Example:
+    //
+    //      ```
+    //      // Note that the default instance of `PhoneNumber` is not valid because the `value`
+    //      // field is mandatory.
+    //      message PhoneNumber {
+    //          string value = 1 [(required) = true, (pattern).regex = "^\+?[0-9\s\-()]{1,30}$"];
+    //      }
+    //
+    //      // In contrast to singular fields, the default instances in `map` values will also be
+    //      // reported by the `(validate)` constraint, with those that do not match the pattern.
+    //      message Contacts {
+    //          map<string, PhoneNumber> map = 1 [(validate) = true];
+    //      }
+    //      ```
+    //
+    // If the field contains `google.protobuf.Any`, the option will first attempt to unpack
+    // the enclosed message, and only then validate it. However, unpacking is not always possible:
+    //
+    //   1. The default instance of `Any` is always valid because there is nothing to unpack
+    //      and validate.
+    //   2. Instances with type URLs that are unknown to the application are also valid.
+    //
+    //      Unpacking requires a corresponding Java class to deserialize the message, but if
+    //      the application does not recognize the type URL, it has no way to determine which
+    //      class to use.
+    //
+    //      Such may happen when the packed message comes from a newer app version, an external
+    //      system, or is simply not included in the application’s dependencies.
     //
     bool validate = 73821;
 
