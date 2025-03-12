@@ -127,24 +127,32 @@ extend google.protobuf.FieldOptions {
     // See `PatternOption`.
     PatternOption pattern = 73820;
 
-    // Enables validation constraint checking for fields that refer to a message.
+    // Enables in-depth validation for fields that refer to a message.
     //
-    // Default value: `false`.
+    // This option applies only to fields that reference a message:
     //
-    // This option can only be applied to fields that refer to a message. Such fields include:
+    //   1. Singular message fields.
+    //   2. Repeated fields of message types.
+    //   3. Map fields with message types as values.
     //
-    //   1. Message fields.
-    //   2. Map fields with message types as values.
-    //   3. Repeated fields of message types.
+    // When set to `true`, the field is valid only if its value satisfies the validation
+    // constraints defined in the corresponding message type:
     //
-    // When set to `true`, the marked field is considered valid only if the field's value satisfies
-    // the validation constraints defined in the corresponding message type. This means:
+    //   1. For singular message fields: the message must meet its constraints.
+    //      Note: default instances are considered valid even if the message has required fields.
+    //      In such cases, it is unclear whether the field is set with an invalid instance or
+    //      simply unset.
+    //   2. For map fields: each value in the map must meet the constraints of message type.
+    //      Note: Protobuf does not allow messages to be used as map keys.
+    //   3. For repeated fields: every element in the repeated field must meet the constraints
+    //      of its message type.
     //
-    //   1. For message fields: the message value itself must meet its constraints.
-    //   2. For map fields: each value within the map entries must meet the constraints defined
-    //      for its type. Note: Protobuf does not allow messages to be used as map keys.
-    //   3. For repeated fields: every item in the repeated field must satisfy the constraints
-    //      defined for the message type it refers to.
+    // If the field contains `google.protobuf.Any`, the option will first attempt to unpack
+    // the enclosed message, and only then validate it. However, unpacking is not always possible:
+    //
+    //   1. The default instance of `Any` is always valid.
+    //   2. Instances with unknown type URLs are considered valid because their Java class cannot
+    //      be determined from `io.spine.KnownTypes`.
     //
     bool validate = 73821;
 
