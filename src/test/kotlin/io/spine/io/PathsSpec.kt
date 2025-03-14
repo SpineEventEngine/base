@@ -27,12 +27,15 @@
 package io.spine.io
 
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.spine.string.decodeBase64
 import io.spine.testing.TestValues.randomString
+import java.io.File
 import java.nio.file.Paths
 import kotlin.io.path.Path
 import kotlin.io.path.div
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 @DisplayName("Extensions for `Path` should")
@@ -54,5 +57,26 @@ internal class PathsSpec {
         Path("file").replaceExtension("txt") shouldBe Path("file.txt")
         Path("file.txt").replaceExtension("") shouldBe Path("file")
         Path("file.").replaceExtension("") shouldBe Path("file")
+    }
+
+    @Test
+    fun `provide current system path separator`() {
+        Separator.system shouldBe File.separatorChar
+    }
+
+    @Nested inner class
+    `convert path separators to those from Unix` {
+
+        @Test
+        fun `returning the same instance of the path already has Unix separators`() {
+            val path = Path("/my/unix/path")
+            path.toUnix() shouldBeSameInstanceAs path
+        }
+
+        @Test
+        fun `create new instance when Windows separators are present`() {
+            val path = Path("C:\\Windows\\path")
+            path.toUnix() shouldBe Path("C:/Windows/path")
+        }
     }
 }

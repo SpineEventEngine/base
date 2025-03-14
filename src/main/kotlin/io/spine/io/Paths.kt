@@ -29,8 +29,11 @@
 package io.spine.io
 
 import io.spine.string.toBase64Encoded
+import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.nameWithoutExtension
+import kotlin.io.path.pathString
+import kotlin.io.path.Path
 
 /**
  * Converts this path to a Base64-encoded string.
@@ -52,3 +55,43 @@ public fun Path.replaceExtension(newExtension: String): Path {
     val newExt = newExtension.ensureDotPrefix()
     return resolveSibling(nameWithoutExtension + newExt)
 }
+
+/**
+ * Obtains the path with [Unix][Separator.Unix] separators.
+ *
+ * @return `this` if the path is already delimited as required, otherwise creates
+ *  a new instance with [Windows][Separator.Windows] file separators replaced.
+ */
+public fun Path.toUnix(): Path =
+    if (pathString.contains(Separator.Windows)) {
+        Path(pathString.toUnix())
+    } else {
+        this
+    }
+
+/**
+ * Provides values of separators used to delimit directories in a file path.
+ */
+@Suppress("ConstPropertyName") // We use capitalized OS names for constants.
+public object Separator {
+
+    /**
+     * The separator used by the current OS.
+     */
+    public val system: Char = File.separatorChar
+
+    /**
+     * The separator used in Unix-based systems.
+     */
+    public const val Unix: Char = '/'
+
+    /**
+     * The separator used in Windows OS family.
+     */
+    public const val Windows: Char = '\\'
+}
+
+/**
+ * Replaces Windows path separators (`\\`) with those used in Unix-based systems (`/`).
+ */
+internal fun String.toUnix(): String = replace(Separator.Windows, Separator.Unix)

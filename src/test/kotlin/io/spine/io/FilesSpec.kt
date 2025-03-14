@@ -27,8 +27,11 @@
 package io.spine.io
 
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeSameInstanceAs
 import java.io.File
+import kotlin.io.path.Path
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 @DisplayName("Extensions for `File` should")
@@ -41,5 +44,21 @@ internal class FilesSpec {
         File("file").replaceExtension("txt") shouldBe File("file.txt")
         File("file.txt").replaceExtension("") shouldBe File("file")
         File("file.").replaceExtension("") shouldBe File("file")
+    }
+
+    @Nested inner class
+    `convert path separators to those from Unix` {
+
+        @Test
+        fun `returning the same instance of the file already has Unix separators`() {
+            val file = File("/my/unix/path")
+            file.toUnix() shouldBeSameInstanceAs file
+        }
+
+        @Test
+        fun `create new instance when Windows separators are present`() {
+            val file = File("C:\\Windows\\path")
+            file.toUnix() shouldBe File("C:/Windows/path")
+        }
     }
 }
