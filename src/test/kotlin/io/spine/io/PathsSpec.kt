@@ -64,19 +64,11 @@ internal class PathsSpec {
         Separator.system shouldBe File.separatorChar
     }
 
-    @Nested inner class
-    `convert path separators to those from Unix` {
+    @Test
+    fun `provide extension for replacing Windows file separators`() {
+        "C:\\Windows\\path".toUnix() shouldBe "C:/Windows/path"
 
-        @Test
-        fun `returning the same instance of the path already has Unix separators`() {
-            val path = Path("/my/unix/path")
-            path.toUnix() shouldBeSameInstanceAs path
-        }
-
-        @Test
-        fun `create new instance when Windows separators are present`() {
-            val path = Path("C:\\Windows\\path")
-            path.toUnix() shouldBe Path("C:/Windows/path")
-        }
+        val path = "/my/unix/path"
+        path.toUnix() shouldBeSameInstanceAs path
     }
 }

@@ -94,4 +94,8 @@ public object Separator {
 /**
  * Replaces Windows path separators (`\\`) with those used in Unix-based systems (`/`).
  */
-internal fun String.toUnix(): String = replace(Separator.Windows, Separator.Unix)
+public fun String.toUnix(): String = if (contains(Separator.Windows)) {
+    replace(Separator.Windows, Separator.Unix)
+} else {
+    this
+}
