@@ -1,5 +1,5 @@
 /*
- * Copyright 2024, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,7 @@ import java.io.File
  * The function does not check the presence of the file.
  * It does not check if this path represents a directory, either.
  *
- * @param newExtension
- *         a new file extension with or without leading `"."`.
+ * @param newExtension The new file extension with or without leading `"."`.
  */
 public fun File.replaceExtension(newExtension: String): File {
     val newExt = newExtension.ensureDotPrefix()
@@ -46,10 +45,23 @@ public fun File.replaceExtension(newExtension: String): File {
 }
 
 /**
+ * Obtains the path with [Unix][Separator.Unix] separators.
+ *
+ * @return `this` if the file path is already delimited as required, otherwise creates
+ *  a new instance with [Windows][Separator.Windows] file separators replaced.
+ */
+public fun File.toUnix(): File =
+    if (path.contains(Separator.Windows)) {
+        File(path.toUnix())
+    } else {
+        this
+    }
+
+/**
  * Ensures that the prefix `.` exists in this string if it is not empty.
  *
  * @return this string if it is already prefixed or is empty,
- *         otherwise returns new prefixed string.
+ *  otherwise returns the new prefixed string.
  */
 internal fun String.ensureDotPrefix() =
     if (isEmpty()) {

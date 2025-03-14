@@ -184,18 +184,35 @@ fun Project.configureTaskDependencies() {
         val launchTestProtoData = "launchTestProtoData"
         val generateProto = "generateProto"
         val createVersionFile = "createVersionFile"
-        "compileKotlin".dependOn(launchProtoData)
-        "compileTestKotlin".dependOn(launchTestProtoData)
+        val compileKotlin = "compileKotlin"
+        compileKotlin.dependOn(launchProtoData)
+        val compileTestKotlin = "compileTestKotlin"
+        compileTestKotlin.dependOn(launchTestProtoData)
         val sourcesJar = "sourcesJar"
-        sourcesJar.dependOn(generateProto)
-        sourcesJar.dependOn(launchProtoData)
-        sourcesJar.dependOn(createVersionFile)
-        sourcesJar.dependOn("prepareProtocConfigVersions")
+        val kspKotlin = "kspKotlin"
+        sourcesJar.run {
+            dependOn(generateProto)
+            dependOn(launchProtoData)
+            dependOn(kspKotlin)
+            dependOn(createVersionFile)
+            dependOn("prepareProtocConfigVersions")
+        }
         val dokkaHtml = "dokkaHtml"
-        dokkaHtml.dependOn(generateProto)
-        dokkaHtml.dependOn(launchProtoData)
-        "dokkaJavadoc".dependOn(launchProtoData)
+        dokkaHtml.run {
+            dependOn(generateProto)
+            dependOn(launchProtoData)
+            dependOn(kspKotlin)
+        }
+        val dokkaJavadoc = "dokkaJavadoc"
+        dokkaJavadoc.run {
+            dependOn(launchProtoData)
+            dependOn(kspKotlin)
+        }
         "publishPluginJar".dependOn(createVersionFile)
+        compileKotlin.dependOn(kspKotlin)
+        compileTestKotlin.dependOn("kspTestKotlin")
+        "compileTestFixturesKotlin".dependOn("kspTestFixturesKotlin")
+        "javadocJar".dependOn(dokkaHtml)
     }
 }
 

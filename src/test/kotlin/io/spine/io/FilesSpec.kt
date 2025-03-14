@@ -27,8 +27,11 @@
 package io.spine.io
 
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeSameInstanceAs
 import java.io.File
+import kotlin.io.path.Path
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 @DisplayName("Extensions for `File` should")
