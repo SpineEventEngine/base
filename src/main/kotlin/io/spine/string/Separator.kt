@@ -90,13 +90,13 @@ public enum class Separator(
          */
         @JvmStatic
         public fun nonSystem(): Iterable<Separator> =
-            values().filter { !it.isSystem() }
+            entries.filter { !it.isSystem() }
 
         /**
          * Finds a separator which value is equal to the given string.
          */
         @JvmStatic
         internal fun findMatching(str: String): Separator? =
-            values().find { str == it.value }
+            entries.find { str == it.value }
     }
 }
