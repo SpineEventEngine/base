@@ -169,4 +169,11 @@ class StringsSpec {
     fun `provide shortcut for 'shortDebugString'`() {
         stringValue { value = "Hey" }.shortly() shouldBe "value: \"Hey\""
     }
+
+    @Test
+    fun `provide utility for pluralizing a string`() {
+        "dog".pluralize(2) shouldBe "dogs"
+        "mouse".pluralize(3, "mice") shouldBe "mice"
+        "cat".pluralize(1) shouldBe "cat"
+    }
 }

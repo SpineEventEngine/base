@@ -1,11 +1,11 @@
 /*
- * Copyright 2024, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -147,7 +147,7 @@ public fun String.pi(indent: String = Indent.defaultJavaIndent.value): String =
 /**
  * Joins the elements of this `Iterable` into a single string having each item on a separate line.
  *
- * The lines are delimited with system line separator.
+ * The lines are delimited with the system line separator.
  */
 public fun Iterable<*>.joinByLines(): String =
     joinToString(separator = NL)
@@ -157,10 +157,8 @@ public fun Iterable<*>.joinByLines(): String =
  *
  * Similar to [prependIndent] but with system-dependent line separator.
  *
- * @param step
- *         the indentation of each level.
- * @param level
- *         the number of indentation levels to add. If zero, no indentation would be added.
+ * @param step The indentation of each level.
+ * @param level The number of indentation levels to add. If zero, no indentation would be added.
  * @see String.pi
  */
 public fun Iterable<String>.indent(step: Indent, level: Int): String {
@@ -171,7 +169,7 @@ public fun Iterable<String>.indent(step: Indent, level: Int): String {
 }
 
 /**
- * Converts this string to Base64-encoded version using UTF-8 charset.
+ * Converts this string to the Base64-encoded version using UTF-8 charset.
  *
  * @see Base64
  */
@@ -198,8 +196,7 @@ public fun String.decodeBase64(): String {
  * The function counts non-overlapping occurrences.
  * For example, the result for the `"aba"` substring in `"ababababa"` would be 2.
  *
- * @param substring
- *         the substring to look for in this one.
+ * @param substring The substring to look for in this one.
  */
 public fun String.count(substring: String): Int {
     var count = 0
@@ -218,6 +215,8 @@ public fun String.count(substring: String): Int {
 
 /**
  * Ensures that this string starts with the given prefix.
+ *
+ * @param prefix The prefix to add to this string if it is not already present.
  */
 public fun String.ensurePrefix(prefix: String): String {
     require(prefix.isNotEmpty()) {
@@ -239,3 +238,19 @@ public inline  fun <reified T> simply(): String = T::class.simpleName!!
  * A shortcut for [shortDebugString] call.
  */
 public fun com.google.protobuf.Message.shortly(): String = shortDebugString()
+
+/**
+ * Transform this string into a plural form if the count is greater than one.
+ *
+ * The function uses English grammar for simple plural forms, if the [pluralForm] parameter
+ * is not specified. So, if `count > 1` and `pluralForm == null`, "${this}s" will be returned.
+ *
+ * Therefore, if the language is not English or the singular word has a non-regular plural form,
+ * please do specify the [pluralForm] parameter.
+ *
+ * @param pluralForm Optional parameter to be used for count > 1.
+ * @return this string if count == 1, [pluralForm], if specified, "${this}s" otherwise.
+ */
+public fun String.pluralize(count: Int, pluralForm: String? = null): String {
+    return if (count == 1) this else pluralForm ?: "${this}s"
+}
