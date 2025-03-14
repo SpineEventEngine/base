@@ -47,7 +47,7 @@ public fun File.replaceExtension(newExtension: String): File {
 /**
  * Obtains the path with [Unix][Separator.Unix] separators.
  *
- * @return `this` if the file is already delimited as required, otherwise creates
+ * @return `this` if the file path is already delimited as required, otherwise creates
  *  a new instance with [Windows][Separator.Windows] file separators replaced.
  */
 public fun File.toUnix(): File =
