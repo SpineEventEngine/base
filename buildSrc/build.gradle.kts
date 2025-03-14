@@ -1,5 +1,5 @@
 /*
- * Copyright 2024, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,9 +39,6 @@ plugins {
 
     // https://github.com/jk1/Gradle-License-Report/releases
     id("com.github.jk1.dependency-license-report").version("2.7")
-
-    // https://github.com/johnrengelman/shadow/releases
-    id("com.github.johnrengelman.shadow").version("7.1.2")
 }
 
 repositories {
