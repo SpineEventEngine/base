@@ -240,7 +240,7 @@ public inline  fun <reified T> simply(): String = T::class.simpleName!!
 public fun com.google.protobuf.Message.shortly(): String = shortDebugString()
 
 /**
- * Transform this string into a plural form if the count is greater than one.
+ * Transforms this string into a plural form if the count is greater than one.
  *
  * The function uses English grammar for simple plural forms, if the [pluralForm] parameter
  * is not specified. So, if `count > 1` and `pluralForm == null`, "${this}s" will be returned.
