@@ -29,12 +29,12 @@ package io.spine.dependency.test
 /**
  * A library for in-process compilation of Kotlin and Java code compilation.
  *
- * @see <a href="https://github.com/tschuchortdev/kotlin-compile-testing">GitHub repo</a>
+ * @see <a href="https://github.com/zacsweers/kotlin-compile-testing">GitHub repo</a>
  */
 @Suppress("unused", "ConstPropertyName")
 object KotlinCompileTesting {
-    private const val version = "1.5.0" // Compatible with Kotlin Compiler 1.8.22.
-    private const val group = "com.github.tschuchortdev"
-    const val lib = "$group:kotlin-compile-testing:$version"
-    const val libKsp = "$group:kotlin-compile-testing-ksp:$version"
+    private const val version = "0.7.0"
+    private const val group = "dev.zacsweers.kctfork"
+    const val libCore = "$group:core:$version"
+    const val libKsp = "$group:ksp:$version"
 }

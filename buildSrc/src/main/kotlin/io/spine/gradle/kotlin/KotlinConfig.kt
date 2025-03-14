@@ -1,5 +1,5 @@
 /*
- * Copyright 2024, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,26 +51,19 @@ fun KotlinJvmProjectExtension.applyJvmToolchain(version: String) =
 /**
  * Opts-in to experimental features that we use in our codebase.
  */
-@Suppress("unused", "MagicNumber" /* Kotlin Compiler version. */)
+@Suppress("unused")
 fun KotlinJvmCompilerOptions.setFreeCompilerArgs() {
-    // Avoid the "unsupported flag warning" for Kotlin compilers pre 1.9.20 and after 2.0.0.
-    // See: https://youtrack.jetbrains.com/issue/KT-61573
-    val expectActualClasses = KotlinVersion.CURRENT.run {
-        if (isAtLeast(1, 9, 20) && major < 2) "-Xexpect-actual-classes"
-        else ""
-    }
     freeCompilerArgs.addAll(
         listOf(
             "-Xskip-prerelease-check",
             "-Xjvm-default=all",
             "-Xinline-classes",
-            expectActualClasses,
             "-opt-in=" +
                     "kotlin.contracts.ExperimentalContracts," +
                     "kotlin.io.path.ExperimentalPathApi," +
                     "kotlin.ExperimentalUnsignedTypes," +
                     "kotlin.ExperimentalStdlibApi," +
                     "kotlin.experimental.ExperimentalTypeInference",
-        ).filter { it.isNotBlank() }
+        )
     )
 }
