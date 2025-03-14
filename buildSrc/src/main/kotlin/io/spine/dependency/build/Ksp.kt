@@ -40,4 +40,5 @@ object Ksp {
     const val symbolProcessing = "$group:symbol-processing:$version"
     const val symbolProcessingAaEmb = "$group:symbol-processing-aa-embeddable:$version"
     const val symbolProcessingCommonDeps = "$group:symbol-processing-common-deps:$version"
+    const val gradlePlugin = "$group:symbol-processing-gradle-plugin:$version"
 }
