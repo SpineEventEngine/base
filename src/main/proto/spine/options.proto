@@ -1303,7 +1303,7 @@ message RangeOption {
 
     // The default error message.
     option (default_message) = "The field `${parent.type}.${field.path}` must be within"
-        " the following range: `${range.value}`.";
+        " the following range: `${range.value}`. The passed value: `${field.value}`.";
 
     // The string representation of the range.
     //
