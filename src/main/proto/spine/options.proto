@@ -1309,43 +1309,47 @@ message RangeOption {
 
     // The string representation of the range.
     //
-    // The range can be open (not including the endpoint) or closed (including the endpoint) on
-    // each side. Open endpoints are indicated using a parenthesis (`(`, `)`). Closed endpoints
-    // are indicated using a square bracket (`[`, `]`).
+    // ## Syntax
     //
-    // The lower and upper bounds are separated using either `..` or ` .. ` delimiter.
+    // 1. The range can be open (not including the endpoint) or closed (including the endpoint)
+    //    on each side. Open endpoints are indicated using a parenthesis (`(`, `)`).
+    //    Closed endpoints are indicated using a square bracket (`[`, `]`).
+    // 2. The lower and upper endpoints are separated by either the `..` or ` .. ` delimiter.
+    // 3. The lower bound must be strictly less than the upper bound.
+    //
+    // ## Field type consistency
     //
     // The definition of the range must be consistent with the field type it describes.
     //
-    // 1. The range for an integer field must be defined with integer numbers.
-    //    Specifying an integer number using the decimal separator (`.`) is not allowed,
-    //    even if the endpoint value has zero fractional part, i.e., `5.0`.
+    // 1. A range for an integer field must use integer numbers. Specifying an integer
+    //    with a decimal separator (`.`) is not allowed, even if the value has no
+    //    fractional part (e.g., `5.0`).
     //
-    //    Example: Defining ranges of integer values.
+    //    Example: Defining ranges for integer fields.
     //
     //    message IntegerRanges {
     //         int32 hour = 1 [(range).value = "[0..24)"];
     //         uint32 minute = 2 [(range).value = "[0..59]"];
     //     }
     //
-    // 2. The range for a floating point field must be defined with decimal separator (`.`),
-    //    even if the endpoint value does not have a fractional part. An exponent part
-    //    (`E` or `e` followed by an optional sign and digits) is allowed.
+    // 2. A range for a floating point field must always use a decimal separator (`.`),
+    //    even if the value value has no fractional part. An exponent part
+    //    (`E` or `e`, followed by an optional sign and digits) is allowed.
     //
-    //    Example: Defining ranges of floating-point values.
+    //    Example: Defining ranges for floating-point fields.
     //
-    //     message NumRanges {
+    //     message FloatRanges {
     //         float degree = 1 [(range).value = "[0.0 .. 360.0)"];
     //         double angle = 2 [(range).value = "(0.0 .. 180.0)"];
     //     }
     //
-    // 3. The specified range must not exceed the range of the field type itself.
+    // 3. A range must not exceed the limits of the field type.
     //
-    //    Example: Invalid ranges that do not fit into the range of the field.
+    //    Example: Invalid ranges that exceed the field type limits.
     //
     //    message OverflowRanges {
-    //        float price = 1 [(range).value = "[0, 5.5E38]"]; // Goes above the `float` maximum.
-    //        uint32 size = 2 [(range).value = "[-5; 10]"]; // Goes below the `uint32` minimum.
+    //        float price = 1 [(range).value = "[0, 5.5E38]"]; // Exceeds the `float` maximum.
+    //        uint32 size = 2 [(range).value = "[-5; 10]"]; // Falls below the `uint32` minimum.
     //    }
     //
     //
