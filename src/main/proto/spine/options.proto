@@ -1299,6 +1299,8 @@ message IfHasDuplicatesOption {
 //
 // For unbounded ranges, please use `(min)` and `(max) options.
 //
+// The option supports all Protobuf numeric fields.
+//
 message RangeOption {
 
     // The default error message.
@@ -1308,22 +1310,44 @@ message RangeOption {
     // The string representation of the range.
     //
     // The range can be open (not including the endpoint) or closed (including the endpoint) on
-    // each side. Open endpoints are indicated using a parenthesis (`(`, `)`). Closed endpoints are
-    // indicated using a square bracket (`[`, `]`).
+    // each side. Open endpoints are indicated using a parenthesis (`(`, `)`). Closed endpoints
+    // are indicated using a square bracket (`[`, `]`).
     //
-    // Example: Defining ranges of numeric values.
+    // The lower and upper bounds are separated using either `..` or ` .. ` delimiter.
     //
-    //     message NumRanges {
+    // The definition of the range must be consistent with the field type it describes.
+    //
+    // 1. The range for an integer field must be defined with integer numbers.
+    //    Specifying an integer number using the decimal separator (`.`) is not allowed,
+    //    even if the endpoint value has zero fractional part, i.e., `5.0`.
+    //
+    //    Example: Defining ranges of integer values.
+    //
+    //    message IntegerRanges {
     //         int32 hour = 1 [(range).value = "[0..24)"];
     //         uint32 minute = 2 [(range).value = "[0..59]"];
-    //         float degree = 3 [(range).value = "[0.0..360.0)"];
-    //         double angle = 4 [(range).value = "(0.0..180.0)"];
     //     }
     //
-    // NOTE: That definition of ranges must be consistent with the type they describe.
-    //       An range for an integer field must be defined with integer endpoints.
-    //       A range for a floating point field must be defined with decimal separator (`.`),
-    //       even if the endpoint value does not have a fractional part.
+    // 2. The range for a floating point field must be defined with decimal separator (`.`),
+    //    even if the endpoint value does not have a fractional part. An exponent part
+    //    (`E` or `e` followed by an optional sign and digits) is allowed.
+    //
+    //    Example: Defining ranges of floating-point values.
+    //
+    //     message NumRanges {
+    //         float degree = 1 [(range).value = "[0.0 .. 360.0)"];
+    //         double angle = 2 [(range).value = "(0.0 .. 180.0)"];
+    //     }
+    //
+    // 3. The specified range must not exceed the range of the field type itself.
+    //
+    //    Example: Invalid ranges that do not fit into the range of the field.
+    //
+    //    message OverflowRanges {
+    //        float price = 1 [(range).value = "[0, 5.5E38]"]; // Goes above the `float` maximum.
+    //        uint32 size = 2 [(range).value = "[-5; 10]"]; // Goes below the `uint32` minimum.
+    //    }
+    //
     //
     string value = 1;
 
