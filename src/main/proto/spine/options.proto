@@ -1321,7 +1321,7 @@ message RangeOption {
     // - Open bounds exclude the endpoint and are indicated using parentheses (`(`, `)`).
     //   Example: `(0..10)` represents values strictly between 0 and 10.
     //
-    // The lower bound must be strictly less than the upper bound.
+    // The lower bound must be less than or equal to the upper bound.
     //
     // ## Integer Fields
     //
