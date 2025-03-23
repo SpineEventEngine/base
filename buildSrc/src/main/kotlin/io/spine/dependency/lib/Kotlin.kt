@@ -82,7 +82,7 @@ object Kotlin {
     }
 
     object GradlePlugin {
-        const val version = Kotlin.runtimeVersion
+        const val version = runtimeVersion
         const val api = "$group:kotlin-gradle-plugin-api:$version"
         const val lib = "$group:kotlin-gradle-plugin:$version"
         const val model = "$group:kotlin-gradle-model:$version"
