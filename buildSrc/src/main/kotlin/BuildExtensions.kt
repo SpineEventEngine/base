@@ -111,8 +111,8 @@ val PluginDependenciesSpec.protoData: ProtoData
  * declared in auto-generated `org.gradle.kotlin.dsl.PluginAccessors.kt` file.
  * It conflicts with our own declarations.
  *
- * Declaring of top-level shortcuts eliminates the need in applying plugins
- * using fully qualified name of dependency objects.
+ * Declaring of top-level shortcuts eliminates the need to apply plugins
+ * using a fully qualified name of dependency objects.
  *
  * It is still possible to apply a plugin with a custom version, if needed.
  * Just declare a version again on the returned [PluginDependencySpec].
