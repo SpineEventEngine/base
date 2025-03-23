@@ -1,5 +1,5 @@
 /*
- * Copyright 2024, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -213,6 +213,7 @@ fun Project.configureTaskDependencies() {
         compileTestKotlin.dependOn("kspTestKotlin")
         "compileTestFixturesKotlin".dependOn("kspTestFixturesKotlin")
         "javadocJar".dependOn(dokkaHtml)
+        "dokkaKotlinJar".dependOn(dokkaJavadoc)
     }
 }
 
@@ -224,15 +225,14 @@ fun Project.configureTaskDependencies() {
 val Project.productionModules: Iterable<Project>
     get() = rootProject.subprojects.filter { !it.name.contains("-tests") }
 
-
 /**
- * Sets the remote debug option for this task.
+ * Sets the remote debug option for this [JavaExec] task.
  *
  * The port number is [5566][BuildSettings.REMOTE_DEBUG_PORT].
  *
  * @param enabled If `true` the task will be suspended.
  */
-fun Task.remoteDebug(enabled: Boolean = true) { this as JavaExec
+fun JavaExec.remoteDebug(enabled: Boolean = true) {
     debugOptions {
         this@debugOptions.enabled.set(enabled)
         port.set(BuildSettings.REMOTE_DEBUG_PORT)
@@ -242,15 +242,34 @@ fun Task.remoteDebug(enabled: Boolean = true) { this as JavaExec
 }
 
 /**
+ * Sets the remote debug option for the task of [JavaExec] type with the given name.
+ *
+ * The port number is [5566][BuildSettings.REMOTE_DEBUG_PORT].
+ *
+ * @param enabled If `true` the task will be suspended.
+ * @throws IllegalStateException if the task with the given name is not found, or,
+ *  if the taks is not of [JavaExec] type.
+ */
+fun Project.setRemoteDebug(taskName: String, enabled: Boolean = true) {
+    val task = tasks.findByName(taskName)
+    check(task != null) {
+        "Could not find a task named `$taskName` in the project `$name`."
+    }
+    check(task is JavaExec) {
+        "The task `$taskName` is not of type `JavaExec`."
+    }
+    task.remoteDebug(enabled)
+}
+
+/**
  * Sets remote debug options for the `launchProtoData` task.
  *
  * @param enabled if `true` the task will be suspended.
  *
  * @see remoteDebug
  */
-fun Project.protoDataRemoteDebug(enabled: Boolean = true) {
-    tasks.findByName("launchProtoData")?.remoteDebug(enabled)
-}
+fun Project.protoDataRemoteDebug(enabled: Boolean = true) =
+    setRemoteDebug("launchProtoData", enabled)
 
 /**
  * Sets remote debug options for the `launchTestProtoData` task.
@@ -259,6 +278,15 @@ fun Project.protoDataRemoteDebug(enabled: Boolean = true) {
  *
  * @see remoteDebug
  */
-fun Project.testProtoDataRemoteDebug(enabled: Boolean = true) {
-    tasks.findByName("launchTestProtoData")?.remoteDebug(enabled)
-}
+fun Project.testProtoDataRemoteDebug(enabled: Boolean = true) =
+    setRemoteDebug("launchTestProtoData", enabled)
+
+/**
+ * Sets remote debug options for the `launchTestFixturesProtoData` task.
+ *
+ * @param enabled if `true` the task will be suspended.
+ *
+ * @see remoteDebug
+ */
+fun Project.testFixturesProtoDataRemoteDebug(enabled: Boolean = true) =
+    setRemoteDebug("launchTestFixturesProtoData", enabled)
