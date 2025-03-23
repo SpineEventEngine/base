@@ -33,7 +33,7 @@ package io.spine.dependency.build
  */
 @Suppress("ConstPropertyName", "unused")
 object Ksp {
-    const val version = "2.1.10-1.0.31"
+    const val version = "2.1.20-1.0.31"
     const val id = "com.google.devtools.ksp"
     const val group = "com.google.devtools.ksp"
     const val symbolProcessingApi = "$group:symbol-processing-api:$version"
