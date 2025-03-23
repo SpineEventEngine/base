@@ -99,7 +99,7 @@ val ScriptHandlerScope.protoData: ProtoData
  * This plugin is published at Gradle Plugin Portal.
  * But when used in a pair with [mcJava], it cannot be applied directly to a project.
  * It is so, because [mcJava] uses [protoData] as its dependency.
- * And buildscript's classpath ends up with both of them.
+ * And the buildscript's classpath ends up with both of them.
  */
 val PluginDependenciesSpec.protoData: ProtoData
     get() = ProtoData
