@@ -36,7 +36,7 @@ object Kotlin {
      * depend on Gradle and the version of embedded Kotlin.
      */
     @Suppress("MemberVisibilityCanBePrivate") // used directly from the outside.
-    const val runtimeVersion = "2.1.10"
+    const val runtimeVersion = "2.1.20"
 
     /**
      * This is the version of
@@ -50,7 +50,7 @@ object Kotlin {
      *
      * @see <a href="https://github.com/JetBrains/java-annotations">Java Annotations</a>
      */
-    private const val annotationsVersion = "24.0.1"
+    private const val annotationsVersion = "26.0.2"
 
     private const val group = "org.jetbrains.kotlin"
 
@@ -82,7 +82,7 @@ object Kotlin {
     }
 
     object GradlePlugin {
-        const val version = Kotlin.runtimeVersion
+        const val version = runtimeVersion
         const val api = "$group:kotlin-gradle-plugin-api:$version"
         const val lib = "$group:kotlin-gradle-plugin:$version"
         const val model = "$group:kotlin-gradle-model:$version"

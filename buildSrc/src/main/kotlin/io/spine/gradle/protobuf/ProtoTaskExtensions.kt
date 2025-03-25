@@ -106,12 +106,11 @@ fun GenerateProtoTask.setup() {
     builtins.maybeCreate("kotlin")
     setupDescriptorSetFileCreation()
 
-    doFirst {
-        excludeProtocOutput()
-    }
     doLast {
         copyGeneratedFiles()
     }
+
+    excludeProtocOutput()
 
     setupKotlinCompile()
     dependOnProcessResourcesTask()

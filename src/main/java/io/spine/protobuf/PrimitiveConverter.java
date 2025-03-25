@@ -69,13 +69,25 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
                     .put(BoolValue.class, new BoolConverter())
                     .put(StringValue.class, new StringConverter())
                     .build();
+
     private static final ImmutableMap<Class<?>, Converter<? extends Message, ?>>
             PRIMITIVE_TO_CONVERTER =
             ImmutableMap.<Class<?>, Converter<? extends Message, ?>>builder()
+                    .put(byte.class, new Int32Converter())
+                    .put(Byte.class, new Int32Converter())
+                    .put(short.class, new Int32Converter())
+                    .put(Short.class, new Int32Converter())
+                    .put(char.class, new Int32Converter())
+                    .put(Character.class, new Int32Converter())
+                    .put(int.class, new Int32Converter())
                     .put(Integer.class, new Int32Converter())
+                    .put(long.class, new Int64Converter())
                     .put(Long.class, new Int64Converter())
+                    .put(float.class, new FloatConverter())
                     .put(Float.class, new FloatConverter())
+                    .put(double.class, new DoubleConverter())
                     .put(Double.class, new DoubleConverter())
+                    .put(boolean.class, new BoolConverter())
                     .put(Boolean.class, new BoolConverter())
                     .put(String.class, new StringConverter())
                     .build();
