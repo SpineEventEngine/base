@@ -52,7 +52,6 @@ repositories.standardToSpineSdk()
 plugins {
     `jvm-module`
     `compile-protobuf`
-    idea
     `project-report`
     ksp
 }
