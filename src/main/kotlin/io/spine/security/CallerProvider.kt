@@ -31,7 +31,7 @@ import java.lang.StackWalker.Option.RETAIN_CLASS_REFERENCE
 /**
  * Provides information about the class calling a method.
  */
-internal object CallerProvider {
+public object CallerProvider {
 
     private val stackWalker: StackWalker = StackWalker.getInstance(RETAIN_CLASS_REFERENCE)
 
@@ -39,7 +39,7 @@ internal object CallerProvider {
      * Obtains the class of the object which calls the method from which
      * this method is being called.
      */
-    fun callerClass(): Class<*> {
+    public fun callerClass(): Class<*> {
         return stackWalker.walk { frames ->
             frames.skip(2)
                 .findFirst()
@@ -52,7 +52,7 @@ internal object CallerProvider {
      * Obtains the class preceding in the call chain the class which calls
      * the method from which this method is being called.
      */
-    fun previousCallerClass(): Class<*> {
+    public fun previousCallerClass(): Class<*> {
         return stackWalker.walk { frames ->
             frames.skip(3)
                 .findFirst()
