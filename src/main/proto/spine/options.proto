@@ -275,7 +275,7 @@ extend google.protobuf.FieldOptions {
     // A typical use case involves a field, such as an ID, which remains constant throughout
     // the lifecycle of an entity.
     //
-    // Example: Using `(set_once)` field validation constraint.
+    // Example: using `(set_once)` field validation constraint.
     //
     //     message User {
     //         UserId id = 1 [(set_once) = true];
@@ -303,7 +303,7 @@ extend google.protobuf.FieldOptions {
     // For example, in Java, it is defined by the `equals()` method. No special cases are applied,
     // such as comparing only specific fields like IDs.
     //
-    // Example: Using `(distinct)` constraint for a `repeated` field.
+    // Example: using `(distinct)` constraint for a `repeated` field.
     //
     //    message Blizzard {
     //
@@ -315,7 +315,7 @@ extend google.protobuf.FieldOptions {
     //        repeated Snowflake snowflakes = 1 [(distinct) = true];
     //    }
     //
-    // Example: Using `(distinct)` constraint for a `map` field.
+    // Example: using `(distinct)` constraint for a `map` field.
     //
     //    message UniqueEmails {
     //
@@ -471,7 +471,7 @@ extend google.protobuf.MessageOptions {
     // Field names are separated using the pipe (`|`) symbol. The combination of fields is defined
     // using the ampersand (`&`) symbol.
     //
-    // Example: Pipe syntax for defining alternative required fields.
+    // Example: pipe syntax for defining alternative required fields.
     //
     //     message PersonName {
     //        option (required_field) = "given_name|honorific_prefix & family_name";
@@ -499,7 +499,7 @@ extend google.protobuf.MessageOptions {
     // A target field of an external constraint should be specified using a fully-qualified
     // field name (e.g. `mypackage.MessageName.field_name`).
     //
-    // Example: Defining external validation constraint.
+    // Example: defining external validation constraint.
     //
     //     package io.spine.example;
     //
@@ -556,7 +556,7 @@ extend google.protobuf.MessageOptions {
     // External validation constraints can be applied to fields of several types.
     // To do so, separate fully-qualified references to these fields with comma.
     //
-    // Example: External validation constraints for multiple fields.
+    // Example: external validation constraints for multiple fields.
     //
     //     // External validation constraint for requiring a new value in renaming commands.
     //     message RequireNewName {
@@ -609,7 +609,7 @@ extend google.protobuf.MessageOptions {
 
     // Specifies a characteristic inherent in the the given message type.
     //
-    // Example: Using `(is)` message option.
+    // Example: using `(is)` message option.
     //
     //     message CreateProject {
     //         option (is).java_type = "ProjectCommand";
@@ -692,7 +692,7 @@ extend google.protobuf.FileOptions {
 
     // Specifies a characteristic common for all the message types in the given file.
     //
-    // Example: Marking all the messages using the `(every_is)` file option.
+    // Example: marking all the messages using the `(every_is)` file option.
     // ```
     //     option (every_is).java_type = "ProjectCommand";
     //
@@ -761,7 +761,7 @@ message IfMissingOption {
     //
     // The placeholders will be replaced at runtime when the error is constructed.
     //
-    // Example: Using the `(if_missing)` option.
+    // Example: using the `(if_missing)` option.
     //
     //    message Student {
     //        Name name = 1 [(required) = true,
@@ -792,7 +792,7 @@ message MinOption {
     // the value has no fractional part. An exponent part represented by `E` or `e`, followed
     // by an optional sign and digits is allowed (e.g., `1.2E3`, `0.5e-2`).
     //
-    // Example: Defining minimum values for integer and floating-point fields.
+    // Example: defining minimum values for integer and floating-point fields.
     //
     // message MinimumValues {
     //     int32 temperature = 1 [(min).value = "0"];
@@ -806,7 +806,7 @@ message MinOption {
     //
     // A minimum value must not fall below the limits of the field type.
     //
-    // Example: Invalid values that fall below the field type limits.
+    // Example: invalid values that fall below the field type limits.
     //
     // message OverflowValues {
     //     float price = 1 [(min).value = "-5.5E38"]; // Falls below the `float` minimum.
@@ -862,7 +862,7 @@ message MaxOption {
     // the value has no fractional part. An exponent part represented by `E` or `e`, followed
     // by an optional sign and digits is allowed (e.g., `1.2E3`, `0.5e-2`).
     //
-    // Example: Defining maximum values for integer and floating-point fields.
+    // Example: defining maximum values for integer and floating-point fields.
     //
     // message MaximumValues {
     //     int32 temperature = 1 [(max).value = "270"];
@@ -876,7 +876,7 @@ message MaxOption {
     //
     // A maximum value must not exceed the limits of the field type.
     //
-    // Example: Invalid values that exceed the field type limits.
+    // Example: invalid values that exceed the field type limits.
     //
     // message OverflowValues {
     //     float price = 1 [(min).value = "5.5E38"]; // Exceeds the `float` maximum.
@@ -916,7 +916,7 @@ message MaxOption {
 // This option is applicable only to string fields,
 // including those that are repeated.
 //
-// Example: Using the `(pattern)` option.
+// Example: using the `(pattern)` option.
 //
 //     message CreateAccount {
 //         string id = 1 [(pattern).regex = "^[A-Za-z0-9+]+$",
@@ -1051,7 +1051,7 @@ message IfInvalidOption {
     //
     // The placeholders will be replaced at runtime when the error is constructed.
     //
-    // Example: Using the `(if_invalid)` option.
+    // Example: using the `(if_invalid)` option.
     //
     //     message Transaction {
     //         TransactionDetails details = 1 [(validate) = true,
@@ -1074,7 +1074,7 @@ message IfInvalidOption {
 // - Repeated fields and maps.
 // - `string` and `bytes`.
 //
-// Example: Requiring mutual presence of optional fields.
+// Example: requiring mutual presence of optional fields.
 //
 //    message ScheduledItem {
 //        ...
@@ -1294,7 +1294,7 @@ message IfSetAgainOption {
     //
     // The placeholders will be replaced at runtime when the error is constructed.
     //
-    // Example: Using the `(set_once)` option.
+    // Example: using the `(set_once)` option.
     //
     //     message User {
     //         UserId id = 1 [(set_once) = true,
@@ -1327,7 +1327,7 @@ message IfHasDuplicatesOption {
     //
     // The placeholders will be replaced at runtime when the error is constructed.
     //
-    // Example: Using the `(distinct)` option.
+    // Example: using the `(distinct)` option.
     //
     //    message Blizzard {
     //        repeated Snowflake = 1 [(distinct) = true,
@@ -1370,7 +1370,7 @@ message RangeOption {
     // A range for an integer field must use integer numbers. Specifying a decimal number
     // is not allowed, even if it has no fractional part (e.g., `5.0` is invalid).
     //
-    // Example: Defining ranges for integer fields.
+    // Example: defining ranges for integer fields.
     //
     // message IntegerRanges {
     //      int32 hour = 1 [(range).value = "[0..24)"];
@@ -1383,7 +1383,7 @@ message RangeOption {
     // has no fractional part. An exponent part represented by `E` or `e`, followed by an optional
     // sign and digits is allowed (e.g., `1.2E3`, `0.5e-2`).
     //
-    // Example: Defining ranges for floating-point fields.
+    // Example: defining ranges for floating-point fields.
     //
     // message FloatRanges {
     //     float degree = 1 [(range).value = "[0.0 .. 360.0)"];
@@ -1395,7 +1395,7 @@ message RangeOption {
     //
     // A range must not exceed the limits of the field type.
     //
-    // Example: Invalid ranges that exceed the field type limits.
+    // Example: invalid ranges that exceed the field type limits.
     //
     // message OverflowRanges {
     //     float price = 1 [(range).value = "[0, 5.5E38]"]; // Exceeds the `float` maximum.
