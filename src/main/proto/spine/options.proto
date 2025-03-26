@@ -866,7 +866,7 @@ message MaxOption {
     //
     // Example: Defining maximum values for integer and floating-point fields.
     //
-    // message MinimumValues {
+    // message MaximumValues {
     //     int32 temperature = 1 [(max).value = "270"];
     //     uint32 employees = 2 [(max).value = "1200"];
     //     float degree = 1 [(max).value = "360.0"];
