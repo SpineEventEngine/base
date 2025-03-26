@@ -27,11 +27,13 @@
 package io.spine.security
 
 import java.lang.StackWalker.Option.RETAIN_CLASS_REFERENCE
+import java.lang.StackWalker.StackFrame
+import java.util.stream.Stream
 
 /**
  * Provides information about the class calling a method.
  */
-public object CallerProvider {
+internal object CallerProvider {
 
     private val stackWalker: StackWalker = StackWalker.getInstance(RETAIN_CLASS_REFERENCE)
 
@@ -39,12 +41,9 @@ public object CallerProvider {
      * Obtains the class of the object which calls the method from which
      * this method is being called.
      */
-    public fun callerClass(): Class<*> {
+    fun callerClass(): Class<*> {
         return stackWalker.walk { frames ->
-            frames.skip(2)
-                .findFirst()
-                .map { frame -> frame.declaringClass }
-                .get() // We're safe because the stacktrace will be deeper than 3.
+            frames.getCallingClass(skipFrames = 2)
         }
     }
 
@@ -52,12 +51,15 @@ public object CallerProvider {
      * Obtains the class preceding in the call chain the class which calls
      * the method from which this method is being called.
      */
-    public fun previousCallerClass(): Class<*> {
+    fun previousCallerClass(): Class<*> {
         return stackWalker.walk { frames ->
-            frames.skip(3)
-                .findFirst()
-                .map { frame -> frame.declaringClass }
-                .get() // We're safe because the stacktrace will be deeper than 3.
+            frames.getCallingClass(skipFrames = 3)
         }
     }
+
+    private fun Stream<StackFrame>.getCallingClass(skipFrames: Long) =
+        skip(skipFrames)
+            .findFirst()
+            .map { frame -> frame.declaringClass }
+            .get() // We're safe because the stacktrace will be deeper than 3.
 }
