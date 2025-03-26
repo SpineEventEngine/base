@@ -771,8 +771,7 @@ message IfMissingOption {
     string error_msg = 2;
 }
 
-// The option to indicate that a numeric field is required to be greater than or equal
-// to the given value.
+// Indicates that the numeric field must be greater than or equal to the specified value.
 //
 // The option supports all singular and repeated numeric fields.
 //
@@ -842,8 +841,7 @@ message MinOption {
     string error_msg = 4;
 }
 
-// The option to indicate that a numeric field is required to be less than or equal
-// to the given value.
+// Indicates that the numeric field must be less than or equal to the specified value.
 //
 // The option supports all singular and repeated numeric fields.
 //
@@ -1339,8 +1337,7 @@ message IfHasDuplicatesOption {
     string error_msg = 1;
 }
 
-// The option to indicate that a numeric field is required to have a value which belongs
-// to the specified bounded range.
+// Indicate that the numeric field must belong to the specified bounded range.
 //
 // For unbounded ranges, please use `(min)` and `(max) options.
 //
