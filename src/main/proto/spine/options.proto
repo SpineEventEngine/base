@@ -805,9 +805,9 @@ message MinOption {
     //
     // ## Field Type Limitations
     //
-    // A minimum value must not exceed the limits of the field type.
+    // A minimum value must not fall below the limits of the field type.
     //
-    // Example: Invalid values that exceed the field type limits.
+    // Example: Invalid values that fall below the field type limits.
     //
     // message OverflowValues {
     //     float price = 1 [(min).value = "-5.5E38"]; // Falls below the `float` minimum.
@@ -842,25 +842,49 @@ message MinOption {
     string error_msg = 4;
 }
 
-// The field value must be less than or equal to the given maximum number.
+// The option to indicate that a numeric field is required to be less than or equal
+// to the given value.
 //
-// Is applicable only to number fields.
-// Repeated fields are supported.
-//
-// Example: Defining upper boundary for a numeric field.
-//
-//     message TowerCrane {
-//         double load = 1 [(max).value = "4.2",
-//                          (max).error_msg = "The crane load in `${parent.type}` can not exceed `${max.value}` tons, but provided `${field.value}`."];
-//     }
+// The option supports all singular and repeated numeric fields.
 //
 message MaxOption {
 
     // The default error message.
     option (default_message) = "The field `${parent.type}.${field.path}`"
-        " must be ${max.operator} ${max.value}.";
+        " must be ${max.operator} ${max.value}. The passed value: `${field.value}`.";
 
     // The string representation of the maximum field value.
+    //
+    // ## Integer and floating-point values
+    //
+    // A maximum value for an integer field must use an integer number. Specifying a decimal
+    // number is not allowed, even if it has no fractional part (e.g., `5.0` is invalid).
+    //
+    // A maximum value for a floating-point field must use a decimal separator (`.`), even if
+    // the value has no fractional part. An exponent part represented by `E` or `e`, followed
+    // by an optional sign and digits is allowed (e.g., `1.2E3`, `0.5e-2`).
+    //
+    // Example: Defining maximum values for integer and floating-point fields.
+    //
+    // message MinimumValues {
+    //     int32 temperature = 1 [(max).value = "270"];
+    //     uint32 employees = 2 [(max).value = "1200"];
+    //     float degree = 1 [(max).value = "360.0"];
+    //     double angle = 2 [(max).value = "90.0"];
+    //     float pressure = 3 [(max).value = "1050.0E-2"];
+    //  }
+    //
+    // ## Field Type Limitations
+    //
+    // A maximum value must not exceed the limits of the field type.
+    //
+    // Example: Invalid values that exceed the field type limits.
+    //
+    // message OverflowValues {
+    //     float price = 1 [(min).value = "5.5E38"]; // Exceeds the `float` maximum.
+    //     int32 size = 2 [(min).value = "2147483648"]; // Exceeds the `int32` maximum.
+    // }
+    //
     string value = 1;
 
     // Specifies if the field should be strictly less than the specified maximum
