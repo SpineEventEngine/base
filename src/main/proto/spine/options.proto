@@ -779,7 +779,7 @@ message MinOption {
 
     // The default error message.
     option (default_message) = "The field `${parent.type}.${field.path}`"
-        " must be ${max.operator} ${min.value}. The passed value: `${field.value}`.";
+        " must be ${min.operator} ${min.value}. The passed value: `${field.value}`.";
 
     // The string representation of the minimum field value.
     //
