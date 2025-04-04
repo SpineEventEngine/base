@@ -1404,7 +1404,7 @@ message RangeOption {
 // Controls whether a `oneof` group must always have one of its fields set.
 //
 // Note that unlike the `(required)` constraint, this option supports any field types
-// of the `oneof` cases.
+// within the group cases.
 //
 message ChoiceOption {
 
@@ -1427,7 +1427,8 @@ message ChoiceOption {
     string error_msg = 2;
 }
 
-// The constraint to require at least one of the fields or combinations of fields.
+// The constraint to require at least one of the fields or combinations of fields
+// to be set.
 //
 // Unlike the `(required)` field constraint, which requires the presence of a specific
 // field, this option allows to specify alternative fields or combinations of them.
@@ -1438,19 +1439,19 @@ message RequireOption {
     option (default_message) = "The message `${message.type}` must have at least one of"
         " the following fields or combinations of them specified: `${require.fields}`.";
 
-    // A set of fields or combinations of fields, at least one of which must be set.
+    // A set of fields or combinations of fields, at least one of which must be specified.
     //
     // Fields are separated using the pipe (`|`) symbol. The combination of fields is defined
     // using the ampersand (`&`) symbol. `oneof` group names are also valid and can be used
     // as alternatives.
     //
-    // The field type determines when the field is considered set:
+    // The field type determines when the field is considered specified:
     //
     // 1. For message or enum fields, it must have a non-default instance.
     // 2. For `string` and `bytes` fields, it must be non-empty.
     // 3. For repeated fields and maps, it must contain at least one element.
     //
-    // Field of other types are not supported by this option.
+    // Fields of other types are not supported by this option.
     //
     // For `oneof` groups, the restrictions above do not apply. Any `oneof` group can be used
     // without considering the field types, and its value will be checked directly without
