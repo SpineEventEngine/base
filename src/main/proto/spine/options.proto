@@ -1460,7 +1460,7 @@ message RequireOption {
     // Example: defining alternative required fields.
     //
     //     message PersonName {
-    //         option (required_field) = "given_name | honorific_prefix & family_name";
+    //         option (require).fields = "given_name | honorific_prefix & family_name";
     //
     //         string honorific_prefix = 1;
     //         string given_name = 2;
