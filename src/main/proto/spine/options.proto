@@ -425,14 +425,13 @@ extend google.protobuf.FieldOptions {
 
 extend google.protobuf.OneofOptions {
 
-    // Marks a `oneof` group, in which one field *must* be set.
-    //
-    // Alternative to `(required_field)` with all the field in the group
-    // joined with the OR operator.
-    //
-    bool is_required = 73891;
+    // Deprecated: use the `(choice)` option instead.
+    bool is_required = 73891 [deprecated = true];
 
-    // Reserved 73892 to 73899 for future options.
+    // Controls whether a `oneof` group must always have one of its fields set.
+    ChoiceOption choice = 73892;
+
+    // Reserved 73893 to 73899 for future options.
 }
 
 extend google.protobuf.MessageOptions {
@@ -1413,6 +1412,28 @@ message RangeOption {
     // 3. `${field.type}` – the fully qualified name of the field type.
     // 4. `${parent.type}` – the fully qualified name of the validated message.
     // 5. `${range.value}` – the specified range.
+    //
+    // The placeholders will be replaced at runtime when the error is constructed.
+    //
+    string error_msg = 2;
+}
+
+// Controls whether a `oneof` group must always have one of its fields set.
+message ChoiceOption {
+
+    // The default error message.
+    option (default_message) = "The `oneof` group `${parent.type}.${group.path}` must"
+        "have one of its fields set.";
+
+    // Enables or disables the requirement for the `oneof` group to have a value.
+    bool required = 1;
+
+    // A user-defined error message.
+    //
+    // The specified message may include the following placeholders:
+    //
+    // 1. `${group.path}` – the group path.
+    // 2. `${parent.type}` – the fully qualified name of the validated message.
     //
     // The placeholders will be replaced at runtime when the error is constructed.
     //
