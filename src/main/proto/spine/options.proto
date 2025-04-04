@@ -425,14 +425,13 @@ extend google.protobuf.FieldOptions {
 
 extend google.protobuf.OneofOptions {
 
-    // Marks a `oneof` group, in which one field *must* be set.
-    //
-    // Alternative to `(required_field)` with all the field in the group
-    // joined with the OR operator.
-    //
-    bool is_required = 73891;
+    // Deprecated: use the `(choice)` option instead.
+    bool is_required = 73891 [deprecated = true];
 
-    // Reserved 73892 to 73899 for future options.
+    // Controls whether a `oneof` group must always have one of its fields set.
+    ChoiceOption choice = 73892;
+
+    // Reserved 73893 to 73899 for future options.
 }
 
 extend google.protobuf.MessageOptions {
@@ -462,28 +461,8 @@ extend google.protobuf.MessageOptions {
     //
     string default_message = 73901 [(internal) = true];
 
-    // The constraint to require at least one of the fields or a combination of fields.
-    //
-    // Unlike the `required` field constraint which always requires corresponding field,
-    // this message option allows to require alternative fields or a combination of them as
-    // an alternative. Field names and `oneof` group names are acceptable.
-    //
-    // Field names are separated using the pipe (`|`) symbol. The combination of fields is defined
-    // using the ampersand (`&`) symbol.
-    //
-    // Example: pipe syntax for defining alternative required fields.
-    //
-    //     message PersonName {
-    //        option (required_field) = "given_name|honorific_prefix & family_name";
-    //
-    //        string honorific_prefix = 1;
-    //        string given_name = 2;
-    //        string middle_name = 3;
-    //        string family_name = 4;
-    //        string honorific_suffix = 5;
-    //     }
-    //
-    string required_field = 73902;
+    // Deprecated: use the `(require)` option instead.
+    string required_field = 73902 [deprecated = true];
 
     // See `EntityOption`.
     EntityOption entity = 73903;
@@ -641,7 +620,10 @@ extend google.protobuf.MessageOptions {
     //
     CompareByOption compare_by = 73923;
 
-    // Reserved 73924 to 73938 for future options.
+    // The constraint to require at least one of the fields or combinations of fields.
+    RequireOption require = 73924;
+
+    // Reserved 73925 to 73938 for future options.
 
     // Reserved 73939 and 73940 for the deleted options `events` and `rejections`.
 }
@@ -1413,6 +1395,91 @@ message RangeOption {
     // 3. `${field.type}` – the fully qualified name of the field type.
     // 4. `${parent.type}` – the fully qualified name of the validated message.
     // 5. `${range.value}` – the specified range.
+    //
+    // The placeholders will be replaced at runtime when the error is constructed.
+    //
+    string error_msg = 2;
+}
+
+// Controls whether a `oneof` group must always have one of its fields set.
+//
+// Note that unlike the `(required)` constraint, this option supports any field types
+// within the group cases.
+//
+message ChoiceOption {
+
+    // The default error message.
+    option (default_message) = "The `oneof` group `${parent.type}.${group.path}` must"
+        " have one of its fields set.";
+
+    // Enables or disables the requirement for the `oneof` group to have a value.
+    bool required = 1;
+
+    // A user-defined error message.
+    //
+    // The specified message may include the following placeholders:
+    //
+    // 1. `${group.path}` – the group path.
+    // 2. `${parent.type}` – the fully qualified name of the validated message.
+    //
+    // The placeholders will be replaced at runtime when the error is constructed.
+    //
+    string error_msg = 2;
+}
+
+// The constraint to require at least one of the fields or combinations of fields
+// to be set.
+//
+// Unlike the `(required)` field constraint, which requires the presence of a specific
+// field, this option allows to specify alternative fields or combinations of them.
+//
+message RequireOption {
+
+    // The default error message.
+    option (default_message) = "The message `${message.type}` must have at least one of"
+        " the following fields or combinations of them specified: `${require.fields}`.";
+
+    // A set of fields or combinations of fields, at least one of which must be specified.
+    //
+    // Fields are separated using the pipe (`|`) symbol. The combination of fields is defined
+    // using the ampersand (`&`) symbol. `oneof` group names are also valid and can be used
+    // as alternatives.
+    //
+    // The field type determines when the field is considered specified:
+    //
+    // 1. For message or enum fields, it must have a non-default instance.
+    // 2. For `string` and `bytes` fields, it must be non-empty.
+    // 3. For repeated fields and maps, it must contain at least one element.
+    //
+    // Fields of other types are not supported by this option.
+    //
+    // For `oneof` groups, the restrictions above do not apply. Any `oneof` group can be used
+    // without considering the field types, and its value will be checked directly without
+    // relying on the default values of the fields within the group.
+    //
+    // Example: defining alternative required fields.
+    //
+    //     message PersonName {
+    //         option (require).fields = "given_name | honorific_prefix & family_name";
+    //
+    //         string honorific_prefix = 1;
+    //         string given_name = 2;
+    //         string middle_name = 3;
+    //         string family_name = 4;
+    //         string honorific_suffix = 5;
+    //     }
+    //
+    // In this example, at least `given_name` or a combination of `honorific_prefix`
+    // and `family_name` must be set.
+    //
+    string fields = 1;
+
+    // A user-defined error message.
+    //
+    // The specified message may include the following placeholders:
+    //
+    // 1. `${message.type}` – the fully qualified name of the validated message.
+    // 2. `${require.fields}` – the specified set of fields and combinations of them.
     //
     // The placeholders will be replaced at runtime when the error is constructed.
     //
