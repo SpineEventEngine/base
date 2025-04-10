@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -60,10 +60,9 @@ public data class Glob(val pattern: String) {
         /**
          * Creates a pattern which matches any file with the given extensions.
          *
-         * @param extensions
-         *         file extensions with or without the leading dot.
-         *         If no extensions are specified, the created pattern will match
-         *         files without extensions.
+         * @param extensions File extensions with or without the leading dot.
+         *   If no extensions are specified, the created pattern will match
+         *   files without extensions.
          * @see [extensionLowerAndUpper]
          */
         @JvmStatic
@@ -73,10 +72,9 @@ public data class Glob(val pattern: String) {
         /**
          * Creates a pattern which matches any file with the given extensions.
          *
-         * @param extensions
-         *         file extensions with or without the leading dot.
-         *         If no extensions are specified, the created pattern will match
-         *         files without extensions.
+         * @param extensions File extensions with or without the leading dot.
+         *  If no extensions are specified, the created pattern will match
+         *  files without extensions.
          * @see [extensionLowerAndUpper]
          */
         @JvmStatic
@@ -121,42 +119,42 @@ public data class Glob(val pattern: String) {
                 Glob("**.${ext[0]}")
             }
         }
+    }
+}
 
-        /**
-         * Transforms this iteration of char sequences into a sorted list of values that do not
-         * have a leading dot.
-         *
-         * @param allowUpperCase
-         *         if `true` each entry of the returned list would have lower- and uppercase
-         *         version of the sequence. Otherwise, the sequences would be used as is.
-         */
-        private fun Iterable<String>.withCaseOptions(allowUpperCase: Boolean): List<String> {
-            if (!iterator().hasNext()) {
-                return listOf()
-            }
-            val values = mutableSetOf<String>()
-            val result = mutableListOf<String>()
-            for (seq in this) {
-                val dotless = seq.withoutLeadingDot()
-                if (allowUpperCase) {
-                    values.add(dotless.lowercase())
-                    values.add(dotless.uppercase())
-                } else {
-                    values.add(dotless)
-                }
-            }
-            result.addAll(values)
-            result.sort()
-            return result
-        }
-
-        /**
-         * Obtains the string without the leading dot, if present.
-         */
-        private fun String.withoutLeadingDot(): String {
-            if (isEmpty()) return this
-            return if (this[0] == '.') substring(1)
-            else this
+/**
+ * Transforms this iteration of char sequences into a sorted list of values that do not
+ * have a leading dot.
+ *
+ * @param allowUpperCase If `true`, each entry of the returned list would have
+ *  the lower- and uppercase version of the sequence.
+ *  Otherwise, the sequences would be used as is.
+ */
+private fun Iterable<String>.withCaseOptions(allowUpperCase: Boolean): List<String> {
+    if (!iterator().hasNext()) {
+        return listOf()
+    }
+    val values = mutableSetOf<String>()
+    val result = mutableListOf<String>()
+    for (seq in this) {
+        val dotless = seq.withoutLeadingDot()
+        if (allowUpperCase) {
+            values.add(dotless.lowercase())
+            values.add(dotless.uppercase())
+        } else {
+            values.add(dotless)
         }
     }
+    result.addAll(values)
+    result.sort()
+    return result
+}
+
+/**
+ * Obtains the string without the leading dot, if present.
+ */
+private fun String.withoutLeadingDot(): String {
+    if (isEmpty()) return this
+    return if (this[0] == '.') substring(1)
+    else this
 }
