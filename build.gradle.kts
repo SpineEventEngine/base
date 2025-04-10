@@ -28,6 +28,7 @@
 
 import io.spine.dependency.lib.AutoService
 import io.spine.dependency.lib.AutoServiceKsp
+import io.spine.dependency.lib.Guava
 import io.spine.dependency.lib.Kotlin
 import io.spine.dependency.lib.Protobuf
 import io.spine.dependency.local.Logging
@@ -50,7 +51,7 @@ repositories.standardToSpineSdk()
 
 // Apply some plugins to make type-safe extension accessors available in this script file.
 plugins {
-    `jvm-module`
+    module
     `compile-protobuf`
     `project-report`
     ksp
@@ -79,6 +80,9 @@ dependencies {
     compileOnly(AutoService.annotations)
     ksp(AutoServiceKsp.processor)
 
+    Protobuf.libs.forEach { api(it) }
+    api(Guava.lib)
+    
     implementation(Logging.lib)
     implementation(Reflect.lib)
     implementation(Kotlin.reflect)
