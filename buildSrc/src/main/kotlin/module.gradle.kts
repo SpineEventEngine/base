@@ -58,7 +58,6 @@ plugins {
     id("detekt-code-analysis")
     id("dokka-for-kotlin")
 }
-
 LicenseReporter.generateReportIn(project)
 JavadocConfig.applyTo(project)
 CheckStyleConfig.applyTo(project)

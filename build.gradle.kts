@@ -26,18 +26,9 @@
 
 @file:Suppress("RemoveRedundantQualifierName") // Cannot use imports in some places.
 
-import io.spine.dependency.lib.AutoService
-import io.spine.dependency.lib.AutoServiceKsp
-import io.spine.dependency.lib.Guava
-import io.spine.dependency.lib.Kotlin
-import io.spine.dependency.lib.Protobuf
-import io.spine.dependency.local.Logging
-import io.spine.dependency.local.Reflect
-import io.spine.dependency.local.TestLib
-import io.spine.gradle.publish.IncrementGuard
 import io.spine.gradle.publish.PublishingRepos
-import io.spine.gradle.publish.excludeGoogleProtoFromArtifacts
 import io.spine.gradle.publish.spinePublishing
+import io.spine.gradle.report.coverage.JacocoConfig
 import io.spine.gradle.report.license.LicenseReporter
 import io.spine.gradle.report.pom.PomGenerator
 import io.spine.gradle.standardToSpineSdk
@@ -47,16 +38,11 @@ buildscript {
     doForceVersions(configurations)
 }
 
-repositories.standardToSpineSdk()
-
-// Apply some plugins to make type-safe extension accessors available in this script file.
 plugins {
-    module
-    `compile-protobuf`
+    jacoco
+    `gradle-doctor`
     `project-report`
-    ksp
 }
-apply<IncrementGuard>()
 
 spinePublishing {
     destinations = with(PublishingRepos) {
@@ -65,53 +51,25 @@ spinePublishing {
             gitHub("base")
         )
     }
+    modules = setOf(
+        "base",
+//        "format"
+    )
     dokkaJar {
         java = true
     }
 }
 
-apply(from = "$rootDir/version.gradle.kts")
-group = "io.spine"
-version = rootProject.extra["versionToPublish"]!!
-repositories.standardToSpineSdk()
-configurations.forceVersions()
-
-dependencies {
-    compileOnly(AutoService.annotations)
-    ksp(AutoServiceKsp.processor)
-
-    Protobuf.libs.forEach { api(it) }
-    api(Guava.lib)
-    
-    implementation(Logging.lib)
-    implementation(Reflect.lib)
-    implementation(Kotlin.reflect)
-
-    /* Have `protobuf` dependency instead of `api` or `implementation` so that proto
-       files from the library are included in the compilation. We need this because we
-       build our descriptor set files using those standard proto files too.
-
-       See Protobuf Gradle Plugin documentation for details:
-           https://github.com/google/protobuf-gradle-plugin#protos-in-dependencies
-    */
-    protobuf(Protobuf.protoSrcLib)
-
-    testImplementation(TestLib.lib)
-    testImplementation(Logging.smokeTest)
-    testImplementation(Logging.testLib)?.because("We need `tapConsole`.")
+allprojects {
+    apply(from = "$rootDir/version.gradle.kts")
+    group = "io.spine"
+    version = rootProject.extra["versionToPublish"]!!
+    repositories.standardToSpineSdk()
+    configurations.forceVersions()
 }
 
-configurations.all {
-    resolutionStrategy {
-        force(Reflect.lib)
-        force(Logging.lib)
-        force(Logging.libJvm)
-    }
+gradle.projectsEvaluated {
+    JacocoConfig.applyTo(project)
+    LicenseReporter.mergeAllReports(project)
+    PomGenerator.applyTo(project)
 }
-
-tasks {
-    excludeGoogleProtoFromArtifacts()
-}
-
-LicenseReporter.mergeAllReports(project)
-PomGenerator.applyTo(project)
