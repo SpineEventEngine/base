@@ -1,0 +1,93 @@
+/*
+ * Copyright 2025, TeamDev. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package io.spine.format.parse
+
+import com.google.common.io.ByteSource
+import com.google.common.io.Files
+import io.spine.format.Format
+import io.spine.format.Format.JSON
+import io.spine.format.Format.PROTO_BINARY
+import io.spine.format.Format.PROTO_JSON
+import io.spine.format.Format.TEXT
+import io.spine.format.Format.YAML
+import java.io.File
+
+/**
+ * Parses the given file loading the instance of the given class.
+ *
+ * The format of the file is determined by the extension of the file.
+ *
+ * For `.txt` files [T] must be [java.lang.String].
+ * Otherwise, the [IllegalStateException] will be thrown.
+ *
+ * @param T The type of the class stored in the file.
+ * @param file The file to parse.
+ * @throws IllegalStateException if the file is not of the supported [format][Format].
+ */
+public inline fun <reified T : Any> parseFile(file: File): T = parseFile(file, T::class.java)
+
+/**
+ * Parses the given file loading the instance of the given class.
+ *
+ * The format of the file is determined by the extension of the file.
+ *
+ * For `.txt` files [T] must be [java.lang.String].
+ * Otherwise, the [IllegalStateException] will be thrown.
+ *
+ * @param T The type of the class stored in the file.
+ * @param file The file to parse.
+ * @param cls The class of the instance stored in the file.
+ * @throws IllegalStateException if the file is not of the supported [format][Format].
+ */
+public fun <T : Any> parseFile(file: File, cls: Class<T>): T {
+    val format = Format.of(file)
+    val bytes = Files.asByteSource(file)
+    return format.parser.parse(bytes, cls)
+}
+
+/**
+ * A parser for files in one of the supported [formats][Format].
+ */
+internal sealed interface Parser {
+
+    /**
+     * Attempts to deserialize the given settings value into the given class.
+     */
+    fun <T> parse(source: ByteSource, cls: Class<T>): T
+}
+
+/**
+ * Obtains a [Parser] for this [format][Format].
+ */
+private val Format.parser: Parser
+    get() = when(this) {
+        PROTO_BINARY -> ProtoBinaryParser
+        PROTO_JSON -> ProtoJsonParser
+        JSON -> JsonParser
+        YAML -> YamlParser
+        TEXT -> TextReader
+    }
