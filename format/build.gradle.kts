@@ -24,6 +24,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import io.spine.dependency.lib.Jackson
+
 plugins {
     module
+}
+
+dependencies {
+    implementation(project(":base"))
+    with(Jackson) {
+        implementation(databind)
+        implementation(dataformatYaml)
+        runtimeOnly(moduleKotlin)
+    }
 }
