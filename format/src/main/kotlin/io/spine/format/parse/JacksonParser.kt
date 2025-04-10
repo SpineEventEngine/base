@@ -37,9 +37,17 @@ import java.nio.charset.Charset.defaultCharset
  */
 internal sealed class JacksonParser : Parser {
 
+    /**
+     * The instance of [JsonFactory] used by the parser.
+     */
     protected abstract val factory: JsonFactory
 
-    private val mapper by lazy {
+    /**
+     * The lazily evaluated cached instance of the object matter.
+     *
+     * @see ObjectMapper.findAndRegisterModules
+     */
+    private val mapper: ObjectMapper by lazy {
         ObjectMapper(factory).findAndRegisterModules()
     }
 
