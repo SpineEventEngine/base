@@ -104,7 +104,7 @@ public enum class Format(vararg extensions: String) {
         @JvmStatic
         public fun of(file: Path): Format =
             entries.find { it.matches(file) }
-                ?: error("The file is not of recognized format: `${file.name}`.")
+                ?: error("Unsupported file format: `${file.name}`.")
     }
 }
 

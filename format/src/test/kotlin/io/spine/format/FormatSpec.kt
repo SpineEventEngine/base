@@ -118,13 +118,17 @@ class FormatSpec {
         "file.yaml" shouldProduceFormat YAML
         "file.txt" shouldProduceFormat TEXT
 
-        // Check that an unsupported extension causes the exception.
-        assertThrows<IllegalStateException> {
-            Format.of(File("photo.jpeg"))
-        }
     }
 
     private infix fun String.shouldProduceFormat(expectedFormat: Format) =
         Format.of(File(this)) shouldBe expectedFormat
 
+    @Test
+    fun `throw an exception for unsupported format`() {
+        val file = File("photo.jpeg")
+        val exception = assertThrows<IllegalStateException> {
+            Format.of(file)
+        }
+        exception.message shouldBe "Unsupported file format: `${file.name}`."
+    }
 }
