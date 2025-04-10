@@ -27,29 +27,15 @@
 package io.spine.format.parse
 
 import com.fasterxml.jackson.core.JsonFactory
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.google.common.io.ByteSource
+import io.spine.format.JacksonSupport
 import java.nio.charset.Charset.defaultCharset
 
 /**
  * The abstract base parsers of text-based formats backed by the Jackson library.
  */
-internal sealed class JacksonParser : Parser {
-
-    /**
-     * The instance of [JsonFactory] used by the parser.
-     */
-    protected abstract val factory: JsonFactory
-
-    /**
-     * The lazily evaluated cached instance of the object matter.
-     *
-     * @see ObjectMapper.findAndRegisterModules
-     */
-    private val mapper: ObjectMapper by lazy {
-        ObjectMapper(factory).findAndRegisterModules()
-    }
+internal sealed class JacksonParser : JacksonSupport(), Parser {
 
     final override fun <T> parse(source: ByteSource, cls: Class<T>): T {
         val charSource = source.asCharSource(defaultCharset())
