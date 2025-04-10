@@ -41,22 +41,32 @@ import java.io.File
  *
  * The format of the file is determined by the extension of the file.
  *
- * For `.txt` files [T] must be [java.lang.String].
- * Otherwise, the [IllegalStateException] will be thrown.
- *
  * @param T The type of the class stored in the file.
  * @param file The file to parse.
  * @throws IllegalStateException if the file is not of the supported [format][Format].
  */
-public inline fun <reified T : Any> parseFile(file: File): T = parseFile(file, T::class.java)
+public inline fun <reified T : Any> parseFile(file: File): T =
+    parseFile(file, T::class.java)
+
+/**
+ * Parses the given file loading the instance of the given class.
+ *
+ * This function provides the [format] parameter to cover the cases
+ * of custom file extensions that are not available from
+ * the items of the [Format] enumeration.
+ *
+ * @param T The type of the class stored in the file.
+ * @param file The file to parse.
+ * @param format The format of the file.
+ * @throws IllegalStateException if the file is not of the supported [format][Format].
+ */
+public inline fun <reified T : Any> parseFile(file: File, format: Format): T =
+    parseFile(file, format, T::class.java)
 
 /**
  * Parses the given file loading the instance of the given class.
  *
  * The format of the file is determined by the extension of the file.
- *
- * For `.txt` files [T] must be [java.lang.String].
- * Otherwise, the [IllegalStateException] will be thrown.
  *
  * @param T The type of the class stored in the file.
  * @param file The file to parse.
@@ -65,6 +75,27 @@ public inline fun <reified T : Any> parseFile(file: File): T = parseFile(file, T
  */
 public fun <T : Any> parseFile(file: File, cls: Class<T>): T {
     val format = Format.of(file)
+    return parseFile(file, format, cls)
+}
+
+/**
+ * Parses the given file loading the instance of the given class.
+ *
+ * This function provides the [format] parameter to cover the cases
+ * of custom file extensions that are not available from
+ * the items of the [Format] enumeration.
+ *
+ * @param T The type of the class stored in the file.
+ * @param file The file to parse.
+ * @param format The format of the file.
+ * @param cls The class of the instance stored in the file.
+ * @throws IllegalStateException if the file is not of the supported [format][Format].
+ */
+public fun <T : Any> parseFile(
+    file: File,
+    format: Format,
+    cls: Class<T>
+): T {
     val bytes = Files.asByteSource(file)
     return format.parser.parse(bytes, cls)
 }
