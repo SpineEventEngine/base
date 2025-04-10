@@ -111,10 +111,11 @@ public enum class Format(vararg extensions: String) {
 /**
  * Tells if this file is of one of the supported [formats][Format].
  */
-public fun Path.hasSupportedFormat(): Boolean =
-    entries.any { it.matches(this) }
+public fun File.hasSupportedFormat(): Boolean =
+    toPath().hasSupportedFormat()
 
 /**
  * Tells if this file is of one of the supported [formats][Format].
  */
-public fun File.hasSupportedFormat(): Boolean = toPath().hasSupportedFormat()
+public fun Path.hasSupportedFormat(): Boolean =
+    entries.any { it.matches(this) }
