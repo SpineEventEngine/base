@@ -107,6 +107,8 @@ internal sealed interface Parser {
 
     /**
      * Attempts to deserialize the given settings value into the given class.
+     *
+     * If the parsing fails, an exception will be thrown.
      */
     fun <T> parse(source: ByteSource, cls: Class<T>): T
 }
