@@ -1,5 +1,5 @@
 /*
- * Copyright 2024, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,9 +96,9 @@ public fun MessageOrBuilder.toJson(printer: Printer = JsonOutput.printer): Strin
 }
 
 /**
- * Converts this message into compact JSON representation.
+ * Converts this message into a compact JSON representation.
  *
- * <p>The resulted JSON does not contain the line separators.
+ * <p>The result JSON does not contain the line separators.
  *
  * @see [toJson]
  */
