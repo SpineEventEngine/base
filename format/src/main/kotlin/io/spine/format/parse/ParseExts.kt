@@ -74,7 +74,7 @@ public inline fun <reified T : Any> parseFile(file: File, format: Format): T =
  * @param file The file to parse.
  * @param cls The class of the instance stored in the file.
  * @throws IllegalStateException if the file is not of the supported [format][Format].
- * @throws java.io.IOException if the parsing of the file fails.
+ * @throws java.io.IOException or its subclass, if the parsing of the file fails.
  */
 public fun <T : Any> parseFile(file: File, cls: Class<T>): T {
     val format = Format.of(file)

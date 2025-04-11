@@ -33,9 +33,19 @@ import java.nio.file.Path
 import kotlin.io.path.name
 
 /**
- * Formats supported for parsing by the Spine Format library.
+ * Formats supported for parsing by [parseFile][io.spine.format.parse.parseFile] functions.
  *
- * @param extensions The extensions of the files storing data in the corresponding format.
+ * A format of a file can be obtained using the [Format.of] functions accepting
+ * [File] or [Path] parameters.
+ *
+ * You can check if a file is in the supported format using the functions
+ * [File.hasSupportedFormat] and [Path.hasSupportedFormat].
+ *
+ * @param extensions One or more extensions of the files that are conventionally used
+ *   for files in the corresponding format. If there is a format has multiple file extensions,
+ *   the one coming fist in the list is the primary one.
+ *   This [extension] will be used for writing and other operations that need to match
+ *   a file name to its format.
  */
 public enum class Format(vararg extensions: String) {
 
@@ -79,7 +89,20 @@ public enum class Format(vararg extensions: String) {
      *
      * Extensions are given without leading dots.
      */
-    public val extensions: List<String> = extensions.toList()
+    public val extensions: List<String>
+
+    /**
+     * The primary file extension of this format.
+     */
+    public val extension: String by lazy { extensions[0] }
+
+    init {
+        val list = extensions.toList()
+        require(list.isNotEmpty()) {
+            "The file format `$name` must have at least one extension."
+        }
+        this.extensions = list
+    }
 
     public companion object {
 
@@ -87,6 +110,7 @@ public enum class Format(vararg extensions: String) {
          * Obtains a [Format] from the extension of the given file.
          *
          * @throws IllegalStateException If the format is not recognized.
+         * @see File.hasSupportedFormat
          */
         @JvmStatic
         public fun of(file: File): Format = of(file.toPath())
@@ -95,6 +119,7 @@ public enum class Format(vararg extensions: String) {
          * Obtains a [Format] from the extension of the given file.
          *
          * @throws IllegalStateException If the format is not recognized.
+         * @see Path.hasSupportedFormat
          */
         @JvmStatic
         public fun of(file: Path): Format =
