@@ -37,7 +37,7 @@ import com.google.protobuf.util.JsonFormat.Parser
 import com.google.protobuf.util.JsonFormat.Printer
 import io.spine.protobuf.builderFor
 import io.spine.type.TypeRegistryHolder.typeRegistry
-import io.spine.util.Exceptions.newIllegalArgumentException
+import io.spine.util.Exceptions.newIllegalStateException
 
 /**
  * Utilities for working with JSON representation of Protobuf [Message] types.
@@ -108,8 +108,8 @@ public fun MessageOrBuilder.toCompactJson(): String =
 /**
  * Parses a message of the type [T] from the given [json] representation.
  *
- * @throws IllegalArgumentException
- *          if the message of this type cannot be parsed from the given string.
+ * @throws IllegalArgumentException if the message of this type cannot be parsed
+ *  from the given string.
  */
 public fun <T : Message> Class<T>.fromJson(json: String): T {
     try {
@@ -119,7 +119,7 @@ public fun <T : Message> Class<T>.fromJson(json: String): T {
         val result = messageBuilder.build() as T
         return result
     } catch (e: InvalidProtocolBufferException) {
-        throw newIllegalArgumentException(
+        throw newIllegalStateException(
             e,
             "The JSON text (`$json`) cannot be parsed to an instance of the class `$name`."
         )
