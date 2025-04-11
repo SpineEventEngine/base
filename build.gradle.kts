@@ -84,6 +84,31 @@ configurations.all {
     }
 }
 
+/**
+ * The below block avoids the version conflict with the `spine-base` used
+ * by our Dokka plugin and the module of this project.
+ *
+ * Here's the error:
+ *
+ * ```
+ * Execution failed for task ':dokkaGeneratePublicationHtml'.
+ * > Could not resolve all dependencies for configuration ':dokkaHtmlGeneratorRuntimeResolver~internal'.
+ *    > Conflict found for the following module:
+ *        - io.spine:spine-base between versions 2.0.0-SNAPSHOT.308 and 2.0.0-SNAPSHOT.309
+ * ```
+ * The problem is not fixed by forcing the version of [Base.lib] in the block above.
+ * It requires the code executed on `afterEvaluate`.
+ */
+afterEvaluate {
+    configurations.named("dokkaHtmlGeneratorRuntimeResolver~internal") {
+        resolutionStrategy.preferProjectModules()
+    }
+}
+
+val dokkaGeneratePublicationHtml by tasks.getting {
+    dependsOn(tasks.jar)
+}
+
 gradle.projectsEvaluated {
     JacocoConfig.applyTo(project)
     LicenseReporter.mergeAllReports(project)
