@@ -24,87 +24,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:JvmName("Parsers")
-
 package io.spine.format.parse
 
 import com.google.common.io.ByteSource
-import com.google.common.io.Files
-import io.spine.format.Format
-import io.spine.format.Format.JSON
-import io.spine.format.Format.PROTO_BINARY
-import io.spine.format.Format.PROTO_JSON
-import io.spine.format.Format.TEXT
-import io.spine.format.Format.YAML
-import java.io.File
-
-/**
- * Parses the given file loading the instance of the given class.
- *
- * The format of the file is determined by the extension of the file.
- *
- * @param T The type of the class stored in the file.
- * @param file The file to parse.
- * @throws IllegalStateException if the file is not of the supported [format][Format].
- * @throws java.io.IOException or its subclass, if the parsing of the file fails.
- */
-public inline fun <reified T : Any> parseFile(file: File): T =
-    parseFile(file, T::class.java)
-
-/**
- * Parses the given file loading the instance of the given class.
- *
- * This function provides the [format] parameter to cover the cases
- * of custom file extensions that are not available from
- * the items of the [Format] enumeration.
- *
- * @param T The type of the class stored in the file.
- * @param file The file to parse.
- * @param format The format of the file.
- * @throws IllegalStateException if the file is not of the supported [format][Format].
- * @throws java.io.IOException or its subclass, if the parsing of the file fails.
- */
-public inline fun <reified T : Any> parseFile(file: File, format: Format): T =
-    parseFile(file, format, T::class.java)
-
-/**
- * Parses the given file loading the instance of the given class.
- *
- * The format of the file is determined by the extension of the file.
- *
- * @param T The type of the class stored in the file.
- * @param file The file to parse.
- * @param cls The class of the instance stored in the file.
- * @throws IllegalStateException if the file is not of the supported [format][Format].
- * @throws java.io.IOException if the parsing of the file fails.
- */
-public fun <T : Any> parseFile(file: File, cls: Class<T>): T {
-    val format = Format.of(file)
-    return parseFile(file, format, cls)
-}
-
-/**
- * Parses the given file loading the instance of the given class.
- *
- * This function provides the [format] parameter to cover the cases
- * of custom file extensions that are not available from
- * the items of the [Format] enumeration.
- *
- * @param T The type of the class stored in the file.
- * @param file The file to parse.
- * @param format The format of the file.
- * @param cls The class of the instance stored in the file.
- * @throws IllegalStateException if the file is not of the supported [format][Format].
- * @throws java.io.IOException or its subclass, if the parsing of the file fails.
- */
-public fun <T : Any> parseFile(
-    file: File,
-    format: Format,
-    cls: Class<T>
-): T {
-    val bytes = Files.asByteSource(file)
-    return format.parser.parse(bytes, cls)
-}
 
 /**
  * A parser for files in one of the supported [formats][Format].
@@ -118,15 +40,3 @@ internal sealed interface Parser {
      */
     fun <T> parse(source: ByteSource, cls: Class<T>): T
 }
-
-/**
- * Obtains a [Parser] for this [format][Format].
- */
-private val Format.parser: Parser
-    get() = when(this) {
-        PROTO_BINARY -> ProtoBinaryParser
-        PROTO_JSON -> ProtoJsonParser
-        JSON -> JsonParser
-        YAML -> YamlParser
-        TEXT -> TextReader
-    }
