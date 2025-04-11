@@ -229,6 +229,22 @@ val Project.productionModules: Iterable<Project>
     get() = rootProject.subprojects.filter { !it.name.contains("-tests") }
 
 /**
+ * Obtains the names of the [productionModules].
+ *
+ * The extension could be useful for excluding modules from standard publishing:
+ * ```kotlin
+ * spinePublishing {
+ *     val customModule = "my-custom-module"
+ *     modules = productionModuleNames.toSet().minus(customModule)
+ *     modulesWithCustomPublishing = setOf(customModule)
+ *     //...
+ * }
+ * ```
+ */
+val Project.productionModuleNames: List<String>
+    get() = productionModules.map { it.name }
+
+/**
  * Sets the remote debug option for this [JavaExec] task.
  *
  * The port number is [5566][BuildSettings.REMOTE_DEBUG_PORT].

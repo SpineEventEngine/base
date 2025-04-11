@@ -2,15 +2,16 @@
 [![codecov][codecov-badge]][codecov] &nbsp;
 [![license][license-badge]][license]
 
-# Spine Base
+# Welcome to the `spine-base` repository
 
 This repository contains common data types and utilities used by
-the Spine SDK subprojects (e.g. [core-java][core-java]).
+the Spine SDK subprojects (e.g. [core-jvm][core-java]).
 
-## Adding to a Gradle project
-
-Spine Base is not supposed to be used directly in an end-user project.
-But if you need to, here's how you add it to your Gradle project:
+## The `spine-base` module
+This module is not supposed to be used directly in an end-user project because it is 
+exposed as an API dependency by [`core-jvm`][core-java] modules [`spine-client`][spine-client] and
+[`spine-server`][spine-server].
+But if you need to, here is how you add it to your Gradle project:
 
 ```kotlin
 dependencies {
@@ -18,11 +19,26 @@ dependencies {
 }
 ```
 
-## Java Support
+## The `spine-format` module
+This module contains utilities for parsing files in various types like YAML, JSON, binary Protobuf,
+or Protobuf JSON. This module is used internally by Spine SDK components. 
+If you need it as a direct dependency in your Gradle project, please use the following code: 
 
-Starting version `2.0.0-SNAPSHOT.78`, the modules in this repository are built with Java 11.
+```kotlin
+dependencies {
+    implementation("io.spine:spine-format:$version")
+}
+```
 
-Prior versions, including all `1.x` versions were assembled with Java 8.
+## Language versions
+
+* **Java** — [see `BuildSettings.kt`](buildSrc/src/main/kotlin/BuildSettings.kt)
+
+
+* **Kotlin** — [see `Kotlin.kt`](buildSrc/src/main/kotlin/io/spine/dependency/lib/Kotlin.kt)
+
+
+* `1.x` versions were assembled with Java 8.
 
 
 [gh-actions]: https://github.com/SpineEventEngine/base/actions
@@ -32,3 +48,5 @@ Prior versions, including all `1.x` versions were assembled with Java 8.
 [license-badge]: https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat
 [license]: http://www.apache.org/licenses/LICENSE-2.0
 [core-java]: https://github.com/SpineEventEngine/core-java 
+[spine-client]: https://github.com/SpineEventEngine/core-java/tree/master/client
+[spine-server]: https://github.com/SpineEventEngine/core-java/tree/master/server

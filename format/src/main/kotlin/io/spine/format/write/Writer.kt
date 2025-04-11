@@ -24,27 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.jetbrains.dokka.gradle.DokkaTaskPartial
+package io.spine.format.write
 
-plugins {
-    id("org.jetbrains.dokka") // Cannot use `Dokka` dependency object here yet.
-}
+import io.spine.format.Format
+import java.io.File
 
-dependencies {
-    useDokkaWithSpineExtensions()
-}
+internal interface Writer {
 
-afterEvaluate {
-    dokka {
-        configureForKotlin(
-            project,
-            "https://github.com/SpineEventEngine/base/tree/master/src"
-        )
-    }
-}
+    /**
+     * Writes the [value] using the given [format] into the specified [file].
+     *
+     * The extension of the file does not have to match the specified [format].
+     */
+    fun <T : Any> write(file: File, format: Format, value: T)
 
-tasks.withType<DokkaTaskPartial>().configureEach {
-    onlyIf {
-        isInPublishingGraph()
+    /**
+     * Writes the [value] into the file using a [Format] obtained via
+     * extension of the given [file].
+     *
+     * @see write
+     */
+    fun <T : Any> write(file: File, value: List<T>) {
+        val format = Format.of(file)
+        write(file, format, value)
     }
 }

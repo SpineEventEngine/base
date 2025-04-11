@@ -24,27 +24,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.jetbrains.dokka.gradle.DokkaTaskPartial
+package io.spine.format.parse
 
-plugins {
-    id("org.jetbrains.dokka") // Cannot use `Dokka` dependency object here yet.
-}
+import com.google.common.io.ByteSource
 
-dependencies {
-    useDokkaWithSpineExtensions()
-}
+/**
+ * A parser for files in one of the supported [formats][io.spine.format.Format].
+ */
+internal sealed interface Parser {
 
-afterEvaluate {
-    dokka {
-        configureForKotlin(
-            project,
-            "https://github.com/SpineEventEngine/base/tree/master/src"
-        )
-    }
-}
-
-tasks.withType<DokkaTaskPartial>().configureEach {
-    onlyIf {
-        isInPublishingGraph()
-    }
+    /**
+     * Attempts to deserialize the given settings value into the given class.
+     *
+     * @throws java.io.IOException or its subclass, if the parsing of the file fails.
+     */
+    fun <T> parse(source: ByteSource, cls: Class<T>): T
 }

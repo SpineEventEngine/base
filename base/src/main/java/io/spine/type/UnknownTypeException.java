@@ -25,14 +25,17 @@
  */
 package io.spine.type;
 
+import java.io.Serial;
+
 import static java.lang.String.format;
 
 /**
- * Exception that is thrown when unsupported message is obtained
- * or in case when there is no class for given Protobuf message.
+ * Exception that is thrown when an unsupported message is obtained
+ * or in case when there is no class for the given Protobuf message.
  */
-public class UnknownTypeException extends RuntimeException {
+public class UnknownTypeException extends IllegalStateException {
 
+    @Serial
     private static final long serialVersionUID = 0L;
 
     /**
@@ -63,8 +66,8 @@ public class UnknownTypeException extends RuntimeException {
      *
      * <p>Use this constructor when propagating
      * {@link com.google.protobuf.InvalidProtocolBufferException InvalidProtocolBufferException}
-     * without knowing which type caused the exception (e.g. when calling
-     * {@code JsonFormat.print()}.
+     * without knowing which type caused the exception
+     * (e.g., when calling {@code JsonFormat.print()}).
      */
     public UnknownTypeException(Throwable cause) {
         super(cause);

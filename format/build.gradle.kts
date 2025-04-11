@@ -24,27 +24,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.jetbrains.dokka.gradle.DokkaTaskPartial
+import io.spine.dependency.lib.Jackson
 
 plugins {
-    id("org.jetbrains.dokka") // Cannot use `Dokka` dependency object here yet.
+    module
 }
 
 dependencies {
-    useDokkaWithSpineExtensions()
-}
-
-afterEvaluate {
-    dokka {
-        configureForKotlin(
-            project,
-            "https://github.com/SpineEventEngine/base/tree/master/src"
-        )
-    }
-}
-
-tasks.withType<DokkaTaskPartial>().configureEach {
-    onlyIf {
-        isInPublishingGraph()
+    implementation(project(":base"))
+    with(Jackson) {
+        implementation(databind)
+        implementation(dataformatYaml)
+        runtimeOnly(moduleKotlin)
     }
 }

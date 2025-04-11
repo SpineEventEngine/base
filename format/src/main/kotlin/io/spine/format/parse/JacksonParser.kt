@@ -24,27 +24,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.jetbrains.dokka.gradle.DokkaTaskPartial
+package io.spine.format.parse
 
-plugins {
-    id("org.jetbrains.dokka") // Cannot use `Dokka` dependency object here yet.
-}
+import com.fasterxml.jackson.core.JsonFactory
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import com.google.common.io.ByteSource
+import io.spine.format.JacksonSupport
+import java.nio.charset.Charset.defaultCharset
 
-dependencies {
-    useDokkaWithSpineExtensions()
-}
+/**
+ * The abstract base parsers of text-based formats backed by the Jackson library.
+ */
+internal sealed class JacksonParser : JacksonSupport(), Parser {
 
-afterEvaluate {
-    dokka {
-        configureForKotlin(
-            project,
-            "https://github.com/SpineEventEngine/base/tree/master/src"
-        )
+    final override fun <T> parse(source: ByteSource, cls: Class<T>): T {
+        val charSource = source.asCharSource(defaultCharset())
+        return charSource.openBufferedStream().use {
+            mapper.readValue(it, cls)
+        }
     }
 }
 
-tasks.withType<DokkaTaskPartial>().configureEach {
-    onlyIf {
-        isInPublishingGraph()
+/**
+ * Settings parser for JSON.
+ */
+internal data object JsonParser : JacksonParser() {
+    override val factory: JsonFactory by lazy {
+        JsonFactory()
+    }
+}
+
+/**
+ * Settings parser for YAML.
+ */
+internal data object YamlParser : JacksonParser() {
+    override val factory: JsonFactory by lazy {
+        YAMLFactory()
     }
 }

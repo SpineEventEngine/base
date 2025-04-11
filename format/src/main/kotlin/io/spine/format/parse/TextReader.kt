@@ -24,27 +24,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.jetbrains.dokka.gradle.DokkaTaskPartial
+package io.spine.format.parse
 
-plugins {
-    id("org.jetbrains.dokka") // Cannot use `Dokka` dependency object here yet.
-}
+import com.google.common.io.ByteSource
+import java.nio.charset.Charset
 
-dependencies {
-    useDokkaWithSpineExtensions()
-}
+/**
+ * A reader for the plain text file into [java.lang.String].
+ *
+ * This object does not parse, but simply reads a [ByteSource] instance into a string.
+ *
+ * The string is converted from bytes using the [default charset][Charset.defaultCharset].
+ */
+internal data object TextReader : Parser {
 
-afterEvaluate {
-    dokka {
-        configureForKotlin(
-            project,
-            "https://github.com/SpineEventEngine/base/tree/master/src"
-        )
-    }
-}
-
-tasks.withType<DokkaTaskPartial>().configureEach {
-    onlyIf {
-        isInPublishingGraph()
+    /**
+     * Reads the given [source] as [java.lang.String] value.
+     *
+     * To ensure the type safety, the [cls] parameter is checked to
+     * be the class of [java.lang.String].
+     *
+     * @throws IllegalStateException if the type [T] is not [java.lang.String].
+     */
+    override fun <T> parse(source: ByteSource, cls: Class<T>): T {
+        if (cls != String::class.java) {
+            error("Expected format supporting the type `${cls.canonicalName}`" +
+                    " but got a text file.")
+        }
+        val value = source.asCharSource(Charset.defaultCharset()).read()
+        @Suppress("UNCHECKED_CAST")
+        return value as T
     }
 }

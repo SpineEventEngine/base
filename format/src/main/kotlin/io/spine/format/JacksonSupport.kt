@@ -24,27 +24,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.jetbrains.dokka.gradle.DokkaTaskPartial
+package io.spine.format
 
-plugins {
-    id("org.jetbrains.dokka") // Cannot use `Dokka` dependency object here yet.
-}
+import com.fasterxml.jackson.core.JsonFactory
+import com.fasterxml.jackson.databind.ObjectMapper
 
-dependencies {
-    useDokkaWithSpineExtensions()
-}
+internal abstract class JacksonSupport {
 
-afterEvaluate {
-    dokka {
-        configureForKotlin(
-            project,
-            "https://github.com/SpineEventEngine/base/tree/master/src"
-        )
-    }
-}
+    /**
+     * The instance of [JsonFactory] used by the parser.
+     */
+    protected abstract val factory: JsonFactory
 
-tasks.withType<DokkaTaskPartial>().configureEach {
-    onlyIf {
-        isInPublishingGraph()
+    /**
+     * The lazily evaluated cached instance of the object matter.
+     *
+     * @see ObjectMapper.findAndRegisterModules
+     */
+    protected val mapper: ObjectMapper by lazy {
+        ObjectMapper(factory).findAndRegisterModules()
     }
 }

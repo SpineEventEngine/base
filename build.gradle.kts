@@ -26,17 +26,11 @@
 
 @file:Suppress("RemoveRedundantQualifierName") // Cannot use imports in some places.
 
-import io.spine.dependency.lib.AutoService
-import io.spine.dependency.lib.AutoServiceKsp
-import io.spine.dependency.lib.Kotlin
-import io.spine.dependency.lib.Protobuf
+import io.spine.dependency.local.Base
 import io.spine.dependency.local.Logging
-import io.spine.dependency.local.Reflect
-import io.spine.dependency.local.TestLib
-import io.spine.gradle.publish.IncrementGuard
 import io.spine.gradle.publish.PublishingRepos
-import io.spine.gradle.publish.excludeGoogleProtoFromArtifacts
 import io.spine.gradle.publish.spinePublishing
+import io.spine.gradle.report.coverage.JacocoConfig
 import io.spine.gradle.report.license.LicenseReporter
 import io.spine.gradle.report.pom.PomGenerator
 import io.spine.gradle.standardToSpineSdk
@@ -46,16 +40,13 @@ buildscript {
     doForceVersions(configurations)
 }
 
-repositories.standardToSpineSdk()
-
-// Apply some plugins to make type-safe extension accessors available in this script file.
 plugins {
-    `jvm-module`
-    `compile-protobuf`
+    kotlin
+    jacoco
+    `gradle-doctor`
     `project-report`
-    ksp
+    `dokka-for-kotlin`
 }
-apply<IncrementGuard>()
 
 spinePublishing {
     destinations = with(PublishingRepos) {
@@ -64,50 +55,62 @@ spinePublishing {
             gitHub("base")
         )
     }
+    modules = productionModuleNames.toSet()
     dokkaJar {
+        kotlin = true
         java = true
     }
 }
 
-apply(from = "$rootDir/version.gradle.kts")
-group = "io.spine"
-version = rootProject.extra["versionToPublish"]!!
-repositories.standardToSpineSdk()
-configurations.forceVersions()
+allprojects {
+    apply(from = "$rootDir/version.gradle.kts")
+    group = "io.spine"
+    version = rootProject.extra["versionToPublish"]!!
+    repositories.standardToSpineSdk()
+    configurations.forceVersions()
+}
 
 dependencies {
-    compileOnly(AutoService.annotations)
-    ksp(AutoServiceKsp.processor)
-
-    implementation(Logging.lib)
-    implementation(Reflect.lib)
-    implementation(Kotlin.reflect)
-
-    /* Have `protobuf` dependency instead of `api` or `implementation` so that proto
-       files from the library are included in the compilation. We need this because we
-       build our descriptor set files using those standard proto files too.
-
-       See Protobuf Gradle Plugin documentation for details:
-           https://github.com/google/protobuf-gradle-plugin#protos-in-dependencies
-    */
-    protobuf(Protobuf.protoSrcLib)
-
-    testImplementation(TestLib.lib)
-    testImplementation(Logging.smokeTest)
-    testImplementation(Logging.testLib)?.because("We need `tapConsole`.")
+    dokka(project(":base"))
+    dokka(project(":format"))
 }
 
 configurations.all {
     resolutionStrategy {
-        force(Reflect.lib)
-        force(Logging.lib)
-        force(Logging.libJvm)
+        force(
+            Base.lib,
+            Logging.lib,
+        )
     }
 }
 
-tasks {
-    excludeGoogleProtoFromArtifacts()
+/**
+ * The below block avoids the version conflict with the `spine-base` used
+ * by our Dokka plugin and the module of this project.
+ *
+ * Here's the error:
+ *
+ * ```
+ * Execution failed for task ':dokkaGeneratePublicationHtml'.
+ * > Could not resolve all dependencies for configuration ':dokkaHtmlGeneratorRuntimeResolver~internal'.
+ *    > Conflict found for the following module:
+ *        - io.spine:spine-base between versions 2.0.0-SNAPSHOT.308 and 2.0.0-SNAPSHOT.309
+ * ```
+ * The problem is not fixed by forcing the version of [Base.lib] in the block above.
+ * It requires the code executed on `afterEvaluate`.
+ */
+afterEvaluate {
+    configurations.named("dokkaHtmlGeneratorRuntimeResolver~internal") {
+        resolutionStrategy.preferProjectModules()
+    }
 }
 
-LicenseReporter.mergeAllReports(project)
-PomGenerator.applyTo(project)
+val dokkaGeneratePublicationHtml by tasks.getting {
+    dependsOn(tasks.jar)
+}
+
+gradle.projectsEvaluated {
+    JacocoConfig.applyTo(project)
+    LicenseReporter.mergeAllReports(project)
+    PomGenerator.applyTo(project)
+}

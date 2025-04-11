@@ -30,9 +30,9 @@ import io.spine.dependency.build.Dokka
 import io.spine.dependency.build.ErrorProne
 import io.spine.dependency.lib.Guava
 import io.spine.dependency.lib.JavaX
-import io.spine.dependency.lib.Protobuf
-import io.spine.dependency.local.Logging
+import io.spine.dependency.local.Base
 import io.spine.dependency.local.Reflect
+import io.spine.dependency.local.Logging
 import io.spine.dependency.local.TestLib
 import io.spine.dependency.test.JUnit
 import io.spine.dependency.test.Jacoco
@@ -60,7 +60,6 @@ plugins {
     id("detekt-code-analysis")
     id("dokka-for-kotlin")
 }
-
 LicenseReporter.generateReportIn(project)
 JavadocConfig.applyTo(project)
 CheckStyleConfig.applyTo(project)
@@ -126,14 +125,9 @@ fun Module.configureKotlin(javaVersion: JavaLanguageVersion) {
 fun Module.addDependencies() = dependencies {
     errorprone(ErrorProne.core)
 
-    Protobuf.libs.forEach { api(it) }
-    api(Guava.lib)
-
     compileOnlyApi(CheckerFramework.annotations)
     compileOnlyApi(JavaX.annotations)
     ErrorProne.annotations.forEach { compileOnlyApi(it) }
-
-    implementation(Logging.lib)
 
     testImplementation(Guava.testLib)
     testImplementation(JUnit.runner)
@@ -158,6 +152,8 @@ fun Module.forceConfigurations() {
                     JUnit.runner,
                     Dokka.BasePlugin.lib,
                     Reflect.lib,
+                    Base.lib,
+                    Logging.lib,
                 )
             }
         }
