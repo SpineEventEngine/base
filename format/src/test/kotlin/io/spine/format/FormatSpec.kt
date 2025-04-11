@@ -31,7 +31,6 @@ import io.kotest.matchers.shouldBe
 import io.spine.format.Format.JSON
 import io.spine.format.Format.PROTO_BINARY
 import io.spine.format.Format.PROTO_JSON
-import io.spine.format.Format.TEXT
 import io.spine.format.Format.YAML
 import java.io.File
 import kotlin.io.path.Path
@@ -62,9 +61,6 @@ class FormatSpec {
         YAML.extensions.shouldContainInOrder(
             "yml", "yaml"
         )
-        TEXT.extensions.shouldContainInOrder(
-            "txt"
-        )
     }
 
     @Test
@@ -78,7 +74,6 @@ class FormatSpec {
         // to the `PROTO_JSON` format, it is also compatible with `JSON`.
         assertMatches(JSON, "my.pb.json", "dir/sub/file.json", "bin/settings.pb.json")
         assertMatches(YAML, "my.yml", "dir/sub/file.yaml")
-        assertMatches(TEXT, "file.txt")
     }
 
     @Test
@@ -90,7 +85,6 @@ class FormatSpec {
         assertDoesNotMatch(PROTO_JSON, "my.pb", "dir/sub/file.json", "bin/settings.pb")
         assertDoesNotMatch(JSON, "my.yaml", "dir/sub/file.txt")
         assertDoesNotMatch(YAML, "my.json", "dir/file.txt")
-        assertDoesNotMatch(TEXT, "my.json", "file.bp.json")
     }
 
     @Test
@@ -101,7 +95,7 @@ class FormatSpec {
 
         assertSupported(
             "file.binpb", "file.pb", "file.bin",
-            "file.pb.json", "file.json", "file.yml", "file.yaml", "file.txt"
+            "file.pb.json", "file.json", "file.yml", "file.yaml"
         )
 
         File("picture.gif").hasSupportedFormat() shouldBe false
@@ -116,8 +110,6 @@ class FormatSpec {
         "file.json" shouldProduceFormat JSON
         "file.yml" shouldProduceFormat YAML
         "file.yaml" shouldProduceFormat YAML
-        "file.txt" shouldProduceFormat TEXT
-
     }
 
     private infix fun String.shouldProduceFormat(expectedFormat: Format) =

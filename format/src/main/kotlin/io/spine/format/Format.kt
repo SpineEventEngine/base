@@ -64,13 +64,7 @@ public enum class Format(vararg extensions: String) {
     /**
      * A plain [YAML](https://yaml.org/) value.
      */
-    YAML("yml", "yaml"),
-
-    //TODO: Remove support of text files. It is silly.
-    /**
-     * A plain text value.
-     */
-    TEXT("txt");
+    YAML("yml", "yaml");
 
     /**
      * Checks if the given file matches this format.

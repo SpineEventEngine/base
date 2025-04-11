@@ -33,7 +33,6 @@ import io.spine.format.Format
 import io.spine.format.Format.JSON
 import io.spine.format.Format.PROTO_BINARY
 import io.spine.format.Format.PROTO_JSON
-import io.spine.format.Format.TEXT
 import io.spine.format.Format.YAML
 import java.io.File
 
@@ -114,5 +113,4 @@ private val Format.parser: Parser
         PROTO_JSON -> ProtoJsonParser
         JSON -> JsonParser
         YAML -> YamlParser
-        TEXT -> TextReader
     }

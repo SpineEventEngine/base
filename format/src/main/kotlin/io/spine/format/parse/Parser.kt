@@ -29,7 +29,7 @@ package io.spine.format.parse
 import com.google.common.io.ByteSource
 
 /**
- * A parser for files in one of the supported [formats][Format].
+ * A parser for files in one of the supported [formats][io.spine.format.Format].
  */
 internal sealed interface Parser {
 
