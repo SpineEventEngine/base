@@ -24,13 +24,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.format.parser
+package io.spine.format.parse
 
 import com.google.protobuf.Message
 import com.google.protobuf.Timestamp
 import io.kotest.matchers.shouldBe
 import io.spine.base.Time
-import io.spine.format.parse.parseFile
 import io.spine.type.toJson
 import java.io.File
 import org.junit.jupiter.api.BeforeEach
