@@ -26,6 +26,8 @@
 
 @file:Suppress("RemoveRedundantQualifierName") // Cannot use imports in some places.
 
+import io.spine.dependency.local.Base
+import io.spine.dependency.local.Logging
 import io.spine.gradle.publish.PublishingRepos
 import io.spine.gradle.publish.spinePublishing
 import io.spine.gradle.report.coverage.JacocoConfig
@@ -39,9 +41,11 @@ buildscript {
 }
 
 plugins {
+    kotlin
     jacoco
     `gradle-doctor`
     `project-report`
+    `dokka-for-kotlin`
 }
 
 spinePublishing {
@@ -51,11 +55,9 @@ spinePublishing {
             gitHub("base")
         )
     }
-    modules = setOf(
-        "base",
-//        "format"
-    )
+    modules = productionModuleNames.toSet()
     dokkaJar {
+        kotlin = true
         java = true
     }
 }
@@ -66,6 +68,20 @@ allprojects {
     version = rootProject.extra["versionToPublish"]!!
     repositories.standardToSpineSdk()
     configurations.forceVersions()
+}
+
+dependencies {
+    dokka(project(":base"))
+    dokka(project(":format"))
+}
+
+configurations.all {
+    resolutionStrategy {
+        force(
+            Base.lib,
+            Logging.lib,
+        )
+    }
 }
 
 gradle.projectsEvaluated {

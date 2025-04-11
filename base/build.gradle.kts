@@ -29,6 +29,7 @@ import io.spine.dependency.lib.AutoServiceKsp
 import io.spine.dependency.lib.Guava
 import io.spine.dependency.lib.Kotlin
 import io.spine.dependency.lib.Protobuf
+import io.spine.dependency.local.Base
 import io.spine.dependency.local.Logging
 import io.spine.dependency.local.Reflect
 import io.spine.dependency.local.TestLib
@@ -71,12 +72,16 @@ dependencies {
 
 configurations.all {
     resolutionStrategy {
-        force(Reflect.lib)
-        force(Logging.lib)
-        force(Logging.libJvm)
+        force(
+            Base.lib,
+            Reflect.lib,
+            Logging.lib,
+            Logging.libJvm
+        )
     }
 }
 
 tasks {
     excludeGoogleProtoFromArtifacts()
 }
+
