@@ -30,6 +30,7 @@ import io.spine.dependency.build.Dokka
 import io.spine.dependency.build.ErrorProne
 import io.spine.dependency.lib.Guava
 import io.spine.dependency.lib.JavaX
+import io.spine.dependency.local.Base
 import io.spine.dependency.local.Reflect
 import io.spine.dependency.local.Logging
 import io.spine.dependency.local.TestLib
@@ -151,6 +152,7 @@ fun Module.forceConfigurations() {
                     JUnit.runner,
                     Dokka.BasePlugin.lib,
                     Reflect.lib,
+                    Base.lib,
                     Logging.lib,
                 )
             }
