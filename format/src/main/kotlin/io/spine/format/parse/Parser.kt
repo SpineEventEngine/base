@@ -24,6 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:JvmName("Parsers")
+
 package io.spine.format.parse
 
 import com.google.common.io.ByteSource
@@ -44,6 +46,7 @@ import java.io.File
  * @param T The type of the class stored in the file.
  * @param file The file to parse.
  * @throws IllegalStateException if the file is not of the supported [format][Format].
+ * @throws java.io.IOException or its subclass, if the parsing of the file fails.
  */
 public inline fun <reified T : Any> parseFile(file: File): T =
     parseFile(file, T::class.java)
@@ -59,6 +62,7 @@ public inline fun <reified T : Any> parseFile(file: File): T =
  * @param file The file to parse.
  * @param format The format of the file.
  * @throws IllegalStateException if the file is not of the supported [format][Format].
+ * @throws java.io.IOException or its subclass, if the parsing of the file fails.
  */
 public inline fun <reified T : Any> parseFile(file: File, format: Format): T =
     parseFile(file, format, T::class.java)
@@ -72,6 +76,7 @@ public inline fun <reified T : Any> parseFile(file: File, format: Format): T =
  * @param file The file to parse.
  * @param cls The class of the instance stored in the file.
  * @throws IllegalStateException if the file is not of the supported [format][Format].
+ * @throws java.io.IOException if the parsing of the file fails.
  */
 public fun <T : Any> parseFile(file: File, cls: Class<T>): T {
     val format = Format.of(file)
@@ -90,6 +95,7 @@ public fun <T : Any> parseFile(file: File, cls: Class<T>): T {
  * @param format The format of the file.
  * @param cls The class of the instance stored in the file.
  * @throws IllegalStateException if the file is not of the supported [format][Format].
+ * @throws java.io.IOException or its subclass, if the parsing of the file fails.
  */
 public fun <T : Any> parseFile(
     file: File,
@@ -108,7 +114,7 @@ internal sealed interface Parser {
     /**
      * Attempts to deserialize the given settings value into the given class.
      *
-     * If the parsing fails, an exception will be thrown.
+     * @throws java.io.IOException or its subclass, if the parsing of the file fails.
      */
     fun <T> parse(source: ByteSource, cls: Class<T>): T
 }
