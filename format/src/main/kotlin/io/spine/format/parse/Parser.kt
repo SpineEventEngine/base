@@ -27,6 +27,11 @@
 package io.spine.format.parse
 
 import com.google.common.io.ByteSource
+import io.spine.format.Format
+import io.spine.format.Format.JSON
+import io.spine.format.Format.PROTO_BINARY
+import io.spine.format.Format.PROTO_JSON
+import io.spine.format.Format.YAML
 
 /**
  * A parser for files in one of the supported [formats][io.spine.format.Format].
@@ -40,3 +45,14 @@ internal sealed interface Parser {
      */
     fun <T> parse(source: ByteSource, cls: Class<T>): T
 }
+
+/**
+ * Obtains a [Parser] for this [format][Format].
+ */
+internal val Format.parser: Parser
+    get() = when(this) {
+        PROTO_BINARY -> ProtoBinaryParser
+        PROTO_JSON -> ProtoJsonParser
+        JSON -> JsonParser
+        YAML -> YamlParser
+    }

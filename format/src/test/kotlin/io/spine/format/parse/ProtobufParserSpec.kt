@@ -30,6 +30,7 @@ import com.google.protobuf.Message
 import com.google.protobuf.Timestamp
 import io.kotest.matchers.shouldBe
 import io.spine.base.Time
+import io.spine.format.parse
 import io.spine.type.toJson
 import java.io.File
 import org.junit.jupiter.api.BeforeEach

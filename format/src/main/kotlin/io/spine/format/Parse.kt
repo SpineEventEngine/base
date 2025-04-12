@@ -24,16 +24,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:JvmName("Parsers")
+@file:JvmName("Parse")
 
-package io.spine.format.parse
+package io.spine.format
 
 import com.google.common.io.Files
-import io.spine.format.Format
-import io.spine.format.Format.JSON
-import io.spine.format.Format.PROTO_BINARY
-import io.spine.format.Format.PROTO_JSON
-import io.spine.format.Format.YAML
+import io.spine.format.parse.parser
 import java.io.File
 
 /**
@@ -103,14 +99,3 @@ public fun <T : Any> parse(
     val bytes = Files.asByteSource(file)
     return format.parser.parse(bytes, cls)
 }
-
-/**
- * Obtains a [Parser] for this [format][Format].
- */
-private val Format.parser: Parser
-    get() = when(this) {
-        PROTO_BINARY -> ProtoBinaryParser
-        PROTO_JSON -> ProtoJsonParser
-        JSON -> JsonParser
-        YAML -> YamlParser
-    }
