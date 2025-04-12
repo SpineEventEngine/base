@@ -33,7 +33,6 @@ import io.spine.format.Format.ProtoBinary
 import io.spine.format.Format.ProtoJson
 import io.spine.format.Format.Yaml
 import java.io.File
-import kotlin.io.path.Path
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -66,24 +65,23 @@ class FormatSpec {
     @Test
     fun `match files`() {
         fun assertMatches(format: Format<*>, vararg fileNames: String) = fileNames.forEach {
-            format.matches(Path(it)) shouldBe true
+            format.matches(File(it)) shouldBe true
         }
         assertMatches(ProtoBinary, "my.binpb", "dir/sub/file.pb", "app/bin/settings.bin")
         assertMatches(ProtoJson, "my.pb.json", "dir/sub/file.pb.json", "app/bin/settings.pb.json")
-        // Even though the "extension" for the first file is `pb.json` which corresponds
-        // to the `PROTO_JSON` format, it is also compatible with `JSON`.
-        assertMatches(Json, "my.pb.json", "dir/sub/file.json", "bin/settings.pb.json")
+        assertMatches(Json, "my.json", "dir/sub/file.json")
         assertMatches(Yaml, "my.yml", "dir/sub/file.yaml")
     }
 
     @Test
     fun `not match files with wrong extensions`() {
         fun assertDoesNotMatch(format: Format<*>, vararg fileNames: String) = fileNames.forEach {
-            format.matches(Path(it)) shouldBe false
+            format.matches(File(it)) shouldBe false
         }
         assertDoesNotMatch(ProtoBinary, "my.txt", "dir/sub/file.pb.json")
         assertDoesNotMatch(ProtoJson, "my.pb", "dir/sub/file.json", "bin/settings.pb")
-        assertDoesNotMatch(Json, "my.yaml", "dir/sub/file.txt")
+        /* `ProtoJson` and `Json` are different. */
+        assertDoesNotMatch(Json, "my.pb.json", "my.yaml", "dir/sub/file.txt")
         assertDoesNotMatch(Yaml, "my.json", "dir/file.txt")
     }
 

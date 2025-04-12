@@ -27,7 +27,6 @@
 package io.spine.format
 
 import com.google.protobuf.Message
-import io.spine.format.Format.ProtoJson
 import io.spine.format.parse.JsonParser
 import io.spine.format.parse.Parser
 import io.spine.format.parse.ProtoBinaryParser
@@ -39,21 +38,15 @@ import io.spine.format.write.ProtoJsonWriter
 import io.spine.format.write.Writer
 import io.spine.format.write.YamlWriter
 import io.spine.io.Glob
-import io.spine.io.replaceExtension
 import java.io.File
-import java.nio.file.Path
-import kotlin.io.path.name
-
-public interface ProtobufFormat
 
 /**
  * Formats supported for I/O operations supported by the [io.spine.format] package.
  *
- * A format of a file can be obtained using the [Format.of] functions accepting
- * [File] or [Path] parameters.
+ * A format of a file can be obtained using the [Format.of] function.
  *
- * You can check if a file is in the supported format using the functions
- * [File.hasSupportedFormat] and [Path.hasSupportedFormat].
+ * You can check if a file is in the supported format using the function
+ * [File.hasSupportedFormat].
  *
  * @param extensions One or more extensions of the files that are conventionally used
  *   for files in the corresponding format. If there is a format has multiple file extensions,
@@ -68,7 +61,6 @@ public sealed class Format<T : Any>(
     internal val parser: Parser<T>,
     vararg extensions: String
 ) {
-
     /**
      * A Protobuf message encoded in binary.
      *
@@ -100,7 +92,19 @@ public sealed class Format<T : Any>(
     public data object Json : Format<Any>(
         JsonWriter,
         JsonParser,
-        "json")
+        "json") {
+
+        /**
+         * Avoids the clash with [ProtoJson] format extension, which
+         * ends on `.json` too.
+         */
+        override fun matches(file: File): Boolean {
+            if (ProtoJson.matches(file)) {
+                return false
+            }
+            return super.matches(file)
+        }
+    }
 
     /**
      * A plain [YAML](https://yaml.org/) value.
@@ -114,10 +118,10 @@ public sealed class Format<T : Any>(
     /**
      * Checks if the given file matches this format.
      */
-    public fun matches(file: Path): Boolean =
+    public open fun matches(file: File): Boolean =
         extensions
             .map { Glob.extension(it) }
-            .any { it.matches(file) }
+            .any { it.matches(file.toPath()) }
 
     /**
      * Obtains file extensions of this format.
@@ -155,49 +159,8 @@ public sealed class Format<T : Any>(
          * @see File.hasSupportedFormat
          */
         @JvmStatic
-        public fun of(file: File): Format<*> = of(file.toPath())
-
-        /**
-         * Obtains a [Format] from the extension of the given file.
-         *
-         * @throws IllegalStateException If the format is not recognized.
-         * @see Path.hasSupportedFormat
-         */
-        @JvmStatic
-        public fun of(file: Path): Format<*> =
+        public fun of(file: File): Format<*> =
             entries.find { it.matches(file) }
                 ?: error("Unsupported file format: `${file.name}`.")
     }
-}
-
-/**
- * Tells if this file is of one of the supported [formats][Format].
- */
-public fun File.hasSupportedFormat(): Boolean =
-    toPath().hasSupportedFormat()
-
-/**
- * Tells if this file is of one of the supported [formats][Format].
- */
-public fun Path.hasSupportedFormat(): Boolean =
-    Format.entries.any { it.matches(this) }
-
-/**
- * Ensures that the file has the [primary extension][Format.extensions] of the given [format].
- *
- * @return this file if the extension matches, new instance with the required extension otherwise.
- */
-@Suppress("ReturnCount") // Prefer earlier exits for better readability.
-public fun File.ensureFormatExtension(format: Format<*>): File {
-    val required = format.extension
-    if (path.endsWith(required)) {
-        return this
-    }
-    // Handle the special case of this double-extension.
-    val pbJson = ProtoJson.extension
-    if (path.endsWith(pbJson)) {
-        val newPath = path.replace(pbJson, required)
-        return File(newPath)
-    }
-    return replaceExtension(format.extension)
 }
