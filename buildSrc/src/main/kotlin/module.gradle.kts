@@ -25,14 +25,15 @@
  */
 
 import BuildSettings.javaVersion
+import Module_gradle.Module
 import io.spine.dependency.build.CheckerFramework
 import io.spine.dependency.build.Dokka
 import io.spine.dependency.build.ErrorProne
 import io.spine.dependency.lib.Guava
 import io.spine.dependency.lib.JavaX
 import io.spine.dependency.local.Base
-import io.spine.dependency.local.Reflect
 import io.spine.dependency.local.Logging
+import io.spine.dependency.local.Reflect
 import io.spine.dependency.local.TestLib
 import io.spine.dependency.test.JUnit
 import io.spine.dependency.test.Jacoco
@@ -55,7 +56,6 @@ plugins {
     id("project-report")
     id("dokka-for-java")
     kotlin("jvm")
-    id("io.kotest")
     id("org.jetbrains.kotlinx.kover")
     id("detekt-code-analysis")
     id("dokka-for-kotlin")
