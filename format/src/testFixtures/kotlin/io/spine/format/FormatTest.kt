@@ -24,25 +24,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.dependency.lib.Jackson
-import io.spine.dependency.lib.Protobuf
-import io.spine.dependency.test.JUnit
+package io.spine.format
 
-plugins {
-    module
-    `java-test-fixtures`
-}
+import io.spine.format.FormatTest.Companion.tempDir
+import java.io.File
+import java.util.*
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.io.TempDir
 
-dependencies {
-    implementation(project(":base"))
-    with(Jackson) {
-        implementation(databind)
-        implementation(dataformatYaml)
-        runtimeOnly(moduleKotlin)
+/**
+ * The abstract base for format tests that create a [file] under
+ * automatically created [temporary directory][tempDir].
+ *
+ * @property format The format to test.
+ * @property file The file path which is composed having the temporary directory
+ *  as the parent, using a randomly generated UUID-based name.
+ *  The file name has the extension supported by the given [format].
+ *
+ * @see computeFile
+ */
+abstract class FormatTest<T : Any>(
+    protected val format: Format<T>
+) {
+    protected lateinit var file: File
+
+    companion object {
+
+        lateinit var tempDir: File
+
+        @BeforeAll
+        @JvmStatic
+        fun createDirectory(@TempDir tempDir: File) {
+            this.tempDir = tempDir
+        }
     }
 
-    testFixturesImplementation(Protobuf.libs[0])
-    JUnit.api.forEach {
-        testFixturesImplementation(it)
+    @BeforeEach
+    fun computeFile() {
+        val name = UUID.randomUUID().toString()
+        file = File(tempDir, name).ensureFormatExtension(format)
     }
 }

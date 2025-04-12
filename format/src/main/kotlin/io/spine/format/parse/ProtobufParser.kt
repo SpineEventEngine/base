@@ -38,8 +38,9 @@ import java.nio.charset.Charset.defaultCharset
 internal sealed class ProtobufParser : Parser<Message> {
 
     override fun <M : Message> parse(source: ByteSource, cls: Class<out M>): M {
+        val parsed = doParse(source, cls)
         @Suppress("UNCHECKED_CAST")
-        return doParse(source, cls as Class<out Message>) as M
+        return parsed as M
     }
 
     /**
@@ -53,10 +54,16 @@ internal sealed class ProtobufParser : Parser<Message> {
  */
 internal data object ProtoBinaryParser : ProtobufParser() {
 
+    /**
+     * Unpacks the message from the given [source] similarly to how
+     * [AnyPacker][io.spine.protobuf.AnyPacker] does it with
+     * the function accepting [Class].
+     */
     override fun doParse(source: ByteSource, cls: Class<out Message>): Message {
-        val builder = cls.defaultInstance.toBuilder()
-        builder.mergeFrom(source.read())
-        return builder.build()
+        val defaultInstance = cls.defaultInstance
+        val protobufParser = defaultInstance.parserForType
+        val result = protobufParser.parseFrom(source.read())
+        return result
     }
 }
 

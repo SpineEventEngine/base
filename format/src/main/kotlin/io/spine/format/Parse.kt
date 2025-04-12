@@ -59,7 +59,7 @@ public inline fun <reified T : Any> parse(file: File): T =
  * @throws java.io.IOException or its subclass, if the parsing of the file fails.
  * @throws ClassCastException if the stored values is not of the type [T].
  */
-public inline fun <reified T : Any> parse(file: File, format: Format<T>): T =
+public inline fun <reified T : Any> parse(file: File, format: Format<in T>): T =
     parse(file, format, T::class.java)
 
 /**
@@ -78,7 +78,7 @@ public inline fun <reified T : Any> parse(file: File, format: Format<T>): T =
  */
 public fun <T : Any> parse(file: File, cls: Class<T>): T {
     @Suppress("UNCHECKED_CAST")
-    val format = Format.of(file) as Format<T>
+    val format = Format.of(file) as Format<in T>
     return parse(file, format, cls)
 }
 
@@ -99,9 +99,10 @@ public fun <T : Any> parse(file: File, cls: Class<T>): T {
  */
 public fun <T : Any> parse(
     file: File,
-    format: Format<T>,
+    format: Format<in T>,
     cls: Class<T>
 ): T {
     val bytes = Files.asByteSource(file)
-    return format.parser.parse(bytes, cls)
+    val result = format.parser.parse(bytes, cls)
+    return result
 }

@@ -45,17 +45,33 @@ public fun File.replaceExtension(newExtension: String): File {
 }
 
 /**
- * Obtains the path with [Unix][Separator.Unix] separators.
+ * Has no effect under Windows because file paths are always normalized.
  *
- * @return `this` if the file path is already delimited as required, otherwise creates
- *  a new instance with [Windows][Separator.Windows] file separators replaced.
+ * Please use [File.toUnixPath] instead.
  */
+@Deprecated(
+    message = "Please use `toUnixPath()` instead.",
+    replaceWith = ReplaceWith("toUnixPath()")
+)
 public fun File.toUnix(): File =
     if (path.contains(Separator.Windows)) {
         File(path.toUnix())
     } else {
         this
     }
+
+/**
+ * Obtains the path with [Unix][Separator.Unix] separators.
+ *
+ * @return `path` if the file path is already delimited as required, otherwise creates
+ *  a new string with the path with [Windows][Separator.Windows] file separators replaced.
+ */
+public fun File.toUnixPath(): String {
+    if (path.contains(Separator.Windows)) {
+        return path.toUnix()
+    }
+    return path
+}
 
 /**
  * Ensures that the prefix `.` exists in this string if it is not empty.

@@ -145,12 +145,14 @@ public sealed class Format<T : Any>(
 
     public companion object {
 
-        internal val entries: List<Format<*>> = listOf(
-            ProtoBinary,
-            ProtoJson,
-            Json,
-            Yaml,
-        )
+        internal val entries: List<Format<*>> by lazy {
+            listOf(
+                ProtoBinary,
+                ProtoJson,
+                Json,
+                Yaml,
+            )
+        }
 
         /**
          * Obtains a [Format] from the extension of the given file.

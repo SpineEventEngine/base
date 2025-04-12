@@ -135,10 +135,8 @@ fun Module.addDependencies() = dependencies {
     JUnit.api.forEach { testImplementation(it) }
 
     testImplementation(TestLib.lib)
-    testImplementation(Kotest.frameworkEngine)
+    testImplementation(Kotest.assertions)
     testImplementation(Kotest.datatest)
-    testImplementation(Kotest.runnerJUnit5Jvm)
-    testImplementation(JUnit.runner)
 }
 
 fun Module.forceConfigurations() {

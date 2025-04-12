@@ -24,54 +24,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.format.parse
+package io.spine.format
 
-import com.google.protobuf.Message
 import com.google.protobuf.Timestamp
 import io.kotest.matchers.shouldBe
-import io.spine.base.Time
-import io.spine.format.parse
-import io.spine.type.toJson
-import java.io.File
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.api.io.TempDir
 
-@DisplayName("`ProtobufParser` should parse")
-internal class ProtobufParserSpec {
+@DisplayName("`ProtoBinary` format should")
+internal class ProtoBinarySpec : ProtobufFormatTest(Format.ProtoBinary) {
 
-    @TempDir
-    private lateinit var tempDir: File
-    private lateinit var file: File
-    private lateinit var message: Message
-
-    @BeforeEach
-    fun createMessage() {
-        message = Time.currentTime()
-    }
-
+    /**
+     * This test describes the behavior of [Format.ProtoBinary] when
+     * another type is attempted to be parsed from an array of types.
+     *
+     * Unlike [Format.ProtoJson] an attempt to parse with another format
+     * leads to creating an empty instance of another type with
+     * [unknownFields][com.google.protobuf.GeneratedMessage.unknownFields] populated
+     * with the data of the parsed bytes.
+     *
+     * @see io.spine.format.parse.ProtoBinaryParser.doParse
+     * @see ProtoJsonSpec
+     */
     @Test
-    fun `a binary Protobuf file`() {
-        file = File(tempDir, "time.binpb")
-        file.writeBytes(message.toByteArray())
-        parse<Timestamp>(file) shouldBe message
-    }
-
-    @Test
-    fun `a Protobuf JSON file`() {
-        file = File(tempDir, "time.pb.json")
-        file.writeText(message.toJson())
-        parse<Timestamp>(file) shouldBe message
-    }
-
-    @Test
-    fun `require a message type`() {
-        file = File(tempDir, "time.pb.json")
-        file.writeText(message.toJson())
-        assertThrows<IllegalArgumentException> {
-            parse<String>(file)
-        }
+    fun `have required a matching type but it could not`() {
+        write(file, format, message)
+        // We wrote `StringValue`. Now parsing `Timestamp`.
+        val timestamp = parse<Timestamp>(file)
+        timestamp.seconds shouldBe 0L
+        timestamp.nanos shouldBe 0
     }
 }

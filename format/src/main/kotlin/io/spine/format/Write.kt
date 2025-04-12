@@ -24,6 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:JvmName("Write")
+
 package io.spine.format
 
 import java.io.File
@@ -34,10 +36,9 @@ import java.io.File
  * The extension of the file is not checked to match the conventions
  * of the [Format] enumeration.
  *
- * To match the convention, please use
- * [File.ensureFormatExtension(Format)][io.spine.format.ensureFormatExtension].
+ * To match the convention, please use [io.spine.format.ensureFormatExtension].
  */
-public fun <T : Any> write(file: File, format: Format<T>, value: T) {
+public fun <T : Any> write(file: File, format: Format<in T>, value: T) {
     val writer = format.writer
     writer.write(file, value)
 }

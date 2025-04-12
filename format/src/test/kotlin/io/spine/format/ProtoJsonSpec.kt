@@ -24,25 +24,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.dependency.lib.Jackson
-import io.spine.dependency.lib.Protobuf
-import io.spine.dependency.test.JUnit
+package io.spine.format
 
-plugins {
-    module
-    `java-test-fixtures`
-}
+import com.google.protobuf.Timestamp
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
-dependencies {
-    implementation(project(":base"))
-    with(Jackson) {
-        implementation(databind)
-        implementation(dataformatYaml)
-        runtimeOnly(moduleKotlin)
-    }
+@DisplayName("`ProtoJson` format should")
+internal class ProtoJsonSpec : ProtobufFormatTest(Format.ProtoJson) {
 
-    testFixturesImplementation(Protobuf.libs[0])
-    JUnit.api.forEach {
-        testFixturesImplementation(it)
+    @Test
+    fun `require matching Protobuf type when parsing`() {
+        write(file, format, message)
+        assertThrows<IllegalStateException> {
+            parse<Timestamp>(file)
+        }
     }
 }
