@@ -49,7 +49,7 @@ public inline fun <reified T : Any> parse(file: File): T =
  * Parses the given file loading the instance of the given class.
  *
  * This function provides the [format] parameter to cover the cases
- * of custom file extensions that are not available from
+ * of custom file extensions that are not assumed by
  * the supported [formats][Format.entries].
  *
  * @param T The type of the class stored in the file.
@@ -72,7 +72,9 @@ public inline fun <reified T : Any> parse(file: File, format: Format<T>): T =
  * @param cls The class of the instance stored in the file.
  * @throws IllegalStateException if the file is not of the supported [format][Format].
  * @throws java.io.IOException or its subclass, if the parsing of the file fails.
- * @throws ClassCastException if the stored values is not of the type [T].
+ * @throws ClassCastException if the file extension does not match the type
+ *  of the [Format<T>][Format] specified by the [cls] parameter, or
+ *  if the stored value is not of the type [T].
  */
 public fun <T : Any> parse(file: File, cls: Class<T>): T {
     @Suppress("UNCHECKED_CAST")
