@@ -33,7 +33,7 @@ import java.nio.file.Path
 import kotlin.io.path.name
 
 /**
- * Formats supported for parsing by [parseFile][io.spine.format.parse.parseFile] functions.
+ * Formats supported for parsing by [parseFile][io.spine.format.parse.parse] functions.
  *
  * A format of a file can be obtained using the [Format.of] functions accepting
  * [File] or [Path] parameters.

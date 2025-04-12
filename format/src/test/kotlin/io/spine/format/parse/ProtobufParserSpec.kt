@@ -55,14 +55,14 @@ internal class ProtobufParserSpec {
     fun `a binary Protobuf file`() {
         file = File(tempDir, "time.binpb")
         file.writeBytes(message.toByteArray())
-        parseFile<Timestamp>(file) shouldBe message
+        parse<Timestamp>(file) shouldBe message
     }
 
     @Test
     fun `a Protobuf JSON file`() {
         file = File(tempDir, "time.pb.json")
         file.writeText(message.toJson())
-        parseFile<Timestamp>(file) shouldBe message
+        parse<Timestamp>(file) shouldBe message
     }
 
     @Test
@@ -70,7 +70,7 @@ internal class ProtobufParserSpec {
         file = File(tempDir, "time.pb.json")
         file.writeText(message.toJson())
         assertThrows<IllegalArgumentException> {
-            parseFile<String>(file)
+            parse<String>(file)
         }
     }
 }

@@ -46,8 +46,8 @@ import java.io.File
  * @throws IllegalStateException if the file is not of the supported [format][Format].
  * @throws java.io.IOException or its subclass, if the parsing of the file fails.
  */
-public inline fun <reified T : Any> parseFile(file: File): T =
-    parseFile(file, T::class.java)
+public inline fun <reified T : Any> parse(file: File): T =
+    parse(file, T::class.java)
 
 /**
  * Parses the given file loading the instance of the given class.
@@ -62,8 +62,8 @@ public inline fun <reified T : Any> parseFile(file: File): T =
  * @throws IllegalStateException if the file is not of the supported [format][Format].
  * @throws java.io.IOException or its subclass, if the parsing of the file fails.
  */
-public inline fun <reified T : Any> parseFile(file: File, format: Format): T =
-    parseFile(file, format, T::class.java)
+public inline fun <reified T : Any> parse(file: File, format: Format): T =
+    parse(file, format, T::class.java)
 
 /**
  * Parses the given file loading the instance of the given class.
@@ -76,9 +76,9 @@ public inline fun <reified T : Any> parseFile(file: File, format: Format): T =
  * @throws IllegalStateException if the file is not of the supported [format][Format].
  * @throws java.io.IOException or its subclass, if the parsing of the file fails.
  */
-public fun <T : Any> parseFile(file: File, cls: Class<T>): T {
+public fun <T : Any> parse(file: File, cls: Class<T>): T {
     val format = Format.of(file)
-    return parseFile(file, format, cls)
+    return parse(file, format, cls)
 }
 
 /**
@@ -95,7 +95,7 @@ public fun <T : Any> parseFile(file: File, cls: Class<T>): T {
  * @throws IllegalStateException if the file is not of the supported [format][Format].
  * @throws java.io.IOException or its subclass, if the parsing of the file fails.
  */
-public fun <T : Any> parseFile(
+public fun <T : Any> parse(
     file: File,
     format: Format,
     cls: Class<T>
