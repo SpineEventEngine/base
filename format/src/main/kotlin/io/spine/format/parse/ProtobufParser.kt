@@ -35,14 +35,11 @@ import java.nio.charset.Charset.defaultCharset
 /**
  * The abstract base for parsers of files storing Protobuf messages.
  */
-internal sealed class ProtobufParser : Parser {
+internal sealed class ProtobufParser : Parser<Message> {
 
-    final override fun <T> parse(source: ByteSource, cls: Class<T>): T {
-        require(Message::class.java.isAssignableFrom(cls)) {
-            "Expected a message class but got `${cls.canonicalName}`."
-        }
+    override fun <M : Message> parse(source: ByteSource, cls: Class<out M>): M {
         @Suppress("UNCHECKED_CAST")
-        return doParse(source, cls as Class<out Message>) as T
+        return doParse(source, cls as Class<out Message>) as M
     }
 
     /**

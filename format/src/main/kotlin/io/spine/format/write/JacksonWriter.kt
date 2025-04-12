@@ -24,30 +24,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.format
+package io.spine.format.write
 
 import com.fasterxml.jackson.core.JsonFactory
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import io.spine.format.Format
+import io.spine.format.Format.Json
+import io.spine.format.Format.Yaml
+import io.spine.format.JacksonSupport
+import java.io.File
 
-/**
- * The abstract base for classes dealing with Jackson-backed I/O operations.
- */
-internal abstract class JacksonSupport {
+internal sealed class JacksonWriter : JacksonSupport(), Writer<Any>
 
-    /**
-     * The instance of [JsonFactory] used by the parser.
-     */
-    internal abstract val factory: JsonFactory
+internal object JsonWriter : JacksonWriter() {
 
-    /**
-     * The lazily evaluated cached instance of the object matter.
-     *
-     * @see ObjectMapper.findAndRegisterModules
-     */
-    protected val mapper: ObjectMapper by lazy {
-        ObjectMapper(factory)
-            .findAndRegisterModules()
-            .enable(SerializationFeature.INDENT_OUTPUT)
+    override val format: Format<Any> = Json
+
+    override val factory: JsonFactory by lazy {
+        JsonFactory()
     }
+
+    override fun write(file: File, value: Any) =
+        mapper.writeValue(file, value)
+}
+
+internal object YamlWriter : JacksonWriter(), Writer<Any> {
+
+    override val format: Format<Any> = Yaml
+
+    override val factory: JsonFactory by lazy {
+        YAMLFactory()
+    }
+
+    override fun write(file: File, value: Any) =
+        mapper.writeValue(file, value)
 }

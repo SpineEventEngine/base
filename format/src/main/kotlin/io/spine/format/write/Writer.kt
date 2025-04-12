@@ -29,23 +29,20 @@ package io.spine.format.write
 import io.spine.format.Format
 import java.io.File
 
-internal interface Writer {
+internal interface Writer<T : Any> {
 
     /**
-     * Writes the [value] using the given [format] into the specified [file].
-     *
-     * The extension of the file does not have to match the specified [format].
+     * The format which this writer supports.
      */
-    fun <T : Any> write(file: File, format: Format, value: T)
+    val format: Format<T>
 
     /**
-     * Writes the [value] into the file using a [Format] obtained via
-     * extension of the given [file].
+     * Writes the [value] into the file using the [format].
      *
-     * @see write
+     * The extension of the file is not checked to match the conventions
+     * of the [Format] enumeration.
+     *
+     * @see io.spine.format.ensureFormatExtension
      */
-    fun <T : Any> write(file: File, value: List<T>) {
-        val format = Format.of(file)
-        write(file, format, value)
-    }
+    fun write(file: File, value: T)
 }

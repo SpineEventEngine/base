@@ -26,28 +26,18 @@
 
 package io.spine.format
 
-import com.fasterxml.jackson.core.JsonFactory
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
+import java.io.File
 
 /**
- * The abstract base for classes dealing with Jackson-backed I/O operations.
+ * Writes the given [value] using the specified format.
+ *
+ * The extension of the file is not checked to match the conventions
+ * of the [Format] enumeration.
+ *
+ * To match the convention, please use
+ * [File.ensureFormatExtension(Format)][io.spine.format.ensureFormatExtension].
  */
-internal abstract class JacksonSupport {
-
-    /**
-     * The instance of [JsonFactory] used by the parser.
-     */
-    internal abstract val factory: JsonFactory
-
-    /**
-     * The lazily evaluated cached instance of the object matter.
-     *
-     * @see ObjectMapper.findAndRegisterModules
-     */
-    protected val mapper: ObjectMapper by lazy {
-        ObjectMapper(factory)
-            .findAndRegisterModules()
-            .enable(SerializationFeature.INDENT_OUTPUT)
-    }
+public fun <T : Any> write(file: File, format: Format<T>, value: T) {
+    val writer = format.writer
+    writer.write(file, value)
 }

@@ -29,7 +29,6 @@
 package io.spine.format
 
 import com.google.common.io.Files
-import io.spine.format.parse.parser
 import java.io.File
 
 /**
@@ -41,6 +40,7 @@ import java.io.File
  * @param file The file to parse.
  * @throws IllegalStateException if the file is not of the supported [format][Format].
  * @throws java.io.IOException or its subclass, if the parsing of the file fails.
+ * @throws ClassCastException if the stored values is not of the type [T].
  */
 public inline fun <reified T : Any> parse(file: File): T =
     parse(file, T::class.java)
@@ -50,15 +50,16 @@ public inline fun <reified T : Any> parse(file: File): T =
  *
  * This function provides the [format] parameter to cover the cases
  * of custom file extensions that are not available from
- * the items of the [Format] enumeration.
+ * the supported [formats][Format.entries].
  *
  * @param T The type of the class stored in the file.
  * @param file The file to parse.
  * @param format The format of the file.
  * @throws IllegalStateException if the file is not of the supported [format][Format].
  * @throws java.io.IOException or its subclass, if the parsing of the file fails.
+ * @throws ClassCastException if the stored values is not of the type [T].
  */
-public inline fun <reified T : Any> parse(file: File, format: Format): T =
+public inline fun <reified T : Any> parse(file: File, format: Format<T>): T =
     parse(file, format, T::class.java)
 
 /**
@@ -71,9 +72,11 @@ public inline fun <reified T : Any> parse(file: File, format: Format): T =
  * @param cls The class of the instance stored in the file.
  * @throws IllegalStateException if the file is not of the supported [format][Format].
  * @throws java.io.IOException or its subclass, if the parsing of the file fails.
+ * @throws ClassCastException if the stored values is not of the type [T].
  */
 public fun <T : Any> parse(file: File, cls: Class<T>): T {
-    val format = Format.of(file)
+    @Suppress("UNCHECKED_CAST")
+    val format = Format.of(file) as Format<T>
     return parse(file, format, cls)
 }
 
@@ -90,10 +93,11 @@ public fun <T : Any> parse(file: File, cls: Class<T>): T {
  * @param cls The class of the instance stored in the file.
  * @throws IllegalStateException if the file is not of the supported [format][Format].
  * @throws java.io.IOException or its subclass, if the parsing of the file fails.
+ * @throws ClassCastException if the stored values is not of the type [T].
  */
 public fun <T : Any> parse(
     file: File,
-    format: Format,
+    format: Format<T>,
     cls: Class<T>
 ): T {
     val bytes = Files.asByteSource(file)

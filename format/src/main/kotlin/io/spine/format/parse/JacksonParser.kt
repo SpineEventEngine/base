@@ -30,14 +30,15 @@ import com.fasterxml.jackson.core.JsonFactory
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.google.common.io.ByteSource
 import io.spine.format.JacksonSupport
+import io.spine.format.write.JsonWriter
 import java.nio.charset.Charset.defaultCharset
 
 /**
  * The abstract base parsers of text-based formats backed by the Jackson library.
  */
-internal sealed class JacksonParser : JacksonSupport(), Parser {
+internal sealed class JacksonParser : JacksonSupport(), Parser<Any> {
 
-    final override fun <T> parse(source: ByteSource, cls: Class<T>): T {
+    final override fun <T : Any> parse(source: ByteSource, cls: Class<out T>): T {
         val charSource = source.asCharSource(defaultCharset())
         return charSource.openBufferedStream().use {
             mapper.readValue(it, cls)
@@ -50,7 +51,7 @@ internal sealed class JacksonParser : JacksonSupport(), Parser {
  */
 internal data object JsonParser : JacksonParser() {
     override val factory: JsonFactory by lazy {
-        JsonFactory()
+        JsonWriter.factory
     }
 }
 

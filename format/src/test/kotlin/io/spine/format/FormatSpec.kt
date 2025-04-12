@@ -28,10 +28,10 @@ package io.spine.format
 
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.shouldBe
-import io.spine.format.Format.JSON
-import io.spine.format.Format.PROTO_BINARY
-import io.spine.format.Format.PROTO_JSON
-import io.spine.format.Format.YAML
+import io.spine.format.Format.Json
+import io.spine.format.Format.ProtoBinary
+import io.spine.format.Format.ProtoJson
+import io.spine.format.Format.Yaml
 import java.io.File
 import kotlin.io.path.Path
 import org.junit.jupiter.api.DisplayName
@@ -49,42 +49,42 @@ class FormatSpec {
      */
     @Test
     fun `provide allowed extensions`() {
-        PROTO_BINARY.extensions.shouldContainInOrder(
+        ProtoBinary.extensions.shouldContainInOrder(
             "binpb", "pb", "bin"
         )
-        PROTO_JSON.extensions.shouldContainInOrder(
+        ProtoJson.extensions.shouldContainInOrder(
             "pb.json"
         )
-        JSON.extensions.shouldContainInOrder(
+        Json.extensions.shouldContainInOrder(
             "json"
         )
-        YAML.extensions.shouldContainInOrder(
+        Yaml.extensions.shouldContainInOrder(
             "yml", "yaml"
         )
     }
 
     @Test
     fun `match files`() {
-        fun assertMatches(format: Format, vararg fileNames: String) = fileNames.forEach {
+        fun assertMatches(format: Format<*>, vararg fileNames: String) = fileNames.forEach {
             format.matches(Path(it)) shouldBe true
         }
-        assertMatches(PROTO_BINARY, "my.binpb", "dir/sub/file.pb", "app/bin/settings.bin")
-        assertMatches(PROTO_JSON, "my.pb.json", "dir/sub/file.pb.json", "app/bin/settings.pb.json")
+        assertMatches(ProtoBinary, "my.binpb", "dir/sub/file.pb", "app/bin/settings.bin")
+        assertMatches(ProtoJson, "my.pb.json", "dir/sub/file.pb.json", "app/bin/settings.pb.json")
         // Even though the "extension" for the first file is `pb.json` which corresponds
         // to the `PROTO_JSON` format, it is also compatible with `JSON`.
-        assertMatches(JSON, "my.pb.json", "dir/sub/file.json", "bin/settings.pb.json")
-        assertMatches(YAML, "my.yml", "dir/sub/file.yaml")
+        assertMatches(Json, "my.pb.json", "dir/sub/file.json", "bin/settings.pb.json")
+        assertMatches(Yaml, "my.yml", "dir/sub/file.yaml")
     }
 
     @Test
     fun `not match files with wrong extensions`() {
-        fun assertDoesNotMatch(format: Format, vararg fileNames: String) = fileNames.forEach {
+        fun assertDoesNotMatch(format: Format<*>, vararg fileNames: String) = fileNames.forEach {
             format.matches(Path(it)) shouldBe false
         }
-        assertDoesNotMatch(PROTO_BINARY, "my.txt", "dir/sub/file.pb.json")
-        assertDoesNotMatch(PROTO_JSON, "my.pb", "dir/sub/file.json", "bin/settings.pb")
-        assertDoesNotMatch(JSON, "my.yaml", "dir/sub/file.txt")
-        assertDoesNotMatch(YAML, "my.json", "dir/file.txt")
+        assertDoesNotMatch(ProtoBinary, "my.txt", "dir/sub/file.pb.json")
+        assertDoesNotMatch(ProtoJson, "my.pb", "dir/sub/file.json", "bin/settings.pb")
+        assertDoesNotMatch(Json, "my.yaml", "dir/sub/file.txt")
+        assertDoesNotMatch(Yaml, "my.json", "dir/file.txt")
     }
 
     @Test
@@ -103,16 +103,16 @@ class FormatSpec {
 
     @Test
     fun `provide factory methods`() {
-        "file.binpb" shouldProduceFormat PROTO_BINARY
-        "file.pb" shouldProduceFormat PROTO_BINARY
-        "file.bin" shouldProduceFormat PROTO_BINARY
-        "file.pb.json" shouldProduceFormat PROTO_JSON
-        "file.json" shouldProduceFormat JSON
-        "file.yml" shouldProduceFormat YAML
-        "file.yaml" shouldProduceFormat YAML
+        "file.binpb" shouldProduceFormat ProtoBinary
+        "file.pb" shouldProduceFormat ProtoBinary
+        "file.bin" shouldProduceFormat ProtoBinary
+        "file.pb.json" shouldProduceFormat ProtoJson
+        "file.json" shouldProduceFormat Json
+        "file.yml" shouldProduceFormat Yaml
+        "file.yaml" shouldProduceFormat Yaml
     }
 
-    private infix fun String.shouldProduceFormat(expectedFormat: Format) =
+    private infix fun String.shouldProduceFormat(expectedFormat: Format<*>) =
         Format.of(File(this)) shouldBe expectedFormat
 
     @Test

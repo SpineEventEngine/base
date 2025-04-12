@@ -26,14 +26,28 @@
 
 package io.spine.format
 
-import io.spine.format.Format.entries
+import com.google.protobuf.Message
+import io.spine.format.Format.ProtoJson
+import io.spine.format.parse.JsonParser
+import io.spine.format.parse.Parser
+import io.spine.format.parse.ProtoBinaryParser
+import io.spine.format.parse.ProtoJsonParser
+import io.spine.format.parse.YamlParser
+import io.spine.format.write.JsonWriter
+import io.spine.format.write.ProtoBinaryWriter
+import io.spine.format.write.ProtoJsonWriter
+import io.spine.format.write.Writer
+import io.spine.format.write.YamlWriter
 import io.spine.io.Glob
+import io.spine.io.replaceExtension
 import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.name
 
+public interface ProtobufFormat
+
 /**
- * Formats supported for parsing by [parseFile][io.spine.format.parse.parse] functions.
+ * Formats supported for I/O operations supported by the [io.spine.format] package.
  *
  * A format of a file can be obtained using the [Format.of] functions accepting
  * [File] or [Path] parameters.
@@ -46,8 +60,14 @@ import kotlin.io.path.name
  *   the one coming fist in the list is the primary one.
  *   This [extension] will be used for writing and other operations that need to match
  *   a file name to its format.
+ * @see parse
+ * @see write
  */
-public enum class Format(vararg extensions: String) {
+public sealed class Format<T : Any>(
+    internal val writer: Writer<T>,
+    internal val parser: Parser<T>,
+    vararg extensions: String
+) {
 
     /**
      * A Protobuf message encoded in binary.
@@ -56,25 +76,40 @@ public enum class Format(vararg extensions: String) {
      *     Common Filename Suffixes</a>
      * @see <a href="https://buf.build/docs/reference/inputs#binpb">Buf Docs: binpb</a>
      */
-    PROTO_BINARY("binpb", "pb", "bin"),
+    public data object ProtoBinary : Format<Message>(
+        ProtoBinaryWriter,
+        ProtoBinaryParser,
+        "binpb", "pb", "bin"
+    )
 
     /**
      * A Protobuf message encoded in Protobuf JSON.
      *
-     * Use this item instead of [JSON] for Protobuf messages stored in
+     * Use this item instead of [Json] for Protobuf messages stored in
      * JSON format so that the correct parser is selected for the file.
      */
-    PROTO_JSON("pb.json"),
+    public data object ProtoJson : Format<Message>(
+        ProtoJsonWriter,
+        ProtoJsonParser,
+        "pb.json"
+    )
 
     /**
      * A plain [JSON](https://www.json.org/) value.
      */
-    JSON("json"),
+    public data object Json : Format<Any>(
+        JsonWriter,
+        JsonParser,
+        "json")
 
     /**
      * A plain [YAML](https://yaml.org/) value.
      */
-    YAML("yml", "yaml");
+    public data object Yaml : Format<Any>(
+        YamlWriter,
+        YamlParser,
+        "yml", "yaml"
+    )
 
     /**
      * Checks if the given file matches this format.
@@ -99,12 +134,19 @@ public enum class Format(vararg extensions: String) {
     init {
         val list = extensions.toList()
         require(list.isNotEmpty()) {
-            "The file format `$name` must have at least one extension."
+            "The file format `${this::class.simpleName}` must have at least one extension."
         }
         this.extensions = list
     }
 
     public companion object {
+
+        internal val entries: List<Format<*>> = listOf(
+            ProtoBinary,
+            ProtoJson,
+            Json,
+            Yaml,
+        )
 
         /**
          * Obtains a [Format] from the extension of the given file.
@@ -113,7 +155,7 @@ public enum class Format(vararg extensions: String) {
          * @see File.hasSupportedFormat
          */
         @JvmStatic
-        public fun of(file: File): Format = of(file.toPath())
+        public fun of(file: File): Format<*> = of(file.toPath())
 
         /**
          * Obtains a [Format] from the extension of the given file.
@@ -122,7 +164,7 @@ public enum class Format(vararg extensions: String) {
          * @see Path.hasSupportedFormat
          */
         @JvmStatic
-        public fun of(file: Path): Format =
+        public fun of(file: Path): Format<*> =
             entries.find { it.matches(file) }
                 ?: error("Unsupported file format: `${file.name}`.")
     }
@@ -138,4 +180,24 @@ public fun File.hasSupportedFormat(): Boolean =
  * Tells if this file is of one of the supported [formats][Format].
  */
 public fun Path.hasSupportedFormat(): Boolean =
-    entries.any { it.matches(this) }
+    Format.entries.any { it.matches(this) }
+
+/**
+ * Ensures that the file has the [primary extension][Format.extensions] of the given [format].
+ *
+ * @return this file if the extension matches, new instance with the required extension otherwise.
+ */
+@Suppress("ReturnCount") // Prefer earlier exits for better readability.
+public fun File.ensureFormatExtension(format: Format<*>): File {
+    val required = format.extension
+    if (path.endsWith(required)) {
+        return this
+    }
+    // Handle the special case of this double-extension.
+    val pbJson = ProtoJson.extension
+    if (path.endsWith(pbJson)) {
+        val newPath = path.replace(pbJson, required)
+        return File(newPath)
+    }
+    return replaceExtension(format.extension)
+}

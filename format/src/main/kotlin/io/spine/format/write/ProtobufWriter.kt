@@ -24,35 +24,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.format.parse
+package io.spine.format.write
 
-import com.google.common.io.ByteSource
-import java.nio.charset.Charset
+import com.google.protobuf.Message
+import io.spine.format.Format
+import io.spine.format.Format.ProtoBinary
+import io.spine.format.Format.ProtoJson
+import io.spine.type.toJson
+import java.io.File
 
 /**
- * A reader for the plain text file into [java.lang.String].
- *
- * This object does not parse, but simply reads a [ByteSource] instance into a string.
- *
- * The string is converted from bytes using the [default charset][Charset.defaultCharset].
+ * The interface common to writers of Protobuf messages.
  */
-internal data object TextReader : Parser {
+internal interface ProtobufWriter: Writer<Message>
 
-    /**
-     * Reads the given [source] as [java.lang.String] value.
-     *
-     * To ensure the type safety, the [cls] parameter is checked to
-     * be the class of [java.lang.String].
-     *
-     * @throws IllegalStateException if the type [T] is not [java.lang.String].
-     */
-    override fun <T> parse(source: ByteSource, cls: Class<T>): T {
-        if (cls != String::class.java) {
-            error("Expected format supporting the type `${cls.canonicalName}`" +
-                    " but got a text file.")
-        }
-        val value = source.asCharSource(Charset.defaultCharset()).read()
-        @Suppress("UNCHECKED_CAST")
-        return value as T
-    }
+/**
+ * Writes a message using the [ProtoBinary] format.
+ */
+internal object ProtoBinaryWriter : ProtobufWriter {
+
+    override val format: Format<Message> = ProtoBinary
+
+    override fun write(file: File, value: Message) =
+        file.writeBytes(value.toByteArray())
+}
+
+/**
+ * Writes a message using [ProtoJson] format.
+ */
+internal object ProtoJsonWriter : ProtobufWriter {
+
+    override val format: Format<Message> = ProtoJson
+
+    override fun write(file: File, value: Message) =
+        file.writeText(value.toJson())
 }
