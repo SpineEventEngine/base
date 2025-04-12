@@ -109,14 +109,6 @@
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.github.ajalt. **Name** : colormath. **Version** : 1.2.0.
-     * **Project URL:** [https://github.com/ajalt/colormath](https://github.com/ajalt/colormath)
-     * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : com.github.ajalt. **Name** : mordant. **Version** : 1.2.1.
-     * **Project URL:** [https://github.com/ajalt/mordant](https://github.com/ajalt/mordant)
-     * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1.  **Group** : com.github.ben-manes.caffeine. **Name** : caffeine. **Version** : 3.0.5.
      * **Project URL:** [https://github.com/ben-manes/caffeine](https://github.com/ben-manes/caffeine)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -278,10 +270,6 @@
      * **Project URL:** [https://picocli.info](https://picocli.info)
      * **License:** [The Apache Software License, version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.github.classgraph. **Name** : classgraph. **Version** : 4.8.172.
-     * **Project URL:** [https://github.com/classgraph/classgraph](https://github.com/classgraph/classgraph)
-     * **License:** [The MIT License (MIT)](http://opensource.org/licenses/MIT)
-
 1.  **Group** : io.github.davidburstrom.contester. **Name** : contester-breakpoint. **Version** : 0.2.0.
      * **Project URL:** [https://github.com/davidburstrom/contester](https://github.com/davidburstrom/contester)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -425,14 +413,6 @@
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.kotest. **Name** : kotest-extensions. **Version** : 5.9.1.
-     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
-     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
-
-1.  **Group** : io.kotest. **Name** : kotest-extensions-jvm. **Version** : 5.9.1.
-     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
-     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
-
 1.  **Group** : io.kotest. **Name** : kotest-framework-api. **Version** : 5.9.1.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
@@ -441,39 +421,11 @@
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.kotest. **Name** : kotest-framework-concurrency. **Version** : 5.9.1.
-     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
-     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
-
-1.  **Group** : io.kotest. **Name** : kotest-framework-concurrency-jvm. **Version** : 5.9.1.
-     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
-     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
-
 1.  **Group** : io.kotest. **Name** : kotest-framework-datatest. **Version** : 5.9.1.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
 1.  **Group** : io.kotest. **Name** : kotest-framework-datatest-jvm. **Version** : 5.9.1.
-     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
-     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
-
-1.  **Group** : io.kotest. **Name** : kotest-framework-discovery. **Version** : 5.9.1.
-     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
-     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
-
-1.  **Group** : io.kotest. **Name** : kotest-framework-discovery-jvm. **Version** : 5.9.1.
-     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
-     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
-
-1.  **Group** : io.kotest. **Name** : kotest-framework-engine. **Version** : 5.9.1.
-     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
-     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
-
-1.  **Group** : io.kotest. **Name** : kotest-framework-engine-jvm. **Version** : 5.9.1.
-     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
-     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
-
-1.  **Group** : io.kotest. **Name** : kotest-runner-junit5-jvm. **Version** : 5.9.1.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
@@ -488,22 +440,6 @@
 1.  **Group** : junit. **Name** : junit. **Version** : 4.13.1.
      * **Project URL:** [http://junit.org](http://junit.org)
      * **License:** [Eclipse Public License 1.0](http://www.eclipse.org/legal/epl-v10.html)
-
-1.  **Group** : net.bytebuddy. **Name** : byte-buddy. **Version** : 1.10.9.
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : net.bytebuddy. **Name** : byte-buddy-agent. **Version** : 1.10.9.
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : net.java.dev.jna. **Name** : jna. **Version** : 5.9.0.
-     * **Project URL:** [https://github.com/java-native-access/jna](https://github.com/java-native-access/jna)
-     * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [LGPL-2.1-or-later](https://www.gnu.org/licenses/old-licenses/lgpl-2.1)
-
-1.  **Group** : net.java.dev.jna. **Name** : jna-platform. **Version** : 5.9.0.
-     * **Project URL:** [https://github.com/java-native-access/jna](https://github.com/java-native-access/jna)
-     * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [LGPL-2.1-or-later](https://www.gnu.org/licenses/old-licenses/lgpl-2.1)
 
 1.  **Group** : net.sf.saxon. **Name** : Saxon-HE. **Version** : 12.2.
      * **Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
@@ -752,10 +688,6 @@
      * **Project URL:** [https://github.com/Kotlin/kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlinx. **Name** : kotlinx-coroutines-debug. **Version** : 1.8.0.
-     * **Project URL:** [https://github.com/Kotlin/kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines)
-     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1.  **Group** : org.jetbrains.kotlinx. **Name** : kotlinx-coroutines-jdk8. **Version** : 1.8.0.
      * **Project URL:** [https://github.com/Kotlin/kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -852,10 +784,6 @@
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-suite-api. **Version** : 1.10.0.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
-
 1.  **Group** : org.opentest4j. **Name** : opentest4j. **Version** : 1.3.0.
      * **Project URL:** [https://github.com/ota4j-team/opentest4j](https://github.com/ota4j-team/opentest4j)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -895,7 +823,7 @@
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Apr 11 23:18:48 WEST 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Sat Apr 12 23:34:30 WEST 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -1047,14 +975,6 @@ This report was generated on **Fri Apr 11 23:18:48 WEST 2025** using [Gradle-Lic
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.github.ajalt. **Name** : colormath. **Version** : 1.2.0.
-     * **Project URL:** [https://github.com/ajalt/colormath](https://github.com/ajalt/colormath)
-     * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : com.github.ajalt. **Name** : mordant. **Version** : 1.2.1.
-     * **Project URL:** [https://github.com/ajalt/mordant](https://github.com/ajalt/mordant)
-     * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1.  **Group** : com.github.ben-manes.caffeine. **Name** : caffeine. **Version** : 3.0.5.
      * **Project URL:** [https://github.com/ben-manes/caffeine](https://github.com/ben-manes/caffeine)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -1186,10 +1106,6 @@ This report was generated on **Fri Apr 11 23:18:48 WEST 2025** using [Gradle-Lic
 1.  **Group** : info.picocli. **Name** : picocli. **Version** : 4.7.4.
      * **Project URL:** [https://picocli.info](https://picocli.info)
      * **License:** [The Apache Software License, version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : io.github.classgraph. **Name** : classgraph. **Version** : 4.8.172.
-     * **Project URL:** [https://github.com/classgraph/classgraph](https://github.com/classgraph/classgraph)
-     * **License:** [The MIT License (MIT)](http://opensource.org/licenses/MIT)
 
 1.  **Group** : io.github.davidburstrom.contester. **Name** : contester-breakpoint. **Version** : 0.2.0.
      * **Project URL:** [https://github.com/davidburstrom/contester](https://github.com/davidburstrom/contester)
@@ -1334,14 +1250,6 @@ This report was generated on **Fri Apr 11 23:18:48 WEST 2025** using [Gradle-Lic
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.kotest. **Name** : kotest-extensions. **Version** : 5.9.1.
-     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
-     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
-
-1.  **Group** : io.kotest. **Name** : kotest-extensions-jvm. **Version** : 5.9.1.
-     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
-     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
-
 1.  **Group** : io.kotest. **Name** : kotest-framework-api. **Version** : 5.9.1.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
@@ -1350,39 +1258,11 @@ This report was generated on **Fri Apr 11 23:18:48 WEST 2025** using [Gradle-Lic
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.kotest. **Name** : kotest-framework-concurrency. **Version** : 5.9.1.
-     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
-     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
-
-1.  **Group** : io.kotest. **Name** : kotest-framework-concurrency-jvm. **Version** : 5.9.1.
-     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
-     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
-
 1.  **Group** : io.kotest. **Name** : kotest-framework-datatest. **Version** : 5.9.1.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
 1.  **Group** : io.kotest. **Name** : kotest-framework-datatest-jvm. **Version** : 5.9.1.
-     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
-     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
-
-1.  **Group** : io.kotest. **Name** : kotest-framework-discovery. **Version** : 5.9.1.
-     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
-     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
-
-1.  **Group** : io.kotest. **Name** : kotest-framework-discovery-jvm. **Version** : 5.9.1.
-     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
-     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
-
-1.  **Group** : io.kotest. **Name** : kotest-framework-engine. **Version** : 5.9.1.
-     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
-     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
-
-1.  **Group** : io.kotest. **Name** : kotest-framework-engine-jvm. **Version** : 5.9.1.
-     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
-     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
-
-1.  **Group** : io.kotest. **Name** : kotest-runner-junit5-jvm. **Version** : 5.9.1.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
@@ -1397,22 +1277,6 @@ This report was generated on **Fri Apr 11 23:18:48 WEST 2025** using [Gradle-Lic
 1.  **Group** : junit. **Name** : junit. **Version** : 4.13.1.
      * **Project URL:** [http://junit.org](http://junit.org)
      * **License:** [Eclipse Public License 1.0](http://www.eclipse.org/legal/epl-v10.html)
-
-1.  **Group** : net.bytebuddy. **Name** : byte-buddy. **Version** : 1.10.9.
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : net.bytebuddy. **Name** : byte-buddy-agent. **Version** : 1.10.9.
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : net.java.dev.jna. **Name** : jna. **Version** : 5.9.0.
-     * **Project URL:** [https://github.com/java-native-access/jna](https://github.com/java-native-access/jna)
-     * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [LGPL-2.1-or-later](https://www.gnu.org/licenses/old-licenses/lgpl-2.1)
-
-1.  **Group** : net.java.dev.jna. **Name** : jna-platform. **Version** : 5.9.0.
-     * **Project URL:** [https://github.com/java-native-access/jna](https://github.com/java-native-access/jna)
-     * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [LGPL-2.1-or-later](https://www.gnu.org/licenses/old-licenses/lgpl-2.1)
 
 1.  **Group** : net.sf.saxon. **Name** : Saxon-HE. **Version** : 12.2.
      * **Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
@@ -1653,10 +1517,6 @@ This report was generated on **Fri Apr 11 23:18:48 WEST 2025** using [Gradle-Lic
      * **Project URL:** [https://github.com/Kotlin/kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlinx. **Name** : kotlinx-coroutines-debug. **Version** : 1.8.0.
-     * **Project URL:** [https://github.com/Kotlin/kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines)
-     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1.  **Group** : org.jetbrains.kotlinx. **Name** : kotlinx-coroutines-jdk8. **Version** : 1.8.0.
      * **Project URL:** [https://github.com/Kotlin/kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -1733,10 +1593,6 @@ This report was generated on **Fri Apr 11 23:18:48 WEST 2025** using [Gradle-Lic
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-suite-api. **Version** : 1.10.0.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
-
 1.  **Group** : org.opentest4j. **Name** : opentest4j. **Version** : 1.3.0.
      * **Project URL:** [https://github.com/ota4j-team/opentest4j](https://github.com/ota4j-team/opentest4j)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -1780,4 +1636,4 @@ This report was generated on **Fri Apr 11 23:18:48 WEST 2025** using [Gradle-Lic
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Apr 11 23:18:49 WEST 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Sat Apr 12 23:34:31 WEST 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).

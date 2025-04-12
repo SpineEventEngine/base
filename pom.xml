@@ -97,19 +97,13 @@ all modules and does not describe the project structure per-subproject.
   </dependency>
   <dependency>
     <groupId>io.kotest</groupId>
+    <artifactId>kotest-assertions-core</artifactId>
+    <version>5.9.1</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>io.kotest</groupId>
     <artifactId>kotest-framework-datatest</artifactId>
-    <version>5.9.1</version>
-    <scope>test</scope>
-  </dependency>
-  <dependency>
-    <groupId>io.kotest</groupId>
-    <artifactId>kotest-framework-engine</artifactId>
-    <version>5.9.1</version>
-    <scope>test</scope>
-  </dependency>
-  <dependency>
-    <groupId>io.kotest</groupId>
-    <artifactId>kotest-runner-junit5-jvm</artifactId>
     <version>5.9.1</version>
     <scope>test</scope>
   </dependency>
