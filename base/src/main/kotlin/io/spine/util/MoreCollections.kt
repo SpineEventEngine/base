@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:JvmName("MoreCollections")
+
 package io.spine.util
 
 import com.google.common.collect.Iterables
@@ -31,10 +33,8 @@ import com.google.common.collect.Iterables
 /**
  * Obtains the only element in the receiver `Iterable`.
  *
- * @throws NoSuchElementException
- *          if the iterable is empty.
- * @throws IllegalArgumentException
- *          if the iterable contains multiple elements.
+ * @throws NoSuchElementException if the iterable is empty.
+ * @throws IllegalArgumentException if the iterable contains multiple elements.
  */
 public fun <E> Iterable<E>.theOnly(): E = Iterables.getOnlyElement(this)
 
