@@ -43,6 +43,7 @@ import io.spine.code.proto.PackageName;
 import io.spine.option.OptionsProto;
 import io.spine.protobuf.Messages;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -66,6 +67,7 @@ import static java.lang.String.format;
 @Immutable
 public final class TypeUrl implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 0L;
     private static final String SEPARATOR = "/";
     private static final Splitter splitter = Splitter.on(SEPARATOR);
@@ -307,10 +309,9 @@ public final class TypeUrl implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof TypeUrl)) {
+        if (!(o instanceof TypeUrl typeUrl)) {
             return false;
         }
-        var typeUrl = (TypeUrl) o;
         return Objects.equals(prefix, typeUrl.prefix) &&
                Objects.equals(typeName, typeUrl.typeName);
     }
@@ -328,9 +329,6 @@ public final class TypeUrl implements Serializable {
         /**
          * The prefix for standard Protobuf types.
          */
-        @SuppressWarnings(
-                "DuplicateStringLiteralInspection" /* Duplicates are in the generated code. */
-        )
         GOOGLE_APIS("type.googleapis.com"),
 
         /**
