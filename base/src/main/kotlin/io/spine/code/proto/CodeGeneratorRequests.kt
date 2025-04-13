@@ -1,5 +1,5 @@
 /*
- * Copyright 2024, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,10 @@ import kotlin.reflect.KClass
  *
  * @see io.spine.type.ExtensionRegistryHolder
  */
+@Deprecated(
+    message = "Please use `parseCodeGeneratorRequest()`",
+    ReplaceWith("parseCodeGeneratorRequest(input)")
+)
 public fun KClass<CodeGeneratorRequest>.parse(input: InputStream): CodeGeneratorRequest {
     return parseCodeGeneratorRequest(input)
 }
@@ -50,8 +54,6 @@ public fun KClass<CodeGeneratorRequest>.parse(input: InputStream): CodeGenerator
  *
  * This function uses [ExtensionRegistry][extensionRegistry] with all known
  * custom Protobuf options.
- *
- * This function is intended for using from Java. For Kotlin, please use [KClass.parse].
  *
  * @see io.spine.type.ExtensionRegistryHolder
  * @see KClass.parse

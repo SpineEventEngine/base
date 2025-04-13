@@ -41,8 +41,7 @@ import kotlin.io.path.writeBytes
  * Parses a [CodeGeneratorRequest] from given [input] and writes it into
  * files in [binary][writeBinary] and [JSON][writeJson] format.
  *
- * @param input
- *         the input stream containing binary version of the request.
+ * @param input The input stream containing binary version of the request.
  */
 public class CodeGeneratorRequestWriter(
     private val input: InputStream
@@ -51,7 +50,7 @@ public class CodeGeneratorRequestWriter(
      * Lazily evaluated [CodeGeneratorRequest] parsed from [input] using [extensionRegistry].
      */
     public val request: CodeGeneratorRequest by lazy {
-        CodeGeneratorRequest.parseFrom(input, extensionRegistry)
+        parseCodeGeneratorRequest(input)
     }
 
     /**
