@@ -36,12 +36,12 @@ internal class ProtoBinarySpec : ProtobufFormatTest(Format.ProtoBinary) {
 
     /**
      * This test describes the behavior of [Format.ProtoBinary] when
-     * another type is attempted to be parsed from an array of types.
+     * another type is attempted to be parsed from a binary source.
      *
-     * Unlike [Format.ProtoJson] an attempt to parse with another format
-     * leads to creating an empty instance of another type with
-     * [unknownFields][com.google.protobuf.GeneratedMessage.unknownFields] populated
-     * with the data of the parsed bytes.
+     * Unlike [Format.ProtoJson] an attempt to parse with another type
+     * leads to creating an empty instance of the requested type with
+     * [unknownFields][com.google.protobuf.GeneratedMessage.unknownFields]
+     * populated with the data from the parsed bytes.
      *
      * @see io.spine.format.parse.ProtoBinaryParser.doParse
      * @see ProtoJsonSpec
