@@ -25,6 +25,8 @@
  */
 
 import io.spine.dependency.lib.Jackson
+import io.spine.dependency.lib.Jackson.DataFormat
+import io.spine.dependency.lib.Jackson.DataType
 import io.spine.dependency.lib.Protobuf
 import io.spine.dependency.test.JUnit
 
@@ -37,7 +39,10 @@ dependencies {
     implementation(project(":base"))
     with(Jackson) {
         implementation(databind)
-        implementation(dataformatYaml)
+        implementation(DataFormat.yaml)
+        implementation(DataType.jdk8)
+        implementation(DataType.dateTime)
+        implementation(DataType.guava)
         runtimeOnly(moduleKotlin)
     }
 
