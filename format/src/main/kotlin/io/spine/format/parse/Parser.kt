@@ -30,6 +30,13 @@ import com.google.common.io.ByteSource
 
 /**
  * A parser for files in one of the supported [formats][io.spine.format.Format].
+ *
+ * ### API Note
+ *
+ * This interface is used internally for parsing any types from [ByteSource].
+ * It should not be confused with [com.google.protobuf.Parser] which is used
+ * in the Protobuf generated code for parsing [com.google.protobuf.Message] types
+ * from various binary format inputs.
  */
 internal sealed interface Parser<T : Any> {
 

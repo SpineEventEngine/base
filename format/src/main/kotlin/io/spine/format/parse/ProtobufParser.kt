@@ -28,8 +28,8 @@ package io.spine.format.parse
 
 import com.google.common.io.ByteSource
 import com.google.protobuf.Message
-import io.spine.protobuf.defaultInstance
 import io.spine.type.fromJson
+import io.spine.type.parse
 import java.nio.charset.Charset.defaultCharset
 
 /**
@@ -55,16 +55,12 @@ internal sealed class ProtobufParser : Parser<Message> {
 internal data object ProtoBinaryParser : ProtobufParser() {
 
     /**
-     * Unpacks the message from the given [source] similarly to how
-     * [AnyPacker][io.spine.protobuf.AnyPacker] does it with
-     * the function accepting [Class].
+     * Parses the [source] for obtaining the message of the specified class.
      */
-    override fun doParse(source: ByteSource, cls: Class<out Message>): Message {
-        val defaultInstance = cls.defaultInstance
-        val protobufParser = defaultInstance.parserForType
-        val result = protobufParser.parseFrom(source.read())
-        return result
-    }
+    override fun doParse(source: ByteSource, cls: Class<out Message>): Message =
+        source.openStream().use {
+            return cls.parse(it)
+        }
 }
 
 /**
