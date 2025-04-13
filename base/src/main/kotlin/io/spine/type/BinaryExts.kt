@@ -36,10 +36,10 @@ import java.io.InputStream
 import kotlin.reflect.KClass
 
 /**
- * Obtains a binary form parser for this message class.
+ * Obtains a binary form [Parser] for this message class.
  */
 @Suppress("UNCHECKED_CAST") // The generated code ensures the correct parser type.
-private val <M : Message> Class<M>.parser: Parser<M>
+public val <M : Message> Class<M>.parser: Parser<M>
     get() = defaultInstance.parserForType as Parser<M>
 
 /**

@@ -30,6 +30,7 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest
 import io.spine.io.replaceExtension
 import io.spine.string.decodeBase64
 import io.spine.type.ExtensionRegistryHolder.extensionRegistry
+import io.spine.type.parse
 import io.spine.type.toJson
 import java.io.File
 import java.io.InputStream
@@ -50,7 +51,7 @@ public class CodeGeneratorRequestWriter(
      * Lazily evaluated [CodeGeneratorRequest] parsed from [input] using [extensionRegistry].
      */
     public val request: CodeGeneratorRequest by lazy {
-        parseCodeGeneratorRequest(input)
+        CodeGeneratorRequest::class.parse(input)
     }
 
     /**

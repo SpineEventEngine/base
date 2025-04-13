@@ -29,34 +29,33 @@
 package io.spine.code.proto
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest
-import io.spine.type.ExtensionRegistryHolder.extensionRegistry
+import io.spine.type.parse
 import java.io.InputStream
 import kotlin.reflect.KClass
 
 /**
- * Creates new [CodeGeneratorRequest] instance by parsing it from the given input stream.
- *
- * This function uses [ExtensionRegistry][extensionRegistry] with all known
- * custom Protobuf options.
- *
- * @see io.spine.type.ExtensionRegistryHolder
+ * Redirects to [io.spine.type.parse].
  */
 @Deprecated(
-    message = "Please use `parseCodeGeneratorRequest()`",
-    ReplaceWith("parseCodeGeneratorRequest(input)")
+    message = "Please use `io.spine.type.parse()`",
+    replaceWith = ReplaceWith(
+        "this.parse(input)",
+        imports = ["io.spine.type.parse"]
+    ),
 )
 public fun KClass<CodeGeneratorRequest>.parse(input: InputStream): CodeGeneratorRequest {
-    return parseCodeGeneratorRequest(input)
+    return parse(input)
 }
 
 /**
- * Creates new [CodeGeneratorRequest] instance by parsing it from the given input stream.
- *
- * This function uses [ExtensionRegistry][extensionRegistry] with all known
- * custom Protobuf options.
- *
- * @see io.spine.type.ExtensionRegistryHolder
- * @see KClass.parse
+ * Redirects to [io.spine.type.parse].
  */
+@Deprecated(
+    message = "Please use `io.spine.type.parse()`",
+    replaceWith = ReplaceWith(
+        "CodeGeneratorRequest::class.parse(input)",
+        imports = ["io.spine.type.parse"]
+    )
+)
 public fun parseCodeGeneratorRequest(input: InputStream): CodeGeneratorRequest =
-    CodeGeneratorRequest.parseFrom(input, extensionRegistry)
+    CodeGeneratorRequest::class.parse(input)
