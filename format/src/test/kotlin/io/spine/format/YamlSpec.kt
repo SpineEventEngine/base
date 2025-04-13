@@ -26,32 +26,7 @@
 
 package io.spine.format
 
-import com.google.protobuf.Timestamp
-import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
 
-@DisplayName("`ProtoBinary` format should")
-internal class ProtoBinarySpec : ProtobufFormatTest(Format.ProtoBinary) {
-
-    /**
-     * This test describes the behavior of [Format.ProtoBinary] when
-     * another type is attempted to be parsed from a binary source.
-     *
-     * Unlike [Format.ProtoJson] an attempt to parse with another type
-     * leads to creating an empty instance of the requested type with
-     * [unknownFields][com.google.protobuf.GeneratedMessage.unknownFields]
-     * populated with the data from the parsed bytes.
-     *
-     * @see io.spine.format.parse.ProtoBinaryParser.doParse
-     * @see ProtoJsonSpec
-     */
-    @Test
-    fun `have required a matching type but it could not`() {
-        write(file, format, instance)
-        // We wrote `StringValue`. Now parsing `Timestamp`.
-        val timestamp = parse<Timestamp>(file)
-        timestamp.seconds shouldBe 0L
-        timestamp.nanos shouldBe 0
-    }
-}
+@DisplayName("`Yaml` format should")
+internal class YamlSpec : JacksonBackedFormatTest(Format.Yaml)

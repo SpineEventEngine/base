@@ -47,7 +47,7 @@ internal sealed class JacksonParser : JacksonSupport(), Parser<Any> {
 }
 
 /**
- * Settings parser for JSON.
+ * The parser for JSON.
  */
 internal data object JsonParser : JacksonParser() {
     override val factory: JsonFactory by lazy {
@@ -56,7 +56,7 @@ internal data object JsonParser : JacksonParser() {
 }
 
 /**
- * Settings parser for YAML.
+ * The parser for YAML.
  */
 internal data object YamlParser : JacksonParser() {
     override val factory: JsonFactory by lazy {

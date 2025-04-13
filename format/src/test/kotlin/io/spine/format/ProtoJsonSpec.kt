@@ -36,7 +36,7 @@ internal class ProtoJsonSpec : ProtobufFormatTest(Format.ProtoJson) {
 
     @Test
     fun `require matching Protobuf type when parsing`() {
-        write(file, format, message)
+        write(file, format, instance)
         assertThrows<IllegalStateException> {
             parse<Timestamp>(file)
         }

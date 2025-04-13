@@ -27,13 +27,17 @@
 package io.spine.format
 
 import com.fasterxml.jackson.core.JsonFactory
+import com.fasterxml.jackson.databind.Module
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
+import io.spine.annotation.SPI
 
 /**
- * The abstract base for classes dealing with Jackson-backed I/O operations.
+ * The abstract base for classes dealing with I/O operations based
+ * on the [Jackson](https://github.com/FasterXML) library.
  */
-internal abstract class JacksonSupport {
+@SPI
+public abstract class JacksonSupport {
 
     /**
      * The instance of [JsonFactory] used by the parser.
@@ -41,13 +45,45 @@ internal abstract class JacksonSupport {
     internal abstract val factory: JsonFactory
 
     /**
-     * The lazily evaluated cached instance of the object matter.
+     * The lazily evaluated cached instance of the object mapper.
+     *
+     * After creation, the [ObjectMapper] instance registers [modules]
+     * shared among object mappers.
+     * So, if you need to have a Jackson [Module] available to all descendants
+     * of the [JacksonSupport] class, add your module to the companion
+     * object property [modules].
+     *
+     * If you need a [Module] only specific to your class,
+     * please call [mapper.registerModule][ObjectMapper.registerModule] from the derived class.
      *
      * @see ObjectMapper.findAndRegisterModules
      */
+    @get:SPI
     protected val mapper: ObjectMapper by lazy {
         ObjectMapper(factory)
-            .findAndRegisterModules()
+            .registerModules(modules)
             .enable(SerializationFeature.INDENT_OUTPUT)
+    }
+
+    public companion object {
+
+        /**
+         * Provides a shared list of Jackson modules passed to an [ObjectMapper] during
+         * its [creation][JacksonSupport.mapper].
+         *
+         * The initial lazily evaluated list contains the modules
+         * [discovered][ObjectMapper.findModules] via the [java.util.ServiceLoader] API.
+         * Therefore, custom Jackson modules that support this API should be discovered
+         * from the classpath automatically.
+         *
+         * If a module does not support the [ServiceLoader][java.util.ServiceLoader] API,
+         * you can [add][MutableList.add] the module directly.
+         * But please make sure to do it _before_ accessing classes or objects
+         * derived from [JacksonSupport].
+         */
+        @get:SPI
+        public val modules: MutableList<Module> by lazy {
+            ObjectMapper.findModules()
+        }
     }
 }

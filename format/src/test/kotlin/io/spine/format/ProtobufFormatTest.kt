@@ -28,52 +28,16 @@ package io.spine.format
 
 import com.google.protobuf.Message
 import com.google.protobuf.StringValue
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
-import io.spine.io.replaceExtension
 import java.util.*
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 
 /**
  * The abstract base for tests of formats serving Protobuf message types.
  */
-abstract class ProtobufFormatTest(format: Format<Message>) : FormatTest<Message>(format) {
+abstract class ProtobufFormatTest(format: Format<in Message>) : FormatTest<StringValue>(format) {
 
-    protected lateinit var message: Message
-
-    @BeforeEach
-    fun createMessage() {
-        message = StringValue.newBuilder()
+    override fun createInstance(): StringValue {
+        return StringValue.newBuilder()
             .setValue(UUID.randomUUID().toString())
             .build()
-    }
-
-    @Test
-    fun `write a message to a file`() {
-        write(file, format, message)
-        file.run {
-            exists() shouldBe true
-            length() shouldNotBe 0
-        }
-    }
-
-    /**
-     * This test relies on the fact that [message] has the type [StringValue]
-     * as created in [ProtobufFormatTest.createMessage].
-     */
-    @Test
-    fun `parse a file`() {
-        write(file, format, message)
-        val parsed = parse<StringValue>(file)
-        parsed shouldBe message
-    }
-
-    @Test
-    fun `parse a file even if it has non-standard extension`() {
-        val nonStandardFile = file.replaceExtension("fiz")
-        write(nonStandardFile, format, message)
-        val parsed = parse<StringValue>(nonStandardFile, format)
-        parsed shouldBe message
     }
 }
