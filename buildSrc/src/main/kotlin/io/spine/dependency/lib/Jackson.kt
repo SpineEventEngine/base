@@ -69,6 +69,9 @@ object Jackson {
         // https://github.com/FasterXML/jackson-datatypes-collections/blob/2.19/guava
         const val guava = "$group:$infix-guava:$version"
 
+        // https://github.com/FasterXML/jackson-dataformats-binary/tree/2.19/protobuf
+        const val protobuf = "$group:$infix-protobuf:$version"
+        
         // https://github.com/FasterXML/jackson-datatypes-misc/tree/2.19/javax-money
         const val javaXMoney = "$group:$infix-javax-money:$version"
 
