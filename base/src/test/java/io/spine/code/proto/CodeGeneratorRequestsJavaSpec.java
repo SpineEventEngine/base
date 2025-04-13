@@ -27,6 +27,7 @@
 package io.spine.code.proto;
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
+import io.spine.type.Binary;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,8 +39,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
-import static io.spine.code.proto.CodeGeneratorRequests.parseCodeGeneratorRequest;
-import static io.spine.code.proto.CodeGeneratorRequestsSpecKt.constructRequest;
+import static io.spine.code.proto.CodeGeneratorRequestParsingSpecKt.constructRequest;
 import static io.spine.string.Strings.toBase64Encoded;
 import static kotlin.io.FilesKt.writeBytes;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -62,7 +62,7 @@ class CodeGeneratorRequestsJavaSpec {
     void parsing() {
         writeBytes(requestFile, request.toByteArray());
         try (var input = new FileInputStream(requestFile)) {
-            var parsed = parseCodeGeneratorRequest(input);
+            var parsed = Binary.parse(CodeGeneratorRequest.class, input);
             assertThat(parsed).isEqualTo(request);
         } catch (IOException e) {
             fail("Failed to parse the request file.", e);

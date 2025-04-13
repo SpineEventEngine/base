@@ -1,5 +1,5 @@
 /*
- * Copyright 2024, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,13 +32,14 @@ import com.google.protobuf.compiler.codeGeneratorRequest
 import com.google.protobuf.compiler.version
 import io.kotest.matchers.shouldBe
 import io.spine.string.toBase64Encoded
+import io.spine.type.parse
 import java.io.File
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 
-@DisplayName("`CodeGeneratorRequests` utility should")
+@DisplayName("`CodeGeneratorRequest` parsing should")
 internal class CodeGeneratorRequestsSpec {
 
     private lateinit var requestFile: File
@@ -52,7 +53,7 @@ internal class CodeGeneratorRequestsSpec {
     }
 
     @Test
-    fun `provide extension for parsing via 'KClass'`() {
+    fun `parse via 'KClass'`() {
         requestFile.writeBytes(request.toByteArray())
         val input = requestFile.inputStream()
         input.use {
