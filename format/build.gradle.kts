@@ -27,8 +27,6 @@
 import io.spine.dependency.lib.Jackson
 import io.spine.dependency.lib.Jackson.DataFormat
 import io.spine.dependency.lib.Jackson.DataType
-import io.spine.dependency.lib.Protobuf
-import io.spine.dependency.test.JUnit
 
 plugins {
     module
@@ -43,10 +41,5 @@ dependencies {
         implementation(DataType.dateTime)
         implementation(DataType.guava)
         runtimeOnly(moduleKotlin)
-    }
-
-    testFixturesImplementation(Protobuf.libs[0])
-    JUnit.api.forEach {
-        testFixturesImplementation(it)
     }
 }
