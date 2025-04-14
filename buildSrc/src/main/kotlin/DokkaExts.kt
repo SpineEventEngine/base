@@ -103,7 +103,7 @@ fun DokkaHtmlPluginParameters.configureStyle(project: Project) {
 private fun DokkaExtension.configureFor(
     project: Project,
     language: String,
-    gitHubUrl: String
+    sourceLinkRemoveUrl: String
 ) {
     dokkaPublications.named("html") {
         suppressInheritedMembers.set(true)
@@ -116,11 +116,12 @@ private fun DokkaExtension.configureFor(
             includes.from(moduleDoc)
         }
 
-        // Read docs for more details: https://kotlinlang.org/docs/dokka-gradle.html#source-link-configuration
+        // Please see Dokka docs for more details:
+        //   https://kotlinlang.org/docs/dokka-gradle.html#source-link-configuration
         sourceLink {
             localDirectory.set(project.file("src/main/${language.lowercase()}"))
-            remoteUrl(gitHubUrl)
-            remoteLineSuffix.set("#L")
+            remoteUrl(sourceLinkRemoveUrl)
+            remoteLineSuffix.set(DocumentationSettings.SourceLink.lineSuffix)
         }
 
         // Configures links to the external Java documentation.
@@ -143,15 +144,15 @@ private fun DokkaExtension.configureFor(
 /**
  * Configures this [DokkaTask] to accept only Kotlin files.
  */
-fun DokkaExtension.configureForKotlin(project: Project, gitHubUrl: String) {
-    configureFor(project, "kotlin", gitHubUrl)
+fun DokkaExtension.configureForKotlin(project: Project, sourceLinkRemoteUrl: String) {
+    configureFor(project, "kotlin", sourceLinkRemoteUrl)
 }
 
 /**
  * Configures this [DokkaTask] to accept only Java files.
  */
-fun DokkaExtension.configureForJava(project: Project, gitHubUrl: String) {
-    configureFor(project, "java", gitHubUrl)
+fun DokkaExtension.configureForJava(project: Project, sourceLinkRemoteUrl: String) {
+    configureFor(project, "java", sourceLinkRemoteUrl)
 }
 
 /**

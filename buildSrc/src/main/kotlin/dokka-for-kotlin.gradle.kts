@@ -38,7 +38,7 @@ afterEvaluate {
     dokka {
         configureForKotlin(
             project,
-            "https://github.com/SpineEventEngine/base/tree/master/src"
+            DocumentationSettings.SourceLink.url
         )
     }
 }
