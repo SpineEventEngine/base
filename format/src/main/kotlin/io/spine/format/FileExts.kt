@@ -41,8 +41,8 @@ public fun File.hasSupportedFormat(): Boolean =
 /**
  * Ensures that the file has the [primary extension][Format.extensions] of the given [format].
  *
- * @return this instance if the extension matches,
- * a new instance with the required extension otherwise.
+ * @return `this` instance if the extension matches,
+ *   a new instance with the required extension otherwise.
  */
 @Suppress("ReturnCount") // Prefer earlier exits for better readability.
 public fun File.ensureFormatExtension(format: Format<*>): File {
