@@ -90,9 +90,13 @@ public sealed class Format<T : Any>(
     /**
      * A Protobuf message encoded in binary.
      *
+     * @see <a href="https://protobuf.dev/programming-guides/encoding/">
+     *     Protobuf Buffers Documentation: Encoding</a>
      * @see <a href="https://protobuf.dev/programming-guides/techniques/#suffixes">
      *     Common Filename Suffixes</a>
      * @see <a href="https://buf.build/docs/reference/inputs#binpb">Buf Docs: binpb</a>
+     * @see <a href="https://protobuf.dev/programming-guides/serialization-not-canonical/">
+     *  Proto Serialization Is Not Canonical</a>
      */
     public data object ProtoBinary : Format<Message>(
         ProtoBinaryWriter,
@@ -105,6 +109,8 @@ public sealed class Format<T : Any>(
      *
      * Use this item instead of [Json] for Protobuf messages stored in
      * JSON format so that the correct parser is selected for the file.
+     *
+     * @see <a href="https://protobuf.dev/programming-guides/json/">ProtoJSON Format</a>
      */
     public data object ProtoJson : Format<Message>(
         ProtoJsonWriter,

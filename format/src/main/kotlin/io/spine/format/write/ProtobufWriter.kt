@@ -39,8 +39,10 @@ import java.io.File
 internal interface ProtobufWriter: Writer<Message>
 
 /**
- * Writes a message using the [ProtoBinary] format.
+ * Writes a message using the
+ * [Protobuf binary format](https://protobuf.dev/programming-guides/encoding/).
  *
+ * @see io.spine.format.Format.ProtoBinary
  * @see io.spine.format.parse.ProtoBinaryParser
  * @see ProtoJsonWriter
  */
