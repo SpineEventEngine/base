@@ -84,4 +84,3 @@ configurations.all {
 tasks {
     excludeGoogleProtoFromArtifacts()
 }
-
