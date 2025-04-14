@@ -31,7 +31,7 @@ import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
-@DisplayName("`ProtoBinary` format should")
+@DisplayName("`ProtoBinary` format")
 internal class ProtoBinarySpec : ProtobufFormatTest(Format.ProtoBinary) {
 
     /**
@@ -44,10 +44,11 @@ internal class ProtoBinarySpec : ProtobufFormatTest(Format.ProtoBinary) {
      * populated with the data from the parsed bytes.
      *
      * @see io.spine.format.parse.ProtoBinaryParser.doParse
+     * @see com.google.protobuf.GeneratedMessageV3.unknownFields
      * @see ProtoJsonSpec
      */
     @Test
-    fun `have required a matching type but it could not`() {
+    fun `does not force the type but adds unknown fields instead`() {
         write(file, format, instance)
         // We wrote `StringValue`. Now parsing `Timestamp`.
         val timestamp = parse<Timestamp>(file)
