@@ -29,6 +29,10 @@ package io.spine.format.write
 import io.spine.format.Format
 import java.io.File
 
+/**
+ * The interface common for classes that write data to a file using
+ * the specified [format].
+ */
 internal interface Writer<T : Any> {
 
     /**
