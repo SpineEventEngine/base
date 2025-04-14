@@ -44,15 +44,18 @@ abstract class JacksonBackedFormatTest(format: Format<in Any>) :
 data class UserAccount(
     val id: String,
     val creationTimestamp: Instant,     // Test `JavaTimeModule`.
-    val emails: ImmutableList<String>,  // Test `GuavaModule`.
+    val emails: ImmutableList<EmailAddress>,  // Test `GuavaModule` with a custom item type.
     val gender: Optional<String>        // Test `Jdk8Module`.
 ) {
     companion object {
         fun create(id: String) = UserAccount(
             id,
             Instant.now(),
-            ImmutableList.of("j.doe@example.org", "john@acme-corp.com"),
+            ImmutableList.of(EmailAddress("j.doe@example.org"), EmailAddress("john@acme-corp.com")),
             gender = Optional.of("X")
         )
     }
 }
+
+// We don't want to bring Jakarta Mail just to test a custom type.
+data class EmailAddress(val value: String)
