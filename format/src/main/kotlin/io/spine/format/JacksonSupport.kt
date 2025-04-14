@@ -64,34 +64,34 @@ import io.spine.annotation.SPI
 public abstract class JacksonSupport {
 
     /**
-     * The factory class which constructs
-     * [writers][com.fasterxml.jackson.core.JsonGenerator] and
-     * [readers][com.fasterxml.jackson.core.JsonParser] of the Jackson library.
+     * A factory used to create [JsonGenerator][com.fasterxml.jackson.core.JsonGenerator] and
+     * [JsonParser][com.fasterxml.jackson.core.JsonParser] instances for a specific data format.
      *
-     * Despite the prefix `Json` in the class name, there are factories that support
-     * formats other than JSON, like [XML](https://bit.ly/jackson-xml-factory),
-     * [YAML][com.fasterxml.jackson.dataformat.yaml.YAMLFactory], or
-     * [another text format](https://github.com/FasterXML/jackson-dataformats-text).
+     * Although the name `JsonFactory` suggests JSON-only support,
+     * Jackson provides alternative factories for other data formats such as
+     * [XML](https://github.com/FasterXML/jackson-dataformat-xml),
+     * [YAML][com.fasterxml.jackson.dataformat.yaml.YAMLFactory], and other
+     * [text-based formats](https://github.com/FasterXML/jackson-dataformats-text).
      *
-     * Implement this `abstract` property using the factory for your data format.
+     * Subclasses must implement this property by returning a factory appropriate
+     * for the target format.
      */
     internal abstract val factory: JsonFactory
 
     /**
-     * The lazily evaluated cached instance of the object mapper.
+     * A lazily initialized and cached instance of [ObjectMapper] configured for the target format.
      *
-     * After creation, the [ObjectMapper] instance registers [modules]
-     * shared among object mappers.
+     * Upon initialization, the mapper registers shared [modules], which are intended
+     * to be available to all [JacksonSupport] subclasses.
      *
-     * If you need to have a Jackson [Module] available to all
-     * descendants of the [JacksonSupport] class, please see the documentation
-     * of the companion object property [modules] on how to add a shared module.
+     * To contribute a shared [Module], modify the [modules] list in the companion object
+     * **before** accessing this property or any class derived from [JacksonSupport].
      *
-     * If you need a [Module] only specific to your class derived from [JacksonSupport],
-     * please call [mapper.registerModule][ObjectMapper.registerModule] from the derived class.
+     * If a module should only apply to a specific subclass, register it within
+     * that subclass using [ObjectMapper.registerModule].
      *
-     * The [mapper] is created with [SerializationFeature.INDENT_OUTPUT] enabled.
-     * If you do not need the indentation, please call [ObjectMapper.disable].
+     * By default, this mapper is configured with [SerializationFeature.INDENT_OUTPUT] enabled.
+     * To disable indentation, call [ObjectMapper.disable] as needed.
      *
      * @see modules
      * @see ObjectMapper.findAndRegisterModules
@@ -105,18 +105,15 @@ public abstract class JacksonSupport {
     public companion object {
 
         /**
-         * Provides a shared list of Jackson modules passed to an [ObjectMapper] during
-         * its [creation][JacksonSupport.mapper].
+         * A shared list of Jackson [Module]s registered with each [ObjectMapper]
+         * created by [JacksonSupport].
          *
-         * The initial lazily evaluated list contains the modules
-         * [discovered][ObjectMapper.findModules] via the [java.util.ServiceLoader] API.
-         * Therefore, custom Jackson modules that support this API should be discovered
-         * from the classpath automatically.
+         * This list is initialized lazily using [ObjectMapper.findModules], which discovers
+         * modules via the [ServiceLoader][java.util.ServiceLoader] mechanism on the classpath.
          *
-         * If a module does not support the [ServiceLoader][java.util.ServiceLoader] API,
-         * you can [add][MutableList.add] the module directly.
-         * But please make sure to do it _before_ accessing classes or objects
-         * derived from [JacksonSupport].
+         * Modules that are not compatible with `ServiceLoader` can be added to this list manually.
+         * This must be done **before** accessing any instance or `object` derived
+         * from [JacksonSupport], to ensure proper registration.
          */
         public val modules: MutableList<Module> by lazy {
             ObjectMapper.findModules()
