@@ -75,10 +75,10 @@ import java.io.File
  * [ProtoJson] formats.
  *
  * @param extensions One or more extensions of the files that are conventionally used
- *   for files in the corresponding format. If there is a format has multiple file extensions,
- *   the one coming fist in the list is the primary one.
- *   This [extension] will be used for writing and other operations that need to match
- *   a file name to its format.
+ *   for files in the corresponding format.
+ *   If a format has multiple file extensions, the first in the list is the primary one.
+ *   This [extension] will be used for [composing][io.spine.format.ensureFormatExtension]
+ *   a file name for this format.
  * @see parse
  * @see write
  */

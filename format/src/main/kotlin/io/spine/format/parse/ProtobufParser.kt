@@ -51,7 +51,7 @@ internal sealed class ProtobufParser : Parser<Message> {
 
 /**
  * The parser for Protobuf messages encoded in
- * the [Protobuf binary format](https://protobuf.dev/programming-guides/encoding/).
+ * the [binary Protobuf](https://protobuf.dev/programming-guides/encoding/) format.
  *
  * @see io.spine.format.write.ProtoBinaryWriter
  * @see io.spine.format.Format.ProtoBinary
@@ -69,9 +69,11 @@ internal data object ProtoBinaryParser : ProtobufParser() {
 }
 
 /**
- * Settings parser for Protobuf messages encoded in the Protobuf JSON format.
+ * The parser for Protobuf messages encoded in
+ * the [ProtoJSON](https://protobuf.dev/programming-guides/json/) format.
  *
  * @see io.spine.format.write.ProtoJsonWriter
+ * @see io.spine.format.Format.ProtoJson
  * @see ProtoBinaryParser
  */
 internal data object ProtoJsonParser : ProtobufParser() {
