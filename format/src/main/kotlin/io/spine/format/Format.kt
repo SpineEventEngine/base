@@ -52,7 +52,7 @@ import java.io.File
  *
  * The following formats:
  *  * [ProtoBinary] — storing and parsing in Protobuf binary encoding.
- *   This is the performance and memory efficient format.
+ *   This is the performance and memory-efficient format.
  *
  *  * [ProtoJson] — handles [ProtoJSON](https://protobuf.dev/programming-guides/json/) format.
  *   This format should be used for debugging purposes or for sending data to external systems

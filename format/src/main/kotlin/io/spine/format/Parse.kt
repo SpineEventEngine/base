@@ -36,7 +36,7 @@ import java.io.File
  *
  * The format of the file is determined by the extension of the file.
  *
- * @param T The type of the class stored in the file.
+ * @param T The type of instance stored in the file.
  * @param file The file to parse.
  * @throws IllegalStateException if the file is not of the supported [format][Format].
  * @throws java.io.IOException or its subclass, if the parsing of the file fails.
@@ -52,7 +52,7 @@ public inline fun <reified T : Any> parse(file: File): T =
  * of custom file extensions that are not assumed by
  * the supported [formats][Format.entries].
  *
- * @param T The type of the class stored in the file.
+ * @param T The type of instance stored in the file.
  * @param file The file to parse.
  * @param format The format of the file.
  * @throws IllegalStateException if the file is not of the supported [format][Format].
@@ -67,7 +67,7 @@ public inline fun <reified T : Any> parse(file: File, format: Format<in T>): T =
  *
  * The format of the file is determined by the extension of the file.
  *
- * @param T The type of the class stored in the file.
+ * @param T The type of instance stored in the file.
  * @param file The file to parse.
  * @param cls The class of the instance stored in the file.
  * @throws IllegalStateException if the file is not of the supported [format][Format].
@@ -89,7 +89,7 @@ public fun <T : Any> parse(file: File, cls: Class<T>): T {
  * of custom file extensions that are not available from
  * the items of the [Format] enumeration.
  *
- * @param T The type of the class stored in the file.
+ * @param T The type of instance stored in the file.
  * @param file The file to parse.
  * @param format The format of the file.
  * @param cls The class of the instance stored in the file.
