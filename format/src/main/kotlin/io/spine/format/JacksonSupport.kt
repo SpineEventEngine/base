@@ -33,33 +33,32 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import io.spine.annotation.SPI
 
 /**
- * The abstract base for classes dealing with I/O operations based
- * on the [Jackson](https://github.com/FasterXML) library.
+ * An abstract base class for I/O operations using the
+ * [Jackson](https://github.com/FasterXML) library.
  *
- * Direct descendants of this class are abstract classes
+ * The primary subclasses of this class are the abstract types
  * [JacksonWriter][io.spine.format.write.JacksonWriter] and
- * [JacksonParser][io.spine.format.parse.JacksonParser] which form the base
- * for reading and writing in operations in various formats.
+ * [JacksonParser][io.spine.format.parse.JacksonParser], which provide
+ * the foundation for reading from and writing to various data formats.
  *
- * If you intend to support a new data format in addition to already [provided][Format],
- * you are likely to provide a pair of classes derived from
+ * To support a new data format beyond the existing [Format]s,
+ * you will typically define a pair of classes extending
  * [JacksonWriter][io.spine.format.write.JacksonWriter] and
  * [JacksonParser][io.spine.format.parse.JacksonParser],
- * instead of extending this class.
+ * rather than subclassing this base class directly.
  *
- * ## Supporting a new file format
- *  1. Create a new class for writing new data format by extending
+ * ## Adding Support for a New Format
+ * 1. Create a new writer class by extending
  *  [JacksonWriter][io.spine.format.write.JacksonWriter].
- *  2. Create a new class for parsing the data format by extending
+ * 2. Create a corresponding parser class by extending
  *  [JacksonParser][io.spine.format.parse.JacksonParser].
- *  3. Create an `object` extending from the [Format] class providing
- *   instances of the new [writer][Format.writer] and [parser][Format.parser]
- *   along with [extension(s)][Format.extension] for the files of the new format.
- *  4. **If you are a committer of the Spine SDK**, please add the format `object`
- *   nesting it under the [Format] class.
- *   We need this to continue mimicking an enumeration.
- *   We cannot do it in a straight way using Kotlin `enum` because we need generic parameters.
- *   Also, *please remember* to add the `object` to the [Format.entries] list.
+ * 3. Define an `object` that extends [Format], and provide instances
+ *  of the new [writer][Format.writer] and [parser][Format.parser],
+ *  along with the appropriate file [extension(s)][Format.extension].
+ * 4. **If you are a contributor to the Spine SDK**, nest the new format `object`
+ *  under the [Format] class. This helps maintain an enumeration-like structure.
+ *  We avoid using a Kotlin `enum` here because we need generic parameters.
+ *  Also, be sure to add the new `object` to the [Format.entries] list.
  */
 @SPI
 public abstract class JacksonSupport {
