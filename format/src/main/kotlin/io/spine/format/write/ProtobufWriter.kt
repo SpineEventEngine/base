@@ -27,8 +27,6 @@
 package io.spine.format.write
 
 import com.google.protobuf.Message
-import io.spine.format.Format
-import io.spine.format.Format.ProtoBinary
 import io.spine.format.Format.ProtoJson
 import io.spine.type.toJson
 import java.io.File
@@ -48,8 +46,6 @@ internal interface ProtobufWriter: Writer<Message>
  */
 internal object ProtoBinaryWriter : ProtobufWriter {
 
-    override val format: Format<Message> = ProtoBinary
-
     override fun write(file: File, value: Message) =
         file.writeBytes(value.toByteArray())
 }
@@ -62,8 +58,6 @@ internal object ProtoBinaryWriter : ProtobufWriter {
  * @see JsonWriter
  */
 internal object ProtoJsonWriter : ProtobufWriter {
-
-    override val format: Format<Message> = ProtoJson
 
     override fun write(file: File, value: Message) =
         file.writeText(value.toJson())

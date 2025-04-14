@@ -35,13 +35,46 @@ import io.spine.annotation.SPI
 /**
  * The abstract base for classes dealing with I/O operations based
  * on the [Jackson](https://github.com/FasterXML) library.
+ *
+ * Direct descendants of this class are abstract classes
+ * [JacksonWriter][io.spine.format.write.JacksonWriter] and
+ * [JacksonParser][io.spine.format.parse.JacksonParser] which form the base
+ * for reading and writing in operations in various formats.
+ *
+ * If you intend to support a new data format in addition to already [provided][Format],
+ * you are likely to provide a pair of classes derived from
+ * [JacksonWriter][io.spine.format.write.JacksonWriter] and
+ * [JacksonParser][io.spine.format.parse.JacksonParser],
+ * instead of extending this class.
+ *
+ * ## Supporting a new file format
+ *  1. Create a new class for writing new data format by extending
+ *  [JacksonWriter][io.spine.format.write.JacksonWriter].
+ *  2. Create a new class for parsing the data format by extending
+ *  [JacksonParser][io.spine.format.parse.JacksonParser].
+ *  3. Create an `object` extending from the [Format] class providing
+ *   instances of the new [writer][Format.writer] and [parser][Format.parser]
+ *   along with [extension(s)][Format.extension] for the files of the new format.
+ *  4. **If you are a committer of the Spine SDK**, please add the format `object`
+ *   nesting it under the [Format] class.
+ *   We need this to continue mimicking an enumeration.
+ *   We cannot do it in a straight way using Kotlin `enum` because we need generic parameters.
+ *   Also, *please remember* to add the `object` to the [Format.entries] list.
  */
 @SPI
 public abstract class JacksonSupport {
 
     /**
-     * The instance of [JsonFactory] used by the descending
-     * classes for I/O operations.
+     * The factory class which constructs
+     * [writers][com.fasterxml.jackson.core.JsonGenerator] and
+     * [readers][com.fasterxml.jackson.core.JsonParser] of the Jackson library.
+     *
+     * Despite the prefix `Json` in the class name, there are factories that support
+     * formats other than JSON, like [XML](https://bit.ly/jackson-xml-factory),
+     * [YAML][com.fasterxml.jackson.dataformat.yaml.YAMLFactory], or
+     * [another text format](https://github.com/FasterXML/jackson-dataformats-text).
+     *
+     * Implement this `abstract` property using the factory for your data format.
      */
     internal abstract val factory: JsonFactory
 
@@ -57,6 +90,9 @@ public abstract class JacksonSupport {
      *
      * If you need a [Module] only specific to your class derived from [JacksonSupport],
      * please call [mapper.registerModule][ObjectMapper.registerModule] from the derived class.
+     *
+     * The [mapper] is created with [SerializationFeature.INDENT_OUTPUT] enabled.
+     * If you do not need the indentation, please call [ObjectMapper.disable].
      *
      * @see modules
      * @see ObjectMapper.findAndRegisterModules

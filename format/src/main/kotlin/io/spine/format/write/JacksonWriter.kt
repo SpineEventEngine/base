@@ -29,15 +29,15 @@ package io.spine.format.write
 import com.fasterxml.jackson.core.JsonFactory
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import io.spine.annotation.SPI
-import io.spine.format.Format
-import io.spine.format.Format.Json
-import io.spine.format.Format.Yaml
 import io.spine.format.JacksonSupport
 import java.io.File
 
 /**
  * The abstract base for writes based on the [Jackson](https://github.com/FasterXML) library.
  *
+ * If you plan to support a new data format, please see [JacksonSupport].
+ *
+ * @see JacksonSupport
  * @see io.spine.format.parse.JacksonParser
  */
 @SPI
@@ -50,8 +50,6 @@ public abstract class JacksonWriter : JacksonSupport(), Writer<Any>
  * @see ProtoJsonWriter
  */
 internal object JsonWriter : JacksonWriter() {
-
-    override val format: Format<Any> = Json
 
     override val factory: JsonFactory by lazy {
         JsonFactory()
@@ -67,8 +65,6 @@ internal object JsonWriter : JacksonWriter() {
  * @see io.spine.format.parse.YamlParser
  */
 internal object YamlWriter : JacksonWriter(), Writer<Any> {
-
-    override val format: Format<Any> = Yaml
 
     override val factory: JsonFactory by lazy {
         YAMLFactory()

@@ -38,6 +38,9 @@ import java.nio.charset.Charset.defaultCharset
  * The abstract base parsers of text-based formats backed by
  * the [Jackson](https://github.com/FasterXML) library.
  *
+ * If you plan to support a new data format, please see [JacksonSupport].
+ *
+ * @see JacksonSupport
  * @see io.spine.format.write.JacksonWriter
  */
 @SPI

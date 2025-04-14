@@ -30,21 +30,15 @@ import io.spine.format.Format
 import java.io.File
 
 /**
- * The interface common for classes that write data to a file using
- * the specified [format].
+ * The interface common for classes that write data to a file.
  */
 internal interface Writer<T : Any> {
 
     /**
-     * The format which this writer supports.
-     */
-    val format: Format<T>
-
-    /**
-     * Writes the [value] into the file using the [format].
+     * Writes the [value] into the file.
      *
      * The extension of the file is not checked to match the conventions
-     * of the [Format] enumeration.
+     * of the [Format] to which this writer belongs.
      *
      * @see io.spine.format.ensureFormatExtension
      */
