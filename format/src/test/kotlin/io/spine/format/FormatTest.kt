@@ -100,4 +100,3 @@ abstract class FormatTest<T : Any>(
         parsed shouldBe instance
     }
 }
-
