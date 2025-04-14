@@ -37,12 +37,18 @@ import com.google.common.io.ByteSource
  * It should not be confused with [com.google.protobuf.Parser] which is used
  * in the Protobuf generated code for parsing [com.google.protobuf.Message] types
  * from various binary format inputs.
+ *
+ * @param T The type of the upper bound served by the parser.
+ *   For example, if a parser supports parsing Protobuf message types,
+ *   the argument would be [com.google.protobuf.Message].
  */
 internal sealed interface Parser<T : Any> {
 
     /**
      * Attempts to deserialize the given settings value into the given class.
      *
+     * @param R The type of the parsed value, which is a subtype of
+     *   the type [T] supported by this parser.
      * @throws java.io.IOException or its subclass, if the parsing of the file fails.
      */
     fun <R : T> parse(source: ByteSource, cls: Class<out R>): R
