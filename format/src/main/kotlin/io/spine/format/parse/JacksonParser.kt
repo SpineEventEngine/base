@@ -27,16 +27,21 @@
 package io.spine.format.parse
 
 import com.fasterxml.jackson.core.JsonFactory
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.google.common.io.ByteSource
+import io.spine.annotation.SPI
 import io.spine.format.JacksonSupport
 import io.spine.format.write.JsonWriter
+import io.spine.format.write.YamlWriter
 import java.nio.charset.Charset.defaultCharset
 
 /**
- * The abstract base parsers of text-based formats backed by the Jackson library.
+ * The abstract base parsers of text-based formats backed by
+ * the [Jackson](https://github.com/FasterXML) library.
+ *
+ * @see io.spine.format.write.JacksonWriter
  */
-internal sealed class JacksonParser : JacksonSupport(), Parser<Any> {
+@SPI
+public abstract class JacksonParser : JacksonSupport(), Parser<Any> {
 
     final override fun <T : Any> parse(source: ByteSource, cls: Class<out T>): T {
         val charSource = source.asCharSource(defaultCharset())
@@ -64,6 +69,6 @@ internal data object JsonParser : JacksonParser() {
  */
 internal data object YamlParser : JacksonParser() {
     override val factory: JsonFactory by lazy {
-        YAMLFactory()
+        YamlWriter.factory
     }
 }

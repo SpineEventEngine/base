@@ -40,7 +40,8 @@ import io.spine.annotation.SPI
 public abstract class JacksonSupport {
 
     /**
-     * The instance of [JsonFactory] used by the parser.
+     * The instance of [JsonFactory] used by the descending
+     * classes for I/O operations.
      */
     internal abstract val factory: JsonFactory
 
@@ -49,13 +50,15 @@ public abstract class JacksonSupport {
      *
      * After creation, the [ObjectMapper] instance registers [modules]
      * shared among object mappers.
-     * So, if you need to have a Jackson [Module] available to all descendants
-     * of the [JacksonSupport] class, add your module to the companion
-     * object property [modules].
      *
-     * If you need a [Module] only specific to your class,
+     * If you need to have a Jackson [Module] available to all
+     * descendants of the [JacksonSupport] class, please see the documentation
+     * of the companion object property [modules] on how to add a shared module.
+     *
+     * If you need a [Module] only specific to your class derived from [JacksonSupport],
      * please call [mapper.registerModule][ObjectMapper.registerModule] from the derived class.
      *
+     * @see modules
      * @see ObjectMapper.findAndRegisterModules
      */
     protected val mapper: ObjectMapper by lazy {
