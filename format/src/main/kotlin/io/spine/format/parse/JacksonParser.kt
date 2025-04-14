@@ -48,6 +48,8 @@ internal sealed class JacksonParser : JacksonSupport(), Parser<Any> {
 
 /**
  * The parser for JSON.
+ *
+ * @see io.spine.format.write.JsonWriter
  */
 internal data object JsonParser : JacksonParser() {
     override val factory: JsonFactory by lazy {
@@ -57,6 +59,8 @@ internal data object JsonParser : JacksonParser() {
 
 /**
  * The parser for YAML.
+ *
+ * @see io.spine.format.write.YamlWriter
  */
 internal data object YamlParser : JacksonParser() {
     override val factory: JsonFactory by lazy {

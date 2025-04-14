@@ -33,7 +33,7 @@ import io.spine.type.parse
 import java.nio.charset.Charset.defaultCharset
 
 /**
- * The abstract base for parsers of files storing Protobuf messages.
+ * The abstract base for parsers of files containing Protobuf messages.
  */
 internal sealed class ProtobufParser : Parser<Message> {
 
@@ -44,13 +44,16 @@ internal sealed class ProtobufParser : Parser<Message> {
     }
 
     /**
-     * Deserializes the given bytes into a message with the given class.
+     * Deserializes the given bytes into a message of the specified class.
      */
     abstract fun doParse(source: ByteSource, cls: Class<out Message>): Message
 }
 
 /**
  * Settings parser for Protobuf messages encoded in the Protobuf binary format.
+ *
+ * @see io.spine.format.write.ProtoBinaryWriter
+ * @see ProtoJsonParser
  */
 internal data object ProtoBinaryParser : ProtobufParser() {
 
@@ -65,6 +68,9 @@ internal data object ProtoBinaryParser : ProtobufParser() {
 
 /**
  * Settings parser for Protobuf messages encoded in the Protobuf JSON format.
+ *
+ * @see io.spine.format.write.ProtoJsonWriter
+ * @see ProtoBinaryParser
  */
 internal data object ProtoJsonParser : ProtobufParser() {
 

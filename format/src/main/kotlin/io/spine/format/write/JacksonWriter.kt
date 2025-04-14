@@ -34,8 +34,17 @@ import io.spine.format.Format.Yaml
 import io.spine.format.JacksonSupport
 import java.io.File
 
+/**
+ * The abstract base for writes based on the Jackson library.
+ */
 internal sealed class JacksonWriter : JacksonSupport(), Writer<Any>
 
+/**
+ * Writes JSON files.
+ *
+ * @see io.spine.format.parse.JsonParser
+ * @see ProtoJsonWriter
+ */
 internal object JsonWriter : JacksonWriter() {
 
     override val format: Format<Any> = Json
@@ -48,6 +57,11 @@ internal object JsonWriter : JacksonWriter() {
         mapper.writeValue(file, value)
 }
 
+/**
+ * Writes YAML files.
+ *
+ * @see io.spine.format.parse.YamlParser
+ */
 internal object YamlWriter : JacksonWriter(), Writer<Any> {
 
     override val format: Format<Any> = Yaml

@@ -40,6 +40,9 @@ internal interface ProtobufWriter: Writer<Message>
 
 /**
  * Writes a message using the [ProtoBinary] format.
+ *
+ * @see io.spine.format.parse.ProtoBinaryParser
+ * @see ProtoJsonWriter
  */
 internal object ProtoBinaryWriter : ProtobufWriter {
 
@@ -51,6 +54,10 @@ internal object ProtoBinaryWriter : ProtobufWriter {
 
 /**
  * Writes a message using [ProtoJson] format.
+ *
+ * @see io.spine.format.parse.ProtoJsonParser
+ * @see ProtoBinaryWriter
+ * @see JsonWriter
  */
 internal object ProtoJsonWriter : ProtobufWriter {
 
