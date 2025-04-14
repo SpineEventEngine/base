@@ -32,7 +32,6 @@ import io.spine.dependency.test.JUnit
 
 plugins {
     module
-    `java-test-fixtures`
 }
 
 dependencies {
