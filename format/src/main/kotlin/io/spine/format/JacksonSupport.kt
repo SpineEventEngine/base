@@ -58,7 +58,6 @@ public abstract class JacksonSupport {
      *
      * @see ObjectMapper.findAndRegisterModules
      */
-    @get:SPI
     protected val mapper: ObjectMapper by lazy {
         ObjectMapper(factory)
             .registerModules(modules)
@@ -81,7 +80,6 @@ public abstract class JacksonSupport {
          * But please make sure to do it _before_ accessing classes or objects
          * derived from [JacksonSupport].
          */
-        @get:SPI
         public val modules: MutableList<Module> by lazy {
             ObjectMapper.findModules()
         }
