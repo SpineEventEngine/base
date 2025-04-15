@@ -26,7 +26,7 @@
 
 package io.spine.environment;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Arrays;
 import java.util.Locale;
