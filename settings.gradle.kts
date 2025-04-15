@@ -24,6 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+rootProject.name = "base-libraries"
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -31,5 +33,7 @@ pluginManagement {
     }
 }
 
-// Do not add prefix `spine-` for this single-module project. It will be added automatically.
-rootProject.name = "base"
+include(
+    "base",
+    "format"
+)
