@@ -32,7 +32,7 @@ import com.google.protobuf.Message;
 import com.google.protobuf.Parser;
 import io.spine.type.TypeUrl;
 import io.spine.type.UnexpectedTypeException;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.function.Function;

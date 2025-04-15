@@ -26,9 +26,9 @@
 
 package io.spine.base;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.type.KnownMessage;
 
-import javax.annotation.concurrent.Immutable;
 
 /**
  * A message which can be dispatched to one or more entities.

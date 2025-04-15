@@ -26,7 +26,7 @@
 
 package io.spine.io;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.URL;
@@ -73,7 +73,7 @@ abstract class ResourceObject {
     /**
      * Obtains a {@link URL} of the resolved resource.
      *
-     * <p>If the resource cannot be resolved (i.e. the file does not exist), throws
+     * <p>If the resource cannot be resolved (i.e., the file does not exist), throws
      * an {@code IllegalStateException}.
      *
      * @return the resource URL

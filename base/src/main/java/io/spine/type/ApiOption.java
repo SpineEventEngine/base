@@ -33,9 +33,9 @@ import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.DescriptorProtos.ServiceOptions;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
+import com.google.protobuf.GeneratedMessage.ExtendableMessage;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -104,7 +104,7 @@ public final class ApiOption {
         INTERNAL(new ApiOption(internalAll, internalType, null, internal)),
         SPI(new ApiOption(sPIAll, sPIType, sPIService, null));
 
-        @SuppressWarnings({"NonSerializableFieldInSerializableClass", "PMD.SingularField"})
+        @SuppressWarnings("PMD.SingularField")
         // This private enum should not be serialized.
         private final ApiOption option;
 

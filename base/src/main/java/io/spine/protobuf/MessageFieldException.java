@@ -26,8 +26,10 @@
 
 package io.spine.protobuf;
 
-import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.Message;
+
+import java.io.Serial;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -37,9 +39,10 @@ import static java.lang.String.format;
  */
 public final class MessageFieldException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 0L;
 
-    private final GeneratedMessageV3 protobufMessage;
+    private final GeneratedMessage protobufMessage;
 
     /**
      * Constructs a {@code MessageFieldException} with the formatted message text.
@@ -55,7 +58,7 @@ public final class MessageFieldException extends RuntimeException {
                                  String errorMessageFormat,
                                  Object... params) {
         super(format(checkNotNull(errorMessageFormat), params));
-        this.protobufMessage = (GeneratedMessageV3) checkNotNull(protobufMessage);
+        this.protobufMessage = (GeneratedMessage) checkNotNull(protobufMessage);
     }
 
     /**

@@ -26,11 +26,8 @@
 
 package io.spine.io;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,7 +35,6 @@ import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static io.spine.io.Copy.copyContent;
 import static io.spine.io.Copy.copyDir;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
@@ -75,8 +71,7 @@ public final class ResourceDirectory extends ResourceObject {
      * Obtains the path to this directory under resources.
      */
     public Path toPath() {
-        @Nullable URL url = locate();
-        checkState(url != null, "Unable to locate resource directory: `%s`.", path());
+        var url = locate();
         try {
             var result = Paths.get(url.toURI());
             return result;
@@ -155,9 +150,6 @@ public final class ResourceDirectory extends ResourceObject {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof ResourceDirectory) {
-            return super.equals(o);
-        }
-        return false;
+        return (o instanceof ResourceDirectory) && super.equals(o);
     }
 }
