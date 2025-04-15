@@ -226,21 +226,21 @@ public final class Field extends ValueHolder<FieldPath> {
     }
 
     /**
-     * Obtains a descriptor of the referenced field in the passed message type.
+     * Obtains a descriptor of the referenced field in the given message type.
      *
-     * @return the descriptor, if there is such a field in the passed type, or empty
+     * @return the descriptor, if there is such a field in the given type, or empty
      *  {@code Optional} if the field is not declared
      */
     public Optional<FieldDescriptor> findDescriptor(Descriptor message) {
-        @Nullable FieldDescriptor field = fieldIn(path(), message);
+        var field = fieldIn(path(), message);
         return Optional.ofNullable(field);
     }
     /**
-     * Obtains the type of the referenced field in the passed message class.
+     * Obtains the type of the referenced field in the given message class.
      */
     public Optional<Class<?>> findType(Class<? extends Message> holderType) {
         var message = TypeName.of(holderType).messageDescriptor();
-        @Nullable FieldDescriptor field = fieldIn(path(), message);
+        var field = fieldIn(path(), message);
         if (field == null) {
             return Optional.empty();
         }
@@ -308,7 +308,7 @@ public final class Field extends ValueHolder<FieldPath> {
         for (var iterator = path.getFieldNameList().iterator(); iterator.hasNext(); ) {
             var fieldName = iterator.next();
             var type = message.getDescriptorForType();
-            @Nullable FieldDescriptor field = type.findFieldByName(fieldName);
+            var field = type.findFieldByName(fieldName);
             if (field == null) {
                 if (strict) {
                     throw newIllegalArgumentException(
@@ -365,7 +365,7 @@ public final class Field extends ValueHolder<FieldPath> {
     }
 
     /**
-     * Obtains the descriptor of the field in the passed message type.
+     * Obtains the descriptor of the field in the given message type.
      *
      * @return the descriptor or {@code null} if the message type does not declare this field
      */
@@ -399,7 +399,7 @@ public final class Field extends ValueHolder<FieldPath> {
     }
 
     /** Obtains the type of the values stored in the field. */
-    static Class<?> classOf(FieldDescriptor field) {
+    private static Class<?> classOf(FieldDescriptor field) {
         var type = field.getType();
         if (type == MESSAGE) {
             var cls = TypeUrl.from(field.getMessageType()).toJavaClass();
