@@ -191,7 +191,7 @@ public final class Field extends ValueHolder<FieldPath> {
     }
 
     /**
-     * Obtains the value of the field in the passed message.
+     * Obtains the value of the field in the given message.
      *
      * @param holder
      *         the message which potentially has the referenced field
@@ -291,7 +291,7 @@ public final class Field extends ValueHolder<FieldPath> {
      * @param path
      *         the path to the field in the message
      * @param holder
-     *         the instance of message from which to obtain the value
+     *         the instance of the message from which to obtain the value
      * @param strict
      *         If {@code true}, the method would fail with the {@code IllegalArgumentException}
      *         if there is no field matching the passed path.
