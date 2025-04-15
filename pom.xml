@@ -10,7 +10,7 @@ all modules and does not describe the project structure per-subproject.
  -->
 <groupId>io.spine</groupId>
 <artifactId>base-libraries</artifactId>
-<version>2.0.0-SNAPSHOT.309</version>
+<version>2.0.0-SNAPSHOT.310</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -56,25 +56,25 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.guava</groupId>
     <artifactId>guava</artifactId>
-    <version>32.1.3-jre</version>
+    <version>33.4.8-jre</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>com.google.protobuf</groupId>
     <artifactId>protobuf-java</artifactId>
-    <version>3.25.1</version>
+    <version>4.30.2</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>com.google.protobuf</groupId>
     <artifactId>protobuf-java-util</artifactId>
-    <version>3.25.1</version>
+    <version>4.30.2</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>com.google.protobuf</groupId>
     <artifactId>protobuf-kotlin</artifactId>
-    <version>3.25.1</version>
+    <version>4.30.2</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -102,6 +102,12 @@ all modules and does not describe the project structure per-subproject.
     <scope>compile</scope>
   </dependency>
   <dependency>
+    <groupId>org.jspecify</groupId>
+    <artifactId>jspecify</artifactId>
+    <version>1.0.0</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
     <groupId>com.fasterxml.jackson.module</groupId>
     <artifactId>jackson-module-kotlin</artifactId>
     <version>2.18.3</version>
@@ -110,7 +116,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.guava</groupId>
     <artifactId>guava-testlib</artifactId>
-    <version>32.1.3-jre</version>
+    <version>33.4.8-jre</version>
     <scope>test</scope>
   </dependency>
   <dependency>
@@ -152,25 +158,25 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>org.junit-pioneer</groupId>
     <artifactId>junit-pioneer</artifactId>
-    <version>2.0.1</version>
+    <version>2.3.0</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>org.junit.jupiter</groupId>
     <artifactId>junit-jupiter-api</artifactId>
-    <version>5.10.0</version>
+    <version>5.12.2</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>org.junit.jupiter</groupId>
     <artifactId>junit-jupiter-engine</artifactId>
-    <version>5.10.0</version>
+    <version>5.12.2</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>org.junit.jupiter</groupId>
     <artifactId>junit-jupiter-params</artifactId>
-    <version>5.10.0</version>
+    <version>5.12.2</version>
     <scope>test</scope>
   </dependency>
   <dependency>
@@ -182,17 +188,17 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.devtools.ksp</groupId>
     <artifactId>symbol-processing</artifactId>
-    <version>2.1.20-1.0.31</version>
+    <version>2.1.20-2.0.0</version>
   </dependency>
   <dependency>
     <groupId>com.google.devtools.ksp</groupId>
     <artifactId>symbol-processing-api</artifactId>
-    <version>2.1.20-1.0.31</version>
+    <version>2.1.20-2.0.0</version>
   </dependency>
   <dependency>
     <groupId>com.google.devtools.ksp</groupId>
     <artifactId>symbol-processing-cmdline</artifactId>
-    <version>2.1.20-1.0.31</version>
+    <version>2.1.20-2.0.0</version>
   </dependency>
   <dependency>
     <groupId>com.google.errorprone</groupId>
@@ -219,7 +225,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.protobuf</groupId>
     <artifactId>protoc</artifactId>
-    <version>3.25.1</version>
+    <version>4.30.2</version>
   </dependency>
   <dependency>
     <groupId>com.puppycrawl.tools</groupId>
@@ -242,15 +248,14 @@ all modules and does not describe the project structure per-subproject.
     <version>2.0.0-SNAPSHOT.7</version>
   </dependency>
   <dependency>
-    <groupId>javax.annotation</groupId>
-    <artifactId>javax.annotation-api</artifactId>
-    <version>1.3.2</version>
-    <scope>provided</scope>
+    <groupId>net.sourceforge.pmd</groupId>
+    <artifactId>pmd-ant</artifactId>
+    <version>7.12.0</version>
   </dependency>
   <dependency>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd-java</artifactId>
-    <version>6.55.0</version>
+    <version>7.12.0</version>
   </dependency>
   <dependency>
     <groupId>org.checkerframework</groupId>
@@ -261,12 +266,12 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>org.jacoco</groupId>
     <artifactId>org.jacoco.agent</artifactId>
-    <version>0.8.12</version>
+    <version>0.8.13</version>
   </dependency>
   <dependency>
     <groupId>org.jacoco</groupId>
     <artifactId>org.jacoco.ant</artifactId>
-    <version>0.8.12</version>
+    <version>0.8.13</version>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.dokka</groupId>

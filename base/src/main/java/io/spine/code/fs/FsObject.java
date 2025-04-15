@@ -27,7 +27,7 @@
 package io.spine.code.fs;
 
 import com.google.errorprone.annotations.InlineMe;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

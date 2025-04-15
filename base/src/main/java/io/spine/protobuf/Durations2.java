@@ -30,8 +30,9 @@ import com.google.errorprone.annotations.InlineMe;
 import com.google.protobuf.Duration;
 import com.google.protobuf.util.Durations;
 import io.spine.string.Stringifiers;
+import org.jspecify.annotations.Nullable;
 
-import javax.annotation.Nullable;
+import java.io.Serial;
 import java.io.Serializable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -67,7 +68,7 @@ public final class Durations2 {
     @Deprecated
     public static final Duration ZERO = fromMillis(0L);
 
-    static final String PROTOBUF_DURATIONS = "com.google.protobuf.util.Durations";
+    private static final String PROTOBUF_DURATIONS = "com.google.protobuf.util.Durations";
 
     /** Prevent instantiation of this utility class. */
     private Durations2() {
@@ -277,6 +278,7 @@ public final class Durations2 {
     private static final class JtConverter
             extends Converter<java.time.Duration, Duration> implements Serializable {
 
+        @Serial
         private static final long serialVersionUID = 0L;
 
         private static final JtConverter INSTANCE = new JtConverter();
@@ -299,6 +301,7 @@ public final class Durations2 {
             return "Durations2.converter()";
         }
 
+        @Serial
         private Object readResolve() {
             return INSTANCE;
         }

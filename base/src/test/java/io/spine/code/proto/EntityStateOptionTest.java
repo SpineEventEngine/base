@@ -26,7 +26,6 @@
 
 package io.spine.code.proto;
 
-import com.google.common.truth.Truth8;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.option.EntityOption.Kind;
 import io.spine.option.EntityOption.Visibility;
@@ -78,13 +77,13 @@ class EntityStateOptionTest {
     @DisplayName("obtain the kind of an entity")
     void obtainEntityKind() {
         var kind = EntityStateOption.entityKindOf(EsoPublicProjection.getDescriptor());
-        Truth8.assertThat(kind).isPresent();
+        assertThat(kind).isPresent();
         assertThat(kind.get()).isEqualTo(PROJECTION);
     }
 
     void assertOption(Descriptor type, Kind kind, Visibility visibility) {
         var found = EntityStateOption.valueOf(type);
-        Truth8.assertThat(found).isPresent();
+        assertThat(found).isPresent();
         @SuppressWarnings("OptionalGetWithoutIsPresent") // checked above.
         var option = found.get();
         assertThat(option.getKind())

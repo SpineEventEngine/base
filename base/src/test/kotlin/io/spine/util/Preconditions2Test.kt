@@ -34,6 +34,7 @@ import io.spine.testing.Assertions.assertIllegalState
 import io.spine.testing.Assertions.assertNpe
 import io.spine.testing.TestValues.longRandom
 import io.spine.testing.TestValues.newUuidValue
+import io.spine.testing.TestValues.nullRef
 import io.spine.testing.TestValues.randomString
 import io.spine.testing.UtilityClassTest
 import io.spine.util.Preconditions2.checkBounds
@@ -92,15 +93,14 @@ internal class Preconditions2Test : UtilityClassTest<Preconditions2>(Preconditio
         }) {
 
         @Test
-        @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
         fun `a 'null'`() {
-            assertNpe { checkNotEmptyOrBlank(null) }
+            assertNpe { checkNotEmptyOrBlank(nullRef()) }
             val errorTemplateBase = randomString()
             val errorArg = arrayOf(randomString(), randomString())
             val errorTemplate = "$errorTemplateBase%s %s"
 
             val exception = assertThrows<NullPointerException>{
-                checkNotEmptyOrBlank(null, errorTemplate, errorArg[0], errorArg[1])
+                checkNotEmptyOrBlank(nullRef(), errorTemplate, errorArg[0], errorArg[1])
             }
 
             val assertExceptionMessage = assertThat(exception).hasMessageThat()

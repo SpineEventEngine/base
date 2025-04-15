@@ -29,8 +29,8 @@ package io.spine.code.proto;
 import com.google.errorprone.annotations.Immutable;
 import com.google.errorprone.annotations.ImmutableTypeParameter;
 import com.google.protobuf.Descriptors.GenericDescriptor;
+import com.google.protobuf.GeneratedMessage.ExtendableMessage;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 
 import java.util.Optional;
 
@@ -83,14 +83,14 @@ public abstract class AbstractOption<@ImmutableTypeParameter T,
     }
 
     @Override
+    @SuppressWarnings("PMD.SimplifyBooleanReturns")
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof AbstractOption)) {
+        if (!(o instanceof AbstractOption<?, ?, ?> option)) {
             return false;
         }
-        var option = (AbstractOption<?, ?, ?>) o;
         return extension.getNumber() == option.extension.getNumber();
     }
 
@@ -98,7 +98,7 @@ public abstract class AbstractOption<@ImmutableTypeParameter T,
      * Computes the hash code of this option basing on its extension number.
      *
      * <p>Improves the performance of operations that group the {@code AbstractOption} instances
-     * into {@code Set}s or other structures relying onto the hash code value.
+     * into {@code Set}s or other structures relying on the hash code value.
      *
      * @return the hash code value
      */

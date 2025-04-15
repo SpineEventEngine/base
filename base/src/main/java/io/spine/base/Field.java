@@ -39,8 +39,9 @@ import io.spine.code.proto.ScalarType;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
 import io.spine.value.ValueHolder;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
+import java.io.Serial;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,7 +49,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
-import static com.google.protobuf.TextFormat.shortDebugString;
+import static io.spine.type.ProtoTexts.shortDebugString;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
@@ -70,6 +71,7 @@ public final class Field extends ValueHolder<FieldPath> {
     private static final Joiner joiner = Joiner.on(SEPARATOR);
     private static final Splitter dotSplitter = Splitter.on(SEPARATOR)
                                                         .trimResults();
+    @Serial
     private static final long serialVersionUID = 0L;
 
     private Field(FieldPath path) {
@@ -202,15 +204,15 @@ public final class Field extends ValueHolder<FieldPath> {
     }
 
     /**
-     * Obtains the value of the field (which must exist) in the passed message.
+     * Obtains the value of the field (which must exist) in the given message.
      *
      * @throws IllegalStateException if the type of the passed message does not declare this field
      */
     public Object valueIn(Message holder) {
         var result = findValue(holder).orElseThrow(
-                () -> newIllegalStateException("Unable to get the field `%s` from `%s`.",
-                                               this, shortDebugString(holder))
-        );
+                () -> newIllegalStateException(
+                        "Unable to get the field `%s` from `%s`.", this, shortDebugString(holder)
+                ));
         return result;
     }
 
@@ -345,17 +347,16 @@ public final class Field extends ValueHolder<FieldPath> {
      * Java enum value. Otherwise, returns the passed value.
      *
      * <p>{@link Message#getField(FieldDescriptor)} returns {@code EnumValueDescriptor} if
-     * a field of a message is an enum value. This descriptor contains information about the
+     * a field of a message is an enum value. This descriptor contains information about
      * the value of the enum. This method converts this value into an instance of a generated
      * Java {@link Enum} which corresponds to the enum proto type of the field.
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
         // The generic arg. of the enum is of no importance here.
     private static Object convertIfEnum(Object currentValue) {
-        if (!(currentValue instanceof EnumValueDescriptor)) {
+        if (!(currentValue instanceof EnumValueDescriptor value)) {
             return currentValue;
         }
-        var value = (EnumValueDescriptor) currentValue;
         var enumType = value.getType();
         var typeName = TypeName.of(enumType.getFullName());
         Class<? extends Enum> cls = typeName.toEnumClass();
