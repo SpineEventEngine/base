@@ -28,7 +28,7 @@ package io.spine.query;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Message;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Function;
 

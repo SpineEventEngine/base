@@ -27,7 +27,6 @@
 package io.spine.string;
 
 import com.google.common.base.Converter;
-import com.google.common.truth.Truth8;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -103,7 +102,7 @@ abstract class AbstractStringifierTest<T> {
     @DisplayName("be registered")
     void isRegistered() {
         var found = registry().find(dataClass);
-        Truth8.assertThat(found).isPresent();
+        assertThat(found).isPresent();
     }
 
     @Test

@@ -31,7 +31,7 @@ import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FileName;
 import io.spine.type.MessageType;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 

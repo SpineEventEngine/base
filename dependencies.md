@@ -1,25 +1,25 @@
 
 
-# Dependencies of `io.spine:spine-base:2.0.0-SNAPSHOT.309`
+# Dependencies of `io.spine:spine-base:2.0.0-SNAPSHOT.310`
 
 ## Runtime
 1.  **Group** : com.google.code.findbugs. **Name** : jsr305. **Version** : 3.0.2.
      * **Project URL:** [http://findbugs.sourceforge.net/](http://findbugs.sourceforge.net/)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.code.gson. **Name** : gson. **Version** : 2.10.1.
-     * **Project URL:** [https://github.com/google/gson/gson](https://github.com/google/gson/gson)
+1.  **Group** : com.google.code.gson. **Name** : gson. **Version** : 2.13.0.
+     * **Project URL:** [https://github.com/google/gson](https://github.com/google/gson)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : com.google.errorprone. **Name** : error_prone_annotations. **Version** : 2.36.0.
      * **Project URL:** [https://errorprone.info/error_prone_annotations](https://errorprone.info/error_prone_annotations)
      * **License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.guava. **Name** : failureaccess. **Version** : 1.0.1.
+1.  **Group** : com.google.guava. **Name** : failureaccess. **Version** : 1.0.3.
      * **Project URL:** [https://github.com/google/guava/](https://github.com/google/guava/)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.guava. **Name** : guava. **Version** : 32.1.3-jre.
+1.  **Group** : com.google.guava. **Name** : guava. **Version** : 33.4.8-jre.
      * **Project URL:** [https://github.com/google/guava](https://github.com/google/guava)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -30,20 +30,17 @@
      * **Project URL:** [https://github.com/google/j2objc/](https://github.com/google/j2objc/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-java. **Version** : 3.25.1.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-java. **Version** : 4.30.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-java-util. **Version** : 3.25.1.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-java-util. **Version** : 4.30.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-kotlin. **Version** : 3.25.1.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-kotlin. **Version** : 4.30.2.
+     * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
-
-1.  **Group** : org.checkerframework. **Name** : checker-qual. **Version** : 3.40.0.
-     * **Project URL:** [https://checkerframework.org/](https://checkerframework.org/)
-     * **License:** [The MIT License](http://opensource.org/licenses/MIT)
 
 1.  **Group** : org.jetbrains. **Name** : annotations. **Version** : 26.0.2.
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
@@ -65,16 +62,16 @@
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1.  **Group** : org.jspecify. **Name** : jspecify. **Version** : 1.0.0.
+     * **Project URL:** [http://jspecify.org/](http://jspecify.org/)
+     * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1.  **Group** : org.ow2.asm. **Name** : asm. **Version** : 9.6.
      * **Project URL:** [http://asm.ow2.io/](http://asm.ow2.io/)
      * **License:** [BSD-3-Clause](https://asm.ow2.io/license.html)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 ## Compile, tests, and tooling
-1.  **Group** : com.beust. **Name** : jcommander. **Version** : 1.48.
-     * **Project URL:** [http://beust.com/jcommander](http://beust.com/jcommander)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1.  **Group** : com.fasterxml.jackson. **Name** : jackson-bom. **Version** : 2.18.3.
      * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -117,6 +114,10 @@
      * **Project URL:** [https://www.github.com/KevinStern/software-and-algorithms](https://www.github.com/KevinStern/software-and-algorithms)
      * **License:** [MIT License](http://www.opensource.org/licenses/mit-license.php)
 
+1.  **Group** : com.github.oowekyala.ooxml. **Name** : nice-xml-messages. **Version** : 3.1.
+     * **Project URL:** [https://github.com/oowekyala/nice-xml-messages](https://github.com/oowekyala/nice-xml-messages)
+     * **License:** [MIT License](https://github.com/oowekyala/nice-xml-messages/tree/master/LICENSE)
+
 1.  **Group** : com.google.auto. **Name** : auto-common. **Version** : 1.2.2.
      * **Project URL:** [https://github.com/google/auto/tree/main/common](https://github.com/google/auto/tree/main/common)
      * **License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -133,19 +134,19 @@
      * **Project URL:** [http://findbugs.sourceforge.net/](http://findbugs.sourceforge.net/)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.code.gson. **Name** : gson. **Version** : 2.10.1.
-     * **Project URL:** [https://github.com/google/gson/gson](https://github.com/google/gson/gson)
+1.  **Group** : com.google.code.gson. **Name** : gson. **Version** : 2.13.0.
+     * **Project URL:** [https://github.com/google/gson](https://github.com/google/gson)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.devtools.ksp. **Name** : symbol-processing. **Version** : 2.1.20-1.0.31.
+1.  **Group** : com.google.devtools.ksp. **Name** : symbol-processing. **Version** : 2.1.20-2.0.0.
      * **Project URL:** [https://goo.gle/ksp](https://goo.gle/ksp)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.devtools.ksp. **Name** : symbol-processing-api. **Version** : 2.1.20-1.0.31.
+1.  **Group** : com.google.devtools.ksp. **Name** : symbol-processing-api. **Version** : 2.1.20-2.0.0.
      * **Project URL:** [https://goo.gle/ksp](https://goo.gle/ksp)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.devtools.ksp. **Name** : symbol-processing-cmdline. **Version** : 2.1.20-1.0.31.
+1.  **Group** : com.google.devtools.ksp. **Name** : symbol-processing-cmdline. **Version** : 2.1.20-2.0.0.
      * **Project URL:** [https://goo.gle/ksp](https://goo.gle/ksp)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -184,15 +185,15 @@
 1.  **Group** : com.google.googlejavaformat. **Name** : google-java-format. **Version** : 1.19.1.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.guava. **Name** : failureaccess. **Version** : 1.0.1.
+1.  **Group** : com.google.guava. **Name** : failureaccess. **Version** : 1.0.3.
      * **Project URL:** [https://github.com/google/guava/](https://github.com/google/guava/)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.guava. **Name** : guava. **Version** : 32.1.3-jre.
+1.  **Group** : com.google.guava. **Name** : guava. **Version** : 33.4.8-jre.
      * **Project URL:** [https://github.com/google/guava](https://github.com/google/guava)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.guava. **Name** : guava-testlib. **Version** : 32.1.3-jre.
+1.  **Group** : com.google.guava. **Name** : guava-testlib. **Version** : 33.4.8-jre.
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : com.google.guava. **Name** : listenablefuture. **Version** : 9999.0-empty-to-avoid-conflict-with-guava.
@@ -202,32 +203,33 @@
      * **Project URL:** [https://github.com/google/j2objc/](https://github.com/google/j2objc/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-java. **Version** : 3.25.1.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-java. **Version** : 4.30.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-java-util. **Version** : 3.25.1.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-java-util. **Version** : 4.30.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-kotlin. **Version** : 3.25.1.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-kotlin. **Version** : 4.30.2.
+     * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 3.25.1.
+1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.30.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.truth. **Name** : truth. **Version** : 1.1.5.
+1.  **Group** : com.google.truth. **Name** : truth. **Version** : 1.4.4.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.truth.extensions. **Name** : truth-java8-extension. **Version** : 1.1.5.
+1.  **Group** : com.google.truth.extensions. **Name** : truth-java8-extension. **Version** : 1.4.4.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.truth.extensions. **Name** : truth-liteproto-extension. **Version** : 1.1.5.
+1.  **Group** : com.google.truth.extensions. **Name** : truth-liteproto-extension. **Version** : 1.4.4.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.truth.extensions. **Name** : truth-proto-extension. **Version** : 1.1.5.
+1.  **Group** : com.google.truth.extensions. **Name** : truth-proto-extension. **Version** : 1.4.4.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : com.puppycrawl.tools. **Name** : checkstyle. **Version** : 10.12.1.
@@ -445,27 +447,30 @@
      * **Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
      * **License:** [Mozilla Public License Version 2.0](http://www.mozilla.org/MPL/2.0/)
 
-1.  **Group** : net.sourceforge.pmd. **Name** : pmd-core. **Version** : 6.55.0.
+1.  **Group** : net.sf.saxon. **Name** : Saxon-HE. **Version** : 12.5.
+     * **Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
+     * **License:** [Mozilla Public License Version 2.0](http://www.mozilla.org/MPL/2.0/)
+
+1.  **Group** : net.sourceforge.pmd. **Name** : pmd-ant. **Version** : 7.12.0.
      * **License:** [BSD-style](http://pmd.sourceforge.net/license.html)
 
-1.  **Group** : net.sourceforge.pmd. **Name** : pmd-java. **Version** : 6.55.0.
+1.  **Group** : net.sourceforge.pmd. **Name** : pmd-core. **Version** : 7.12.0.
      * **License:** [BSD-style](http://pmd.sourceforge.net/license.html)
 
-1.  **Group** : net.sourceforge.saxon. **Name** : saxon. **Version** : 9.1.0.8.
-     * **Project URL:** [http://saxon.sourceforge.net/](http://saxon.sourceforge.net/)
-     * **License:** [Mozilla Public License Version 1.0](http://www.mozilla.org/MPL/MPL-1.0.txt)
+1.  **Group** : net.sourceforge.pmd. **Name** : pmd-java. **Version** : 7.12.0.
+     * **License:** [BSD-style](http://pmd.sourceforge.net/license.html)
 
 1.  **Group** : org.antlr. **Name** : antlr4-runtime. **Version** : 4.11.1.
      * **Project URL:** [https://www.antlr.org/](https://www.antlr.org/)
      * **License:** [BSD-3-Clause](https://www.antlr.org/license.html)
 
-1.  **Group** : org.antlr. **Name** : antlr4-runtime. **Version** : 4.7.2.
+1.  **Group** : org.antlr. **Name** : antlr4-runtime. **Version** : 4.9.3.
      * **Project URL:** [http://www.antlr.org](http://www.antlr.org)
      * **License:** [The BSD License](http://www.antlr.org/license.html)
 
-1.  **Group** : org.apache.commons. **Name** : commons-lang3. **Version** : 3.8.1.
-     * **Project URL:** [http://commons.apache.org/proper/commons-lang/](http://commons.apache.org/proper/commons-lang/)
-     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+1.  **Group** : org.apache.commons. **Name** : commons-lang3. **Version** : 3.17.0.
+     * **Project URL:** [https://commons.apache.org/proper/commons-lang/](https://commons.apache.org/proper/commons-lang/)
+     * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.apache.httpcomponents.client5. **Name** : httpclient5. **Version** : 5.1.3.
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -506,24 +511,24 @@
      * **Project URL:** [https://freemarker.apache.org/](https://freemarker.apache.org/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.hamcrest. **Name** : hamcrest. **Version** : 2.2.
+1.  **Group** : org.hamcrest. **Name** : hamcrest. **Version** : 3.0.
      * **Project URL:** [http://hamcrest.org/JavaHamcrest/](http://hamcrest.org/JavaHamcrest/)
-     * **License:** [BSD License 3](http://opensource.org/licenses/BSD-3-Clause)
+     * **License:** [BSD-3-Clause](https://raw.githubusercontent.com/hamcrest/JavaHamcrest/master/LICENSE)
 
-1.  **Group** : org.hamcrest. **Name** : hamcrest-core. **Version** : 2.2.
+1.  **Group** : org.hamcrest. **Name** : hamcrest-core. **Version** : 3.0.
      * **Project URL:** [http://hamcrest.org/JavaHamcrest/](http://hamcrest.org/JavaHamcrest/)
-     * **License:** [BSD License 3](http://opensource.org/licenses/BSD-3-Clause)
+     * **License:** [BSD-3-Clause](https://raw.githubusercontent.com/hamcrest/JavaHamcrest/master/LICENSE)
 
-1.  **Group** : org.jacoco. **Name** : org.jacoco.agent. **Version** : 0.8.12.
+1.  **Group** : org.jacoco. **Name** : org.jacoco.agent. **Version** : 0.8.13.
      * **License:** [EPL-2.0](https://www.eclipse.org/legal/epl-2.0/)
 
-1.  **Group** : org.jacoco. **Name** : org.jacoco.ant. **Version** : 0.8.12.
+1.  **Group** : org.jacoco. **Name** : org.jacoco.ant. **Version** : 0.8.13.
      * **License:** [EPL-2.0](https://www.eclipse.org/legal/epl-2.0/)
 
-1.  **Group** : org.jacoco. **Name** : org.jacoco.core. **Version** : 0.8.12.
+1.  **Group** : org.jacoco. **Name** : org.jacoco.core. **Version** : 0.8.13.
      * **License:** [EPL-2.0](https://www.eclipse.org/legal/epl-2.0/)
 
-1.  **Group** : org.jacoco. **Name** : org.jacoco.report. **Version** : 0.8.12.
+1.  **Group** : org.jacoco. **Name** : org.jacoco.report. **Version** : 0.8.13.
      * **License:** [EPL-2.0](https://www.eclipse.org/legal/epl-2.0/)
 
 1.  **Group** : org.javassist. **Name** : javassist. **Version** : 3.28.0-GA.
@@ -752,35 +757,35 @@
      * **Project URL:** [http://jspecify.org/](http://jspecify.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.junit. **Name** : junit-bom. **Version** : 5.10.0.
+1.  **Group** : org.junit. **Name** : junit-bom. **Version** : 5.12.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit-pioneer. **Name** : junit-pioneer. **Version** : 2.0.1.
+1.  **Group** : org.junit-pioneer. **Name** : junit-pioneer. **Version** : 2.3.0.
      * **Project URL:** [https://junit-pioneer.org/](https://junit-pioneer.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-api. **Version** : 5.10.0.
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-api. **Version** : 5.12.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-engine. **Version** : 5.10.0.
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-engine. **Version** : 5.12.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-params. **Version** : 5.10.0.
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-params. **Version** : 5.12.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-commons. **Version** : 1.10.0.
+1.  **Group** : org.junit.platform. **Name** : junit-platform-commons. **Version** : 1.12.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-engine. **Version** : 1.10.0.
+1.  **Group** : org.junit.platform. **Name** : junit-platform-engine. **Version** : 1.12.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-launcher. **Version** : 1.10.0.
+1.  **Group** : org.junit.platform. **Name** : junit-platform-launcher. **Version** : 1.12.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
@@ -807,10 +812,18 @@
      * **Project URL:** [https://github.com/hrldcpr/pcollections](https://github.com/hrldcpr/pcollections)
      * **License:** [The MIT License](https://opensource.org/licenses/mit-license.php)
 
+1.  **Group** : org.pcollections. **Name** : pcollections. **Version** : 4.0.2.
+     * **Project URL:** [https://github.com/hrldcpr/pcollections](https://github.com/hrldcpr/pcollections)
+     * **License:** [The MIT License](https://opensource.org/licenses/mit-license.php)
+
 1.  **Group** : org.reflections. **Name** : reflections. **Version** : 0.10.2.
      * **Project URL:** [http://github.com/ronmamo/reflections](http://github.com/ronmamo/reflections)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [WTFPL](http://www.wtfpl.net/)
+
+1.  **Group** : org.slf4j. **Name** : jul-to-slf4j. **Version** : 1.7.36.
+     * **Project URL:** [http://www.slf4j.org](http://www.slf4j.org)
+     * **License:** [MIT License](http://www.opensource.org/licenses/mit-license.php)
 
 1.  **Group** : org.snakeyaml. **Name** : snakeyaml-engine. **Version** : 2.7.
      * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml-engine](https://bitbucket.org/snakeyaml/snakeyaml-engine)
@@ -820,15 +833,19 @@
      * **Project URL:** [https://github.com/xmlresolver/xmlresolver](https://github.com/xmlresolver/xmlresolver)
      * **License:** [Apache License version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
+1.  **Group** : org.xmlresolver. **Name** : xmlresolver. **Version** : 5.2.2.
+     * **Project URL:** [https://github.com/xmlresolver/xmlresolver](https://github.com/xmlresolver/xmlresolver)
+     * **License:** [Apache License version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Mon Apr 14 22:46:09 WEST 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Apr 15 18:48:37 WEST 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine:spine-format:2.0.0-SNAPSHOT.309`
+# Dependencies of `io.spine:spine-format:2.0.0-SNAPSHOT.310`
 
 ## Runtime
 1.  **Group** : com.fasterxml.jackson. **Name** : jackson-bom. **Version** : 2.18.3.
@@ -879,19 +896,19 @@ This report was generated on **Mon Apr 14 22:46:09 WEST 2025** using [Gradle-Lic
      * **Project URL:** [http://findbugs.sourceforge.net/](http://findbugs.sourceforge.net/)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.code.gson. **Name** : gson. **Version** : 2.10.1.
-     * **Project URL:** [https://github.com/google/gson/gson](https://github.com/google/gson/gson)
+1.  **Group** : com.google.code.gson. **Name** : gson. **Version** : 2.13.0.
+     * **Project URL:** [https://github.com/google/gson](https://github.com/google/gson)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : com.google.errorprone. **Name** : error_prone_annotations. **Version** : 2.36.0.
      * **Project URL:** [https://errorprone.info/error_prone_annotations](https://errorprone.info/error_prone_annotations)
      * **License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.guava. **Name** : failureaccess. **Version** : 1.0.1.
+1.  **Group** : com.google.guava. **Name** : failureaccess. **Version** : 1.0.3.
      * **Project URL:** [https://github.com/google/guava/](https://github.com/google/guava/)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.guava. **Name** : guava. **Version** : 32.1.3-jre.
+1.  **Group** : com.google.guava. **Name** : guava. **Version** : 33.4.8-jre.
      * **Project URL:** [https://github.com/google/guava](https://github.com/google/guava)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -902,20 +919,17 @@ This report was generated on **Mon Apr 14 22:46:09 WEST 2025** using [Gradle-Lic
      * **Project URL:** [https://github.com/google/j2objc/](https://github.com/google/j2objc/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-java. **Version** : 3.25.1.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-java. **Version** : 4.30.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-java-util. **Version** : 3.25.1.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-java-util. **Version** : 4.30.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-kotlin. **Version** : 3.25.1.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-kotlin. **Version** : 4.30.2.
+     * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
-
-1.  **Group** : org.checkerframework. **Name** : checker-qual. **Version** : 3.40.0.
-     * **Project URL:** [https://checkerframework.org/](https://checkerframework.org/)
-     * **License:** [The MIT License](http://opensource.org/licenses/MIT)
 
 1.  **Group** : org.jetbrains. **Name** : annotations. **Version** : 26.0.2.
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
@@ -937,6 +951,10 @@ This report was generated on **Mon Apr 14 22:46:09 WEST 2025** using [Gradle-Lic
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1.  **Group** : org.jspecify. **Name** : jspecify. **Version** : 1.0.0.
+     * **Project URL:** [http://jspecify.org/](http://jspecify.org/)
+     * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1.  **Group** : org.ow2.asm. **Name** : asm. **Version** : 9.6.
      * **Project URL:** [http://asm.ow2.io/](http://asm.ow2.io/)
      * **License:** [BSD-3-Clause](https://asm.ow2.io/license.html)
@@ -947,10 +965,6 @@ This report was generated on **Mon Apr 14 22:46:09 WEST 2025** using [Gradle-Lic
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 ## Compile, tests, and tooling
-1.  **Group** : com.beust. **Name** : jcommander. **Version** : 1.48.
-     * **Project URL:** [http://beust.com/jcommander](http://beust.com/jcommander)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1.  **Group** : com.fasterxml.jackson. **Name** : jackson-bom. **Version** : 2.18.3.
      * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -1013,6 +1027,10 @@ This report was generated on **Mon Apr 14 22:46:09 WEST 2025** using [Gradle-Lic
      * **Project URL:** [https://www.github.com/KevinStern/software-and-algorithms](https://www.github.com/KevinStern/software-and-algorithms)
      * **License:** [MIT License](http://www.opensource.org/licenses/mit-license.php)
 
+1.  **Group** : com.github.oowekyala.ooxml. **Name** : nice-xml-messages. **Version** : 3.1.
+     * **Project URL:** [https://github.com/oowekyala/nice-xml-messages](https://github.com/oowekyala/nice-xml-messages)
+     * **License:** [MIT License](https://github.com/oowekyala/nice-xml-messages/tree/master/LICENSE)
+
 1.  **Group** : com.google.auto. **Name** : auto-common. **Version** : 1.2.2.
      * **Project URL:** [https://github.com/google/auto/tree/main/common](https://github.com/google/auto/tree/main/common)
      * **License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -1029,8 +1047,8 @@ This report was generated on **Mon Apr 14 22:46:09 WEST 2025** using [Gradle-Lic
      * **Project URL:** [http://findbugs.sourceforge.net/](http://findbugs.sourceforge.net/)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.code.gson. **Name** : gson. **Version** : 2.10.1.
-     * **Project URL:** [https://github.com/google/gson/gson](https://github.com/google/gson/gson)
+1.  **Group** : com.google.code.gson. **Name** : gson. **Version** : 2.13.0.
+     * **Project URL:** [https://github.com/google/gson](https://github.com/google/gson)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : com.google.errorprone. **Name** : error_prone_annotation. **Version** : 2.36.0.
@@ -1068,15 +1086,15 @@ This report was generated on **Mon Apr 14 22:46:09 WEST 2025** using [Gradle-Lic
 1.  **Group** : com.google.googlejavaformat. **Name** : google-java-format. **Version** : 1.19.1.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.guava. **Name** : failureaccess. **Version** : 1.0.1.
+1.  **Group** : com.google.guava. **Name** : failureaccess. **Version** : 1.0.3.
      * **Project URL:** [https://github.com/google/guava/](https://github.com/google/guava/)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.guava. **Name** : guava. **Version** : 32.1.3-jre.
+1.  **Group** : com.google.guava. **Name** : guava. **Version** : 33.4.8-jre.
      * **Project URL:** [https://github.com/google/guava](https://github.com/google/guava)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.guava. **Name** : guava-testlib. **Version** : 32.1.3-jre.
+1.  **Group** : com.google.guava. **Name** : guava-testlib. **Version** : 33.4.8-jre.
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : com.google.guava. **Name** : listenablefuture. **Version** : 9999.0-empty-to-avoid-conflict-with-guava.
@@ -1086,27 +1104,28 @@ This report was generated on **Mon Apr 14 22:46:09 WEST 2025** using [Gradle-Lic
      * **Project URL:** [https://github.com/google/j2objc/](https://github.com/google/j2objc/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-java. **Version** : 3.25.1.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-java. **Version** : 4.30.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-java-util. **Version** : 3.25.1.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-java-util. **Version** : 4.30.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-kotlin. **Version** : 3.25.1.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-kotlin. **Version** : 4.30.2.
+     * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.truth. **Name** : truth. **Version** : 1.1.5.
+1.  **Group** : com.google.truth. **Name** : truth. **Version** : 1.4.4.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.truth.extensions. **Name** : truth-java8-extension. **Version** : 1.1.5.
+1.  **Group** : com.google.truth.extensions. **Name** : truth-java8-extension. **Version** : 1.4.4.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.truth.extensions. **Name** : truth-liteproto-extension. **Version** : 1.1.5.
+1.  **Group** : com.google.truth.extensions. **Name** : truth-liteproto-extension. **Version** : 1.4.4.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.truth.extensions. **Name** : truth-proto-extension. **Version** : 1.1.5.
+1.  **Group** : com.google.truth.extensions. **Name** : truth-proto-extension. **Version** : 1.4.4.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : com.puppycrawl.tools. **Name** : checkstyle. **Version** : 10.12.1.
@@ -1312,27 +1331,30 @@ This report was generated on **Mon Apr 14 22:46:09 WEST 2025** using [Gradle-Lic
      * **Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
      * **License:** [Mozilla Public License Version 2.0](http://www.mozilla.org/MPL/2.0/)
 
-1.  **Group** : net.sourceforge.pmd. **Name** : pmd-core. **Version** : 6.55.0.
+1.  **Group** : net.sf.saxon. **Name** : Saxon-HE. **Version** : 12.5.
+     * **Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
+     * **License:** [Mozilla Public License Version 2.0](http://www.mozilla.org/MPL/2.0/)
+
+1.  **Group** : net.sourceforge.pmd. **Name** : pmd-ant. **Version** : 7.12.0.
      * **License:** [BSD-style](http://pmd.sourceforge.net/license.html)
 
-1.  **Group** : net.sourceforge.pmd. **Name** : pmd-java. **Version** : 6.55.0.
+1.  **Group** : net.sourceforge.pmd. **Name** : pmd-core. **Version** : 7.12.0.
      * **License:** [BSD-style](http://pmd.sourceforge.net/license.html)
 
-1.  **Group** : net.sourceforge.saxon. **Name** : saxon. **Version** : 9.1.0.8.
-     * **Project URL:** [http://saxon.sourceforge.net/](http://saxon.sourceforge.net/)
-     * **License:** [Mozilla Public License Version 1.0](http://www.mozilla.org/MPL/MPL-1.0.txt)
+1.  **Group** : net.sourceforge.pmd. **Name** : pmd-java. **Version** : 7.12.0.
+     * **License:** [BSD-style](http://pmd.sourceforge.net/license.html)
 
 1.  **Group** : org.antlr. **Name** : antlr4-runtime. **Version** : 4.11.1.
      * **Project URL:** [https://www.antlr.org/](https://www.antlr.org/)
      * **License:** [BSD-3-Clause](https://www.antlr.org/license.html)
 
-1.  **Group** : org.antlr. **Name** : antlr4-runtime. **Version** : 4.7.2.
+1.  **Group** : org.antlr. **Name** : antlr4-runtime. **Version** : 4.9.3.
      * **Project URL:** [http://www.antlr.org](http://www.antlr.org)
      * **License:** [The BSD License](http://www.antlr.org/license.html)
 
-1.  **Group** : org.apache.commons. **Name** : commons-lang3. **Version** : 3.8.1.
-     * **Project URL:** [http://commons.apache.org/proper/commons-lang/](http://commons.apache.org/proper/commons-lang/)
-     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+1.  **Group** : org.apache.commons. **Name** : commons-lang3. **Version** : 3.17.0.
+     * **Project URL:** [https://commons.apache.org/proper/commons-lang/](https://commons.apache.org/proper/commons-lang/)
+     * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.apache.httpcomponents.client5. **Name** : httpclient5. **Version** : 5.1.3.
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -1365,24 +1387,24 @@ This report was generated on **Mon Apr 14 22:46:09 WEST 2025** using [Gradle-Lic
      * **Project URL:** [https://freemarker.apache.org/](https://freemarker.apache.org/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.hamcrest. **Name** : hamcrest. **Version** : 2.2.
+1.  **Group** : org.hamcrest. **Name** : hamcrest. **Version** : 3.0.
      * **Project URL:** [http://hamcrest.org/JavaHamcrest/](http://hamcrest.org/JavaHamcrest/)
-     * **License:** [BSD License 3](http://opensource.org/licenses/BSD-3-Clause)
+     * **License:** [BSD-3-Clause](https://raw.githubusercontent.com/hamcrest/JavaHamcrest/master/LICENSE)
 
-1.  **Group** : org.hamcrest. **Name** : hamcrest-core. **Version** : 2.2.
+1.  **Group** : org.hamcrest. **Name** : hamcrest-core. **Version** : 3.0.
      * **Project URL:** [http://hamcrest.org/JavaHamcrest/](http://hamcrest.org/JavaHamcrest/)
-     * **License:** [BSD License 3](http://opensource.org/licenses/BSD-3-Clause)
+     * **License:** [BSD-3-Clause](https://raw.githubusercontent.com/hamcrest/JavaHamcrest/master/LICENSE)
 
-1.  **Group** : org.jacoco. **Name** : org.jacoco.agent. **Version** : 0.8.12.
+1.  **Group** : org.jacoco. **Name** : org.jacoco.agent. **Version** : 0.8.13.
      * **License:** [EPL-2.0](https://www.eclipse.org/legal/epl-2.0/)
 
-1.  **Group** : org.jacoco. **Name** : org.jacoco.ant. **Version** : 0.8.12.
+1.  **Group** : org.jacoco. **Name** : org.jacoco.ant. **Version** : 0.8.13.
      * **License:** [EPL-2.0](https://www.eclipse.org/legal/epl-2.0/)
 
-1.  **Group** : org.jacoco. **Name** : org.jacoco.core. **Version** : 0.8.12.
+1.  **Group** : org.jacoco. **Name** : org.jacoco.core. **Version** : 0.8.13.
      * **License:** [EPL-2.0](https://www.eclipse.org/legal/epl-2.0/)
 
-1.  **Group** : org.jacoco. **Name** : org.jacoco.report. **Version** : 0.8.12.
+1.  **Group** : org.jacoco. **Name** : org.jacoco.report. **Version** : 0.8.13.
      * **License:** [EPL-2.0](https://www.eclipse.org/legal/epl-2.0/)
 
 1.  **Group** : org.javassist. **Name** : javassist. **Version** : 3.28.0-GA.
@@ -1591,35 +1613,35 @@ This report was generated on **Mon Apr 14 22:46:09 WEST 2025** using [Gradle-Lic
      * **Project URL:** [http://jspecify.org/](http://jspecify.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.junit. **Name** : junit-bom. **Version** : 5.10.0.
+1.  **Group** : org.junit. **Name** : junit-bom. **Version** : 5.12.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit-pioneer. **Name** : junit-pioneer. **Version** : 2.0.1.
+1.  **Group** : org.junit-pioneer. **Name** : junit-pioneer. **Version** : 2.3.0.
      * **Project URL:** [https://junit-pioneer.org/](https://junit-pioneer.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-api. **Version** : 5.10.0.
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-api. **Version** : 5.12.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-engine. **Version** : 5.10.0.
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-engine. **Version** : 5.12.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-params. **Version** : 5.10.0.
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-params. **Version** : 5.12.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-commons. **Version** : 1.10.0.
+1.  **Group** : org.junit.platform. **Name** : junit-platform-commons. **Version** : 1.12.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-engine. **Version** : 1.10.0.
+1.  **Group** : org.junit.platform. **Name** : junit-platform-engine. **Version** : 1.12.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-launcher. **Version** : 1.10.0.
+1.  **Group** : org.junit.platform. **Name** : junit-platform-launcher. **Version** : 1.12.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
@@ -1646,16 +1668,28 @@ This report was generated on **Mon Apr 14 22:46:09 WEST 2025** using [Gradle-Lic
      * **Project URL:** [https://github.com/hrldcpr/pcollections](https://github.com/hrldcpr/pcollections)
      * **License:** [The MIT License](https://opensource.org/licenses/mit-license.php)
 
+1.  **Group** : org.pcollections. **Name** : pcollections. **Version** : 4.0.2.
+     * **Project URL:** [https://github.com/hrldcpr/pcollections](https://github.com/hrldcpr/pcollections)
+     * **License:** [The MIT License](https://opensource.org/licenses/mit-license.php)
+
 1.  **Group** : org.reflections. **Name** : reflections. **Version** : 0.10.2.
      * **Project URL:** [http://github.com/ronmamo/reflections](http://github.com/ronmamo/reflections)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [WTFPL](http://www.wtfpl.net/)
+
+1.  **Group** : org.slf4j. **Name** : jul-to-slf4j. **Version** : 1.7.36.
+     * **Project URL:** [http://www.slf4j.org](http://www.slf4j.org)
+     * **License:** [MIT License](http://www.opensource.org/licenses/mit-license.php)
 
 1.  **Group** : org.snakeyaml. **Name** : snakeyaml-engine. **Version** : 2.7.
      * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml-engine](https://bitbucket.org/snakeyaml/snakeyaml-engine)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.xmlresolver. **Name** : xmlresolver. **Version** : 5.1.2.
+     * **Project URL:** [https://github.com/xmlresolver/xmlresolver](https://github.com/xmlresolver/xmlresolver)
+     * **License:** [Apache License version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+1.  **Group** : org.xmlresolver. **Name** : xmlresolver. **Version** : 5.2.2.
      * **Project URL:** [https://github.com/xmlresolver/xmlresolver](https://github.com/xmlresolver/xmlresolver)
      * **License:** [Apache License version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -1666,4 +1700,4 @@ This report was generated on **Mon Apr 14 22:46:09 WEST 2025** using [Gradle-Lic
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Mon Apr 14 22:46:10 WEST 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Apr 15 18:48:37 WEST 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).

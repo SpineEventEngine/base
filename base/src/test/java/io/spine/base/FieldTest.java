@@ -27,7 +27,6 @@
 package io.spine.base;
 
 import com.google.common.testing.NullPointerTester;
-import com.google.common.truth.Truth8;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
@@ -162,14 +161,14 @@ class FieldTest {
         @Test
         @DisplayName("as `Optional` value")
         void ifFound() {
-            Truth8.assertThat(field.findValue(message))
+            assertThat(field.findValue(message))
                   .hasValue(expectedValue);
         }
 
         @Test
         @DisplayName("returning empty `Optional` if not found")
         void notFound() {
-            Truth8.assertThat(missingField.findValue(message))
+            assertThat(missingField.findValue(message))
                   .isEmpty();
         }
 
@@ -266,7 +265,7 @@ class FieldTest {
         @Test
         @DisplayName("if present")
         void ifFound() {
-            Truth8.assertThat(Field.named("val")
+            assertThat(Field.named("val")
                                    .findDescriptor(AnyHolder.getDescriptor()))
                   .isPresent();
         }
@@ -274,7 +273,7 @@ class FieldTest {
         @Test
         @DisplayName("returning empty `Optional` if not found")
         void notFound() {
-            Truth8.assertThat(Field.named("value") // the real name is `val`.
+            assertThat(Field.named("value") // the real name is `val`.
                                    .findDescriptor(StringHolder.getDescriptor()))
                   .isEmpty();
         }
@@ -287,7 +286,7 @@ class FieldTest {
         @Test
         @DisplayName("for messages")
         void messageType() {
-            Truth8.assertThat(Field.parse("holder_holder.holder")
+            assertThat(Field.parse("holder_holder.holder")
                                    .findType(GenericHolder.class))
                   .hasValue(StringHolder.class);
         }
@@ -295,21 +294,21 @@ class FieldTest {
         @Test
         @DisplayName("for enums")
         void primitiveType() {
-            Truth8.assertThat(Field.named("count").findType(GenericHolder.class))
+            assertThat(Field.named("count").findType(GenericHolder.class))
                   .hasValue(Count.class);
         }
 
         @Test
         @DisplayName("for primitives")
         void enumType() {
-            Truth8.assertThat(Field.named("size").findType(GenericHolder.class))
+            assertThat(Field.named("size").findType(GenericHolder.class))
                   .hasValue(int.class);
         }
 
         @Test
         @DisplayName("returning empty `Optional` if not found")
         void notFound() {
-            Truth8.assertThat(Field.parse("holder")
+            assertThat(Field.parse("holder")
                                    .findType(GenericHolder.class))
                   .isEmpty();
         }
@@ -319,7 +318,7 @@ class FieldTest {
         void recursiveType() {
             var field = Field.parse("generic.generic.generic.generic.generic");
 
-            Truth8.assertThat(field.findType(GenericHolder.class))
+            assertThat(field.findType(GenericHolder.class))
                   .hasValue(GenericHolder.class);
         }
     }

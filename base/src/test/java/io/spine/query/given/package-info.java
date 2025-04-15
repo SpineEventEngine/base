@@ -28,9 +28,8 @@
  * The test environment classes for query builder API.
  */
 @CheckReturnValue
-@ParametersAreNonnullByDefault
+@NullMarked
 package io.spine.query.given;
 
 import com.google.errorprone.annotations.CheckReturnValue;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;

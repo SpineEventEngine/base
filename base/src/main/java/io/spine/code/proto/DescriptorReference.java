@@ -32,8 +32,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.io.Resource;
 import io.spine.string.Separator;
+import org.jspecify.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -42,11 +42,11 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Iterator;
 
-import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.io.ByteStreams.toByteArray;
 import static io.spine.io.Ensure.ensureFile;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 /**

@@ -28,9 +28,8 @@
  * Provides classes and interfaces for checking the environment in which the code is executed.
  */
 @CheckReturnValue
-@ParametersAreNonnullByDefault
+@NullMarked
 package io.spine.environment;
 
 import com.google.errorprone.annotations.CheckReturnValue;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;

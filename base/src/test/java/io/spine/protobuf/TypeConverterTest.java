@@ -26,7 +26,6 @@
 
 package io.spine.protobuf;
 
-import com.google.common.base.Charsets;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
 import com.google.protobuf.BoolValue;
@@ -61,6 +60,7 @@ import static io.spine.test.protobuf.TaskStatus.FAILED;
 import static io.spine.test.protobuf.TaskStatus.SUCCESS;
 import static io.spine.test.protobuf.TaskStatus.UNRECOGNIZED;
 import static io.spine.testing.Assertions.assertIllegalArgument;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -139,7 +139,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @Test
         @DisplayName("`BytesValue` to `ByteString`")
         void bytesValueToByteString() {
-            var rawValue = ByteString.copyFrom("Hello!", Charsets.UTF_8);
+            var rawValue = ByteString.copyFrom("Hello!", UTF_8);
             Message value = BytesValue.of(rawValue);
             checkMapping(rawValue, value);
         }

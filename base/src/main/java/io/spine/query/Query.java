@@ -29,7 +29,7 @@ package io.spine.query;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Message;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An query to fetch the records defined as Protobuf messages.

@@ -39,10 +39,10 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Enumeration;
 
-import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * A resource file in the classpath.
@@ -161,9 +161,6 @@ public final class Resource extends ResourceObject {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof Resource) {
-            return super.equals(o);
-        }
-        return false;
+        return (o instanceof Resource) && super.equals(o);
     }
 }

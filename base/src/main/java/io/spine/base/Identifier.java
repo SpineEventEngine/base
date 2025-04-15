@@ -38,7 +38,7 @@ import io.spine.annotation.Internal;
 import io.spine.protobuf.AnyPacker;
 import io.spine.string.StringifierRegistry;
 import io.spine.type.TypeUrl;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -108,7 +108,7 @@ public final class Identifier<I> {
     /**
      * Converts the class of identifiers to {@code Identifier.Type}.
      */
-    public static <I> IdType toType(Class<I> idClass) {
+    static <I> IdType toType(Class<I> idClass) {
         for (var type : IdType.values()) {
             if (type.matchClass(idClass)) {
                 return type;
@@ -173,7 +173,7 @@ public final class Identifier<I> {
      *   <li>EAN value used in bar codes
      *   <li>ISBN
      *   <li>Phone number
-     *   <li>Email address as a couple of local-part and domain
+     *   <li>Email address as a couple consisting of a local-part and a domain
      * </ul>
      *
      * @param <I>
@@ -181,7 +181,7 @@ public final class Identifier<I> {
      * @param idClass
      *         the class of IDs
      * @throws IllegalArgumentException
-     *         if the class of IDs is not of supported type
+     *         if the class of IDs is not of a supported type
      */
     public static <I> void checkSupported(Class<I> idClass) {
         checkNotNull(idClass);

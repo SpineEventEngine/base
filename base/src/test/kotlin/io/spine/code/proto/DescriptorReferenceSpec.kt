@@ -35,6 +35,7 @@ import io.spine.io.Resource
 import io.spine.string.Separator
 import io.spine.testing.Assertions.assertIllegalState
 import io.spine.testing.Assertions.assertNpe
+import io.spine.testing.TestValues.nullRef
 import io.spine.util.Exceptions
 import java.io.File
 import java.io.IOException
@@ -109,8 +110,7 @@ internal class DescriptorReferenceSpec {
     fun `reject 'null' destination directory`() {
         val knownTypes = knownTypesRef()
         assertNpe {
-            @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-            knownTypes.writeTo(null)
+            knownTypes.writeTo(nullRef())
         }
     }
 

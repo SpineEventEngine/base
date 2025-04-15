@@ -29,7 +29,6 @@ package io.spine.base;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.truth.BooleanSubject;
 import com.google.common.truth.OptionalSubject;
-import com.google.common.truth.Truth8;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -119,7 +118,7 @@ class IdentifierTest {
             assertTypeOf(toMessage(300), MESSAGE);
         }
 
-        private void assertTypeOf(Object id, IdType expectedType) {
+        private static void assertTypeOf(Object id, IdType expectedType) {
             Identifier<?> identifier = Identifier.from(id);
             assertThat(identifier.type()).isEqualTo(expectedType);
         }
@@ -589,7 +588,7 @@ class IdentifierTest {
         }
 
         private <I> OptionalSubject assertField(Class<I> idClass, Descriptor message) {
-            return Truth8.assertThat(findField(idClass, message));
+            return assertThat(findField(idClass, message));
         }
     }
 

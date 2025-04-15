@@ -29,7 +29,7 @@ package io.spine.code.proto;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.base.FieldPath;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Optional;

@@ -31,7 +31,7 @@ import com.google.common.collect.UnmodifiableIterator;
 import com.google.errorprone.annotations.DoNotCall;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Message;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Collection;
 import java.util.Comparator;

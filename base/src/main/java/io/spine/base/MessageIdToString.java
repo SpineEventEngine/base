@@ -34,7 +34,7 @@ import io.spine.string.StringifierRegistry;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.protobuf.TextFormat.shortDebugString;
+import static io.spine.type.ProtoTexts.shortDebugString;
 import static java.util.Objects.requireNonNull;
 
 /**

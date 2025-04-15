@@ -25,11 +25,12 @@
  */
 
 import BuildSettings.javaVersion
+import Module_gradle.Module
 import io.spine.dependency.build.CheckerFramework
 import io.spine.dependency.build.Dokka
 import io.spine.dependency.build.ErrorProne
+import io.spine.dependency.build.JSpecify
 import io.spine.dependency.lib.Guava
-import io.spine.dependency.lib.JavaX
 import io.spine.dependency.local.Base
 import io.spine.dependency.local.Logging
 import io.spine.dependency.local.Reflect
@@ -125,8 +126,10 @@ fun Module.addDependencies() = dependencies {
     errorprone(ErrorProne.core)
 
     compileOnlyApi(CheckerFramework.annotations)
-    compileOnlyApi(JavaX.annotations)
     ErrorProne.annotations.forEach { compileOnlyApi(it) }
+
+    // https://jspecify.dev/docs/using/#gradle
+    api(JSpecify.annotations)
 
     testImplementation(Guava.testLib)
     testImplementation(JUnit.runner)

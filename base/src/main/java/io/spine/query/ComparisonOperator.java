@@ -28,7 +28,7 @@ package io.spine.query;
 
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.Timestamps;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 

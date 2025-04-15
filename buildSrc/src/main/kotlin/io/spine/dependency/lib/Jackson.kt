@@ -1,5 +1,5 @@
 /*
- * Copyright 2024, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ object Jackson {
 
         // https://github.com/FasterXML/jackson-dataformats-binary/tree/2.19/protobuf
         const val protobuf = "$group:$infix-protobuf:$version"
-        
+
         // https://github.com/FasterXML/jackson-datatypes-misc/tree/2.19/javax-money
         const val javaXMoney = "$group:$infix-javax-money:$version"
 

@@ -33,7 +33,7 @@ import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import io.spine.base.Field;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;

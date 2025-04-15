@@ -31,7 +31,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.annotation.SPI;
 import io.spine.logging.WithLogging;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
 
