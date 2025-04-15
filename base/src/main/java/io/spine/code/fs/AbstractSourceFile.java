@@ -26,7 +26,6 @@
 
 package io.spine.code.fs;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
 import org.jspecify.annotations.Nullable;
@@ -37,6 +36,7 @@ import java.nio.file.Path;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.io.IoPreconditions.checkExists;
 import static io.spine.util.Exceptions.newIllegalStateException;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllLines;
 import static java.nio.file.Files.write;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
@@ -77,7 +77,7 @@ public abstract class AbstractSourceFile extends FsObject {
     public void store() {
         var path = path();
         try {
-            write(path, lines(), Charsets.UTF_8, TRUNCATE_EXISTING);
+            write(path, lines(), UTF_8, TRUNCATE_EXISTING);
         } catch (IOException e) {
             throw newIllegalStateException(e, "Unable to write to the file `%s`.", path);
         }
