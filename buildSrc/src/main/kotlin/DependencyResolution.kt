@@ -40,7 +40,6 @@ import io.spine.dependency.lib.CommonsLogging
 import io.spine.dependency.lib.Gson
 import io.spine.dependency.lib.Guava
 import io.spine.dependency.lib.J2ObjC
-import io.spine.dependency.lib.Jackson
 import io.spine.dependency.lib.JavaDiffUtils
 import io.spine.dependency.lib.Kotlin
 import io.spine.dependency.lib.Okio
@@ -134,13 +133,6 @@ private fun ResolutionStrategy.forceTransitiveDependencies() {
         Gson.lib,
         Hamcrest.core,
         J2ObjC.annotations,
-        Jackson.annotations,
-        Jackson.bom,
-        Jackson.core,
-        Jackson.databind,
-        Jackson.DataFormat.xml,
-        Jackson.DataFormat.yaml,
-        Jackson.moduleKotlin,
         JavaDiffUtils.lib,
         Kotlin.jetbrainsAnnotations,
         Okio.lib,
