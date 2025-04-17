@@ -113,11 +113,6 @@ private fun ResolutionStrategy.forceProductionDependencies() {
 private fun ResolutionStrategy.forceTestDependencies() {
     force(
         Guava.testLib,
-        JUnit.api,
-        JUnit.bom,
-        JUnit.Platform.commons,
-        JUnit.Platform.launcher,
-        JUnit.legacy,
         Truth.libs,
         Kotest.assertions,
     )
@@ -140,9 +135,6 @@ private fun ResolutionStrategy.forceTransitiveDependencies() {
         Gson.lib,
         Hamcrest.core,
         J2ObjC.annotations,
-        JUnit.Platform.engine,
-        JUnit.Platform.suiteApi,
-        JUnit.runner,
         Jackson.annotations,
         Jackson.bom,
         Jackson.core,
