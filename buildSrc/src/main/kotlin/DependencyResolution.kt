@@ -50,7 +50,6 @@ import io.spine.dependency.lib.Slf4J
 import io.spine.dependency.local.Base
 import io.spine.dependency.local.Spine
 import io.spine.dependency.test.Hamcrest
-import io.spine.dependency.test.JUnit
 import io.spine.dependency.test.Kotest
 import io.spine.dependency.test.OpenTest4J
 import io.spine.dependency.test.Truth
