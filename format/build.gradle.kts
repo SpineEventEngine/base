@@ -34,6 +34,7 @@ plugins {
 
 dependencies {
     implementation(project(":base"))
+    implementation(enforcedPlatform(Jackson.bom))
     with(Jackson) {
         implementation(databind)
         implementation(DataFormat.yaml)

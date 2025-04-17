@@ -1,19 +1,65 @@
+#
+# Copyright 2025, TeamDev. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Redistribution and use in source and/or binary forms, with or without
+# modification, must retain the above copyright notice and the following
+# disclaimer.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+
+#
+# This file is used for two purposes:
+#  1. ignoring files in the `config` project.
+#  2. ignoring files in the projects that import `config` as a sub-module.
+#
+# Therefore, instructions below are superset of instructions required for all the projects.
+
+# `jenv` local configuration.
+.java-version
+
+# Internal tool directories.
+.fleet/
+
+# Kotlin temp directories.
+**/.kotlin/
+
 # IntelliJ IDEA modules and interim config files.
 *.iml
+.idea/*.xml
 .idea/.name
-.idea/artifacts/**
-**/.idea/libraries
-**/.idea/shelf
-**/.idea/*.xml
+.idea/artifacts
+.idea/libraries
+.idea/modules
+.idea/shelf
 
 # Do not ignore the following IDEA settings
 !.idea/misc.xml
 !.idea/codeStyleSettings.xml
-!.idea/codeStyles/codeStyleConfig.xml
-!.idea/codeStyles/Project.xml
+!.idea/codeStyles/
+!.idea/copyright/
 
 # Gradle interim configs
 **/.gradle/**
+
+# Temp directory for Gradle TestKit runners
+**/.gradle-test-kit/**
 
 # Generated source code
 **/generated/**
@@ -38,17 +84,21 @@ gradle-app.setting
 # Cache of project
 .gradletasknamecache
 
+# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
+# gradle/wrapper/gradle-wrapper.properties
+
 # Spine internal directory for storing intermediate artifacts
 **/.spine/**
 
-# Prevent accidental adding of credential files
+# Login details to Maven repository.
+# Each workstation should have developer's login defined in this file.
 credentials.tar
 credentials.properties
 cloudrepo.properties
 deploy_key_rsa
 gcs-auth-key.json
 
-# Log file
+# Log files
 *.log
 
 # Package Files #
@@ -60,3 +110,11 @@ gcs-auth-key.json
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+.packages
+pubspec.lock
+
+# Ignore the `tmp` directory used for building dependant repositories.
+/tmp
+
+.gradle-test-kit/

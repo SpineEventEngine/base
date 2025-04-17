@@ -25,19 +25,14 @@
  */
 
 import BuildSettings.javaVersion
-import Module_gradle.Module
 import io.spine.dependency.build.CheckerFramework
 import io.spine.dependency.build.Dokka
 import io.spine.dependency.build.ErrorProne
 import io.spine.dependency.build.JSpecify
-import io.spine.dependency.lib.Guava
 import io.spine.dependency.local.Base
 import io.spine.dependency.local.Logging
 import io.spine.dependency.local.Reflect
-import io.spine.dependency.local.TestLib
-import io.spine.dependency.test.JUnit
 import io.spine.dependency.test.Jacoco
-import io.spine.dependency.test.Kotest
 import io.spine.gradle.checkstyle.CheckStyleConfig
 import io.spine.gradle.github.pages.updateGitHubPages
 import io.spine.gradle.javac.configureErrorProne
@@ -46,11 +41,10 @@ import io.spine.gradle.javadoc.JavadocConfig
 import io.spine.gradle.kotlin.applyJvmToolchain
 import io.spine.gradle.kotlin.setFreeCompilerArgs
 import io.spine.gradle.report.license.LicenseReporter
-import io.spine.gradle.testing.configureLogging
-import io.spine.gradle.testing.registerTestTasks
 
 plugins {
     `java-library`
+    id("module-testing")
     id("net.ltgt.errorprone")
     id("pmd-settings")
     id("project-report")
@@ -72,7 +66,6 @@ project.run {
 
     val generatedDir = "$projectDir/generated"
     setTaskDependencies(generatedDir)
-    setupTests()
 
     configureGitHubPages()
 }
@@ -130,15 +123,6 @@ fun Module.addDependencies() = dependencies {
 
     // https://jspecify.dev/docs/using/#gradle
     api(JSpecify.annotations)
-
-    testImplementation(Guava.testLib)
-    testImplementation(JUnit.runner)
-    testImplementation(JUnit.pioneer)
-    JUnit.api.forEach { testImplementation(it) }
-
-    testImplementation(TestLib.lib)
-    testImplementation(Kotest.assertions)
-    testImplementation(Kotest.datatest)
 }
 
 fun Module.forceConfigurations() {
@@ -148,26 +132,12 @@ fun Module.forceConfigurations() {
         all {
             resolutionStrategy {
                 force(
-                    JUnit.bom,
-                    JUnit.runner,
                     Dokka.BasePlugin.lib,
                     Reflect.lib,
                     Base.lib,
                     Logging.lib,
                 )
             }
-        }
-    }
-}
-
-fun Module.setupTests() {
-    tasks {
-        registerTestTasks()
-        test.configure {
-            useJUnitPlatform {
-                includeEngines("junit-jupiter")
-            }
-            configureLogging()
         }
     }
 }

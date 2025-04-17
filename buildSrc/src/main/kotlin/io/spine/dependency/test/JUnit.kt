@@ -30,6 +30,20 @@ package io.spine.dependency.test
 @Suppress("unused", "ConstPropertyName")
 object JUnit {
     const val version = "5.12.2"
+
+    /**
+     * The BOM of JUnit.
+     *
+     * This one should be forced in a project via:
+     *
+     * ```kotlin
+     * dependencies {
+     *     testImplementation(enforcedPlatform(JUnit.bom))
+     * }
+     * ```
+     */
+    const val bom = "org.junit:junit-bom:$version"
+
     private const val legacyVersion = "4.13.1"
 
     // https://github.com/apiguardian-team/apiguardian
@@ -37,28 +51,40 @@ object JUnit {
 
     // https://github.com/junit-pioneer/junit-pioneer
     private const val pioneerVersion = "2.3.0"
+    const val pioneer = "org.junit-pioneer:junit-pioneer:$pioneerVersion"
 
     const val legacy = "junit:junit:$legacyVersion"
 
+    @Deprecated("Use JUnit.Jupiter.api instead", ReplaceWith("JUnit.Jupiter.api"))
     val api = listOf(
         "org.apiguardian:apiguardian-api:$apiGuardianVersion",
         "org.junit.jupiter:junit-jupiter-api:$version",
         "org.junit.jupiter:junit-jupiter-params:$version"
     )
-    const val bom = "org.junit:junit-bom:$version"
 
+    @Deprecated("Use JUnit.Jupiter.engine instead", ReplaceWith("JUnit.Jupiter.engine"))
     const val runner = "org.junit.jupiter:junit-jupiter-engine:$version"
+
+    @Deprecated("Use JUnit.Jupiter.params instead", ReplaceWith("JUnit.Jupiter.params"))
     const val params = "org.junit.jupiter:junit-jupiter-params:$version"
 
-    const val pioneer = "org.junit-pioneer:junit-pioneer:$pioneerVersion"
+    object Jupiter {
+        const val group = "org.junit.jupiter"
+        private const val infix = "junit-jupiter"
+
+        // We do not use versions because they are forced via BOM.
+        const val api = "$group:$infix-api"
+        const val params = "$group:$infix-params"
+        const val engine = "$group:$infix-engine"
+    }
 
     object Platform {
         // https://junit.org/junit5/
-        const val version = "1.12.2"
         internal const val group = "org.junit.platform"
-        const val commons = "$group:junit-platform-commons:$version"
-        const val launcher = "$group:junit-platform-launcher:$version"
-        const val engine = "$group:junit-platform-engine:$version"
-        const val suiteApi = "$group:junit-platform-suite-api:$version"
+        private const val infix = "junit-platform"
+        const val commons = "$group:$infix-commons"
+        const val launcher = "$group:$infix-launcher"
+        const val engine = "$group:$infix-engine"
+        const val suiteApi = "$group:$infix-suite-api"
     }
 }

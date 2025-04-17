@@ -40,7 +40,6 @@ import io.spine.dependency.lib.CommonsLogging
 import io.spine.dependency.lib.Gson
 import io.spine.dependency.lib.Guava
 import io.spine.dependency.lib.J2ObjC
-import io.spine.dependency.lib.Jackson
 import io.spine.dependency.lib.JavaDiffUtils
 import io.spine.dependency.lib.Kotlin
 import io.spine.dependency.lib.Okio
@@ -50,7 +49,6 @@ import io.spine.dependency.lib.Slf4J
 import io.spine.dependency.local.Base
 import io.spine.dependency.local.Spine
 import io.spine.dependency.test.Hamcrest
-import io.spine.dependency.test.JUnit
 import io.spine.dependency.test.Kotest
 import io.spine.dependency.test.OpenTest4J
 import io.spine.dependency.test.Truth
@@ -113,11 +111,6 @@ private fun ResolutionStrategy.forceProductionDependencies() {
 private fun ResolutionStrategy.forceTestDependencies() {
     force(
         Guava.testLib,
-        JUnit.api,
-        JUnit.bom,
-        JUnit.Platform.commons,
-        JUnit.Platform.launcher,
-        JUnit.legacy,
         Truth.libs,
         Kotest.assertions,
     )
@@ -140,16 +133,6 @@ private fun ResolutionStrategy.forceTransitiveDependencies() {
         Gson.lib,
         Hamcrest.core,
         J2ObjC.annotations,
-        JUnit.Platform.engine,
-        JUnit.Platform.suiteApi,
-        JUnit.runner,
-        Jackson.annotations,
-        Jackson.bom,
-        Jackson.core,
-        Jackson.databind,
-        Jackson.DataFormat.xml,
-        Jackson.DataFormat.yaml,
-        Jackson.moduleKotlin,
         JavaDiffUtils.lib,
         Kotlin.jetbrainsAnnotations,
         Okio.lib,

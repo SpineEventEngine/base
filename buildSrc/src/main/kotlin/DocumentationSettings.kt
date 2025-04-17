@@ -55,6 +55,4 @@ object DocumentationSettings {
          */
         const val lineSuffix: String = "#L"
     }
-
-
 }
