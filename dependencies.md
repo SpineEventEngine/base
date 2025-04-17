@@ -72,36 +72,41 @@
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 ## Compile, tests, and tooling
-1.  **Group** : com.fasterxml.jackson. **Name** : jackson-bom. **Version** : 2.18.3.
+1.  **Group** : com.fasterxml.jackson. **Name** : jackson-bom. **Version** : 2.12.7.
      * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-annotations. **Version** : 2.18.3.
-     * **Project URL:** [https://github.com/FasterXML/jackson](https://github.com/FasterXML/jackson)
-     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-annotations. **Version** : 2.12.7.
+     * **Project URL:** [http://github.com/FasterXML/jackson](http://github.com/FasterXML/jackson)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-core. **Version** : 2.18.3.
+1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-core. **Version** : 2.12.7.
      * **Project URL:** [https://github.com/FasterXML/jackson-core](https://github.com/FasterXML/jackson-core)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-databind. **Version** : 2.18.3.
-     * **Project URL:** [https://github.com/FasterXML/jackson](https://github.com/FasterXML/jackson)
+1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-databind. **Version** : 2.12.7.1.
+     * **Project URL:** [http://github.com/FasterXML/jackson](http://github.com/FasterXML/jackson)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.fasterxml.jackson.dataformat. **Name** : jackson-dataformat-xml. **Version** : 2.18.3.
+1.  **Group** : com.fasterxml.jackson.dataformat. **Name** : jackson-dataformat-xml. **Version** : 2.12.7.
      * **Project URL:** [https://github.com/FasterXML/jackson-dataformat-xml](https://github.com/FasterXML/jackson-dataformat-xml)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.fasterxml.jackson.module. **Name** : jackson-module-kotlin. **Version** : 2.18.3.
+1.  **Group** : com.fasterxml.jackson.module. **Name** : jackson-module-jaxb-annotations. **Version** : 2.12.7.
+     * **Project URL:** [https://github.com/FasterXML/jackson-modules-base](https://github.com/FasterXML/jackson-modules-base)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.fasterxml.jackson.module. **Name** : jackson-module-kotlin. **Version** : 2.12.7.
      * **Project URL:** [https://github.com/FasterXML/jackson-module-kotlin](https://github.com/FasterXML/jackson-module-kotlin)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.fasterxml.woodstox. **Name** : woodstox-core. **Version** : 7.0.0.
+1.  **Group** : com.fasterxml.woodstox. **Name** : woodstox-core. **Version** : 6.2.4.
      * **Project URL:** [https://github.com/FasterXML/woodstox](https://github.com/FasterXML/woodstox)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -431,6 +436,18 @@
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
+1.  **Group** : jakarta.activation. **Name** : jakarta.activation-api. **Version** : 1.2.1.
+     * **Project URL:** [https://www.eclipse.org](https://www.eclipse.org)
+     * **License:** [EDL 1.0](http://www.eclipse.org/org/documents/edl-v10.php)
+     * **License:** [Eclipse Public License v. 2.0](https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt)
+     * **License:** [GNU General Public License, version 2 with the GNU Classpath Exception](https://www.gnu.org/software/classpath/license.html)
+
+1.  **Group** : jakarta.xml.bind. **Name** : jakarta.xml.bind-api. **Version** : 2.3.2.
+     * **Project URL:** [https://www.eclipse.org](https://www.eclipse.org)
+     * **License:** [Eclipse Distribution License - v 1.0](http://www.eclipse.org/org/documents/edl-v10.php)
+     * **License:** [Eclipse Public License v. 2.0](https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt)
+     * **License:** [GNU General Public License, version 2 with the GNU Classpath Exception](https://www.gnu.org/software/classpath/license.html)
+
 1.  **Group** : javax.annotation. **Name** : javax.annotation-api. **Version** : 1.3.2.
      * **Project URL:** [http://jcp.org/en/jsr/detail?id=250](http://jcp.org/en/jsr/detail?id=250)
      * **License:** [CDDL + GPLv2 with classpath exception](https://github.com/javaee/javax.annotation/blob/master/LICENSE)
@@ -502,10 +519,10 @@
      * **Project URL:** [https://checkerframework.org/](https://checkerframework.org/)
      * **License:** [The MIT License](http://opensource.org/licenses/MIT)
 
-1.  **Group** : org.codehaus.woodstox. **Name** : stax2-api. **Version** : 4.2.2.
+1.  **Group** : org.codehaus.woodstox. **Name** : stax2-api. **Version** : 4.2.1.
      * **Project URL:** [http://github.com/FasterXML/stax2-api](http://github.com/FasterXML/stax2-api)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The BSD 2-Clause License](http://www.opensource.org/licenses/bsd-license.php)
+     * **License:** [The BSD License](http://www.opensource.org/licenses/bsd-license.php)
 
 1.  **Group** : org.freemarker. **Name** : freemarker. **Version** : 2.3.32.
      * **Project URL:** [https://freemarker.apache.org/](https://freemarker.apache.org/)
@@ -840,7 +857,7 @@
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Thu Apr 17 12:13:21 WEST 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Apr 17 12:41:53 WEST 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -965,26 +982,45 @@ This report was generated on **Thu Apr 17 12:13:21 WEST 2025** using [Gradle-Lic
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 ## Compile, tests, and tooling
+1.  **Group** : com.fasterxml.jackson. **Name** : jackson-bom. **Version** : 2.12.7.
+     * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1.  **Group** : com.fasterxml.jackson. **Name** : jackson-bom. **Version** : 2.18.3.
      * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-annotations. **Version** : 2.12.7.
+     * **Project URL:** [http://github.com/FasterXML/jackson](http://github.com/FasterXML/jackson)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-annotations. **Version** : 2.18.3.
      * **Project URL:** [https://github.com/FasterXML/jackson](https://github.com/FasterXML/jackson)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-core. **Version** : 2.12.7.
+     * **Project URL:** [https://github.com/FasterXML/jackson-core](https://github.com/FasterXML/jackson-core)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-core. **Version** : 2.18.3.
      * **Project URL:** [https://github.com/FasterXML/jackson-core](https://github.com/FasterXML/jackson-core)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-databind. **Version** : 2.12.7.1.
+     * **Project URL:** [http://github.com/FasterXML/jackson](http://github.com/FasterXML/jackson)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-databind. **Version** : 2.18.3.
      * **Project URL:** [https://github.com/FasterXML/jackson](https://github.com/FasterXML/jackson)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.fasterxml.jackson.dataformat. **Name** : jackson-dataformat-xml. **Version** : 2.18.3.
+1.  **Group** : com.fasterxml.jackson.dataformat. **Name** : jackson-dataformat-xml. **Version** : 2.12.7.
      * **Project URL:** [https://github.com/FasterXML/jackson-dataformat-xml](https://github.com/FasterXML/jackson-dataformat-xml)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -1009,12 +1045,22 @@ This report was generated on **Thu Apr 17 12:13:21 WEST 2025** using [Gradle-Lic
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1.  **Group** : com.fasterxml.jackson.module. **Name** : jackson-module-jaxb-annotations. **Version** : 2.12.7.
+     * **Project URL:** [https://github.com/FasterXML/jackson-modules-base](https://github.com/FasterXML/jackson-modules-base)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.fasterxml.jackson.module. **Name** : jackson-module-kotlin. **Version** : 2.12.7.
+     * **Project URL:** [https://github.com/FasterXML/jackson-module-kotlin](https://github.com/FasterXML/jackson-module-kotlin)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1.  **Group** : com.fasterxml.jackson.module. **Name** : jackson-module-kotlin. **Version** : 2.18.3.
      * **Project URL:** [https://github.com/FasterXML/jackson-module-kotlin](https://github.com/FasterXML/jackson-module-kotlin)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.fasterxml.woodstox. **Name** : woodstox-core. **Version** : 7.0.0.
+1.  **Group** : com.fasterxml.woodstox. **Name** : woodstox-core. **Version** : 6.2.4.
      * **Project URL:** [https://github.com/FasterXML/woodstox](https://github.com/FasterXML/woodstox)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -1315,6 +1361,18 @@ This report was generated on **Thu Apr 17 12:13:21 WEST 2025** using [Gradle-Lic
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
+1.  **Group** : jakarta.activation. **Name** : jakarta.activation-api. **Version** : 1.2.1.
+     * **Project URL:** [https://www.eclipse.org](https://www.eclipse.org)
+     * **License:** [EDL 1.0](http://www.eclipse.org/org/documents/edl-v10.php)
+     * **License:** [Eclipse Public License v. 2.0](https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt)
+     * **License:** [GNU General Public License, version 2 with the GNU Classpath Exception](https://www.gnu.org/software/classpath/license.html)
+
+1.  **Group** : jakarta.xml.bind. **Name** : jakarta.xml.bind-api. **Version** : 2.3.2.
+     * **Project URL:** [https://www.eclipse.org](https://www.eclipse.org)
+     * **License:** [Eclipse Distribution License - v 1.0](http://www.eclipse.org/org/documents/edl-v10.php)
+     * **License:** [Eclipse Public License v. 2.0](https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt)
+     * **License:** [GNU General Public License, version 2 with the GNU Classpath Exception](https://www.gnu.org/software/classpath/license.html)
+
 1.  **Group** : javax.annotation. **Name** : javax.annotation-api. **Version** : 1.3.2.
      * **Project URL:** [http://jcp.org/en/jsr/detail?id=250](http://jcp.org/en/jsr/detail?id=250)
      * **License:** [CDDL + GPLv2 with classpath exception](https://github.com/javaee/javax.annotation/blob/master/LICENSE)
@@ -1378,10 +1436,10 @@ This report was generated on **Thu Apr 17 12:13:21 WEST 2025** using [Gradle-Lic
      * **Project URL:** [https://checkerframework.org/](https://checkerframework.org/)
      * **License:** [The MIT License](http://opensource.org/licenses/MIT)
 
-1.  **Group** : org.codehaus.woodstox. **Name** : stax2-api. **Version** : 4.2.2.
+1.  **Group** : org.codehaus.woodstox. **Name** : stax2-api. **Version** : 4.2.1.
      * **Project URL:** [http://github.com/FasterXML/stax2-api](http://github.com/FasterXML/stax2-api)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The BSD 2-Clause License](http://www.opensource.org/licenses/bsd-license.php)
+     * **License:** [The BSD License](http://www.opensource.org/licenses/bsd-license.php)
 
 1.  **Group** : org.freemarker. **Name** : freemarker. **Version** : 2.3.32.
      * **Project URL:** [https://freemarker.apache.org/](https://freemarker.apache.org/)
@@ -1700,4 +1758,4 @@ This report was generated on **Thu Apr 17 12:13:21 WEST 2025** using [Gradle-Lic
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Thu Apr 17 12:13:22 WEST 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Apr 17 12:41:54 WEST 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
