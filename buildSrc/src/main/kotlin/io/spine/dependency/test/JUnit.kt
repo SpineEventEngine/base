@@ -67,7 +67,7 @@ object JUnit {
 
     @Deprecated("Use JUnit.Jupiter.params instead", ReplaceWith("JUnit.Jupiter.params"))
     const val params = "org.junit.jupiter:junit-jupiter-params:$version"
-    
+
     object Jupiter {
         const val group = "org.junit.jupiter"
         private const val infix = "junit-jupiter"
