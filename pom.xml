@@ -10,7 +10,7 @@ all modules and does not describe the project structure per-subproject.
  -->
 <groupId>io.spine</groupId>
 <artifactId>base-libraries</artifactId>
-<version>2.0.0-SNAPSHOT.311</version>
+<version>2.0.0-SNAPSHOT.312</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -150,9 +150,9 @@ all modules and does not describe the project structure per-subproject.
     <scope>test</scope>
   </dependency>
   <dependency>
-    <groupId>org.apiguardian</groupId>
-    <artifactId>apiguardian-api</artifactId>
-    <version>1.1.2</version>
+    <groupId>org.junit</groupId>
+    <artifactId>junit-bom</artifactId>
+    <version>5.12.2</version>
     <scope>test</scope>
   </dependency>
   <dependency>
@@ -164,19 +164,13 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>org.junit.jupiter</groupId>
     <artifactId>junit-jupiter-api</artifactId>
-    <version>5.12.2</version>
+    <version>null</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>org.junit.jupiter</groupId>
     <artifactId>junit-jupiter-engine</artifactId>
-    <version>5.12.2</version>
-    <scope>test</scope>
-  </dependency>
-  <dependency>
-    <groupId>org.junit.jupiter</groupId>
-    <artifactId>junit-jupiter-params</artifactId>
-    <version>5.12.2</version>
+    <version>null</version>
     <scope>test</scope>
   </dependency>
   <dependency>
