@@ -40,12 +40,13 @@ object JUnit {
 
     const val legacy = "junit:junit:$legacyVersion"
 
+    const val bom = "org.junit:junit-bom:$version"
+
     val api = listOf(
         "org.apiguardian:apiguardian-api:$apiGuardianVersion",
         "org.junit.jupiter:junit-jupiter-api:$version",
         "org.junit.jupiter:junit-jupiter-params:$version"
     )
-    const val bom = "org.junit:junit-bom:$version"
 
     const val runner = "org.junit.jupiter:junit-jupiter-engine:$version"
     const val params = "org.junit.jupiter:junit-jupiter-params:$version"
@@ -56,9 +57,10 @@ object JUnit {
         // https://junit.org/junit5/
         const val version = "1.12.2"
         internal const val group = "org.junit.platform"
-        const val commons = "$group:junit-platform-commons:$version"
-        const val launcher = "$group:junit-platform-launcher:$version"
-        const val engine = "$group:junit-platform-engine:$version"
-        const val suiteApi = "$group:junit-platform-suite-api:$version"
+        private const val infix = "junit-platform"
+        const val commons = "$group:$infix-commons:$version"
+        const val launcher = "$group:$infix-launcher:$version"
+        const val engine = "$group:$infix-engine:$version"
+        const val suiteApi = "$group:$infix-suite-api:$version"
     }
 }
