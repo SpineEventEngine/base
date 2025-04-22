@@ -1,6 +1,6 @@
 
 
-# Dependencies of `io.spine:spine-base:2.0.0-SNAPSHOT.313`
+# Dependencies of `io.spine:spine-base:2.0.0-SNAPSHOT.314`
 
 ## Runtime
 1.  **Group** : com.google.code.findbugs. **Name** : jsr305. **Version** : 3.0.2.
@@ -539,9 +539,6 @@
 1.  **Group** : org.jacoco. **Name** : org.jacoco.agent. **Version** : 0.8.13.
      * **License:** [EPL-2.0](https://www.eclipse.org/legal/epl-2.0/)
 
-1.  **Group** : org.jacoco. **Name** : org.jacoco.ant. **Version** : 0.8.13.
-     * **License:** [EPL-2.0](https://www.eclipse.org/legal/epl-2.0/)
-
 1.  **Group** : org.jacoco. **Name** : org.jacoco.core. **Version** : 0.8.13.
      * **License:** [EPL-2.0](https://www.eclipse.org/legal/epl-2.0/)
 
@@ -857,12 +854,12 @@
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Apr 22 17:38:38 CEST 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Apr 22 18:45:22 CEST 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine:spine-format:2.0.0-SNAPSHOT.313`
+# Dependencies of `io.spine:spine-format:2.0.0-SNAPSHOT.314`
 
 ## Runtime
 1.  **Group** : com.fasterxml.jackson. **Name** : jackson-bom. **Version** : 2.18.3.
@@ -1456,9 +1453,6 @@ This report was generated on **Tue Apr 22 17:38:38 CEST 2025** using [Gradle-Lic
 1.  **Group** : org.jacoco. **Name** : org.jacoco.agent. **Version** : 0.8.13.
      * **License:** [EPL-2.0](https://www.eclipse.org/legal/epl-2.0/)
 
-1.  **Group** : org.jacoco. **Name** : org.jacoco.ant. **Version** : 0.8.13.
-     * **License:** [EPL-2.0](https://www.eclipse.org/legal/epl-2.0/)
-
 1.  **Group** : org.jacoco. **Name** : org.jacoco.core. **Version** : 0.8.13.
      * **License:** [EPL-2.0](https://www.eclipse.org/legal/epl-2.0/)
 
@@ -1758,4 +1752,4 @@ This report was generated on **Tue Apr 22 17:38:38 CEST 2025** using [Gradle-Lic
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Apr 22 17:38:48 CEST 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Apr 22 18:45:23 CEST 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
