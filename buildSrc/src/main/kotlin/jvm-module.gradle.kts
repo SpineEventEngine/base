@@ -28,10 +28,12 @@ import BuildSettings.javaVersion
 import io.spine.dependency.build.CheckerFramework
 import io.spine.dependency.build.Dokka
 import io.spine.dependency.build.ErrorProne
-import io.spine.dependency.build.JSpecify
-import io.spine.dependency.local.Base
+import io.spine.dependency.lib.Guava
+import io.spine.dependency.lib.JavaX
+import io.spine.dependency.lib.Protobuf
 import io.spine.dependency.local.Logging
 import io.spine.dependency.local.Reflect
+import io.spine.dependency.local.TestLib
 import io.spine.dependency.test.Jacoco
 import io.spine.gradle.checkstyle.CheckStyleConfig
 import io.spine.gradle.github.pages.updateGitHubPages
@@ -41,19 +43,22 @@ import io.spine.gradle.javadoc.JavadocConfig
 import io.spine.gradle.kotlin.applyJvmToolchain
 import io.spine.gradle.kotlin.setFreeCompilerArgs
 import io.spine.gradle.report.license.LicenseReporter
+import io.spine.gradle.testing.configureLogging
+import io.spine.gradle.testing.registerTestTasks
 
 plugins {
     `java-library`
-    id("module-testing")
     id("net.ltgt.errorprone")
     id("pmd-settings")
     id("project-report")
     id("dokka-for-java")
     kotlin("jvm")
+    id("io.kotest")
     id("org.jetbrains.kotlinx.kover")
     id("detekt-code-analysis")
     id("dokka-for-kotlin")
 }
+
 LicenseReporter.generateReportIn(project)
 JavadocConfig.applyTo(project)
 CheckStyleConfig.applyTo(project)
@@ -66,6 +71,7 @@ project.run {
 
     val generatedDir = "$projectDir/generated"
     setTaskDependencies(generatedDir)
+    setupTests()
 
     configureGitHubPages()
 }
@@ -95,9 +101,22 @@ fun Module.configureKotlin(javaVersion: JavaLanguageVersion) {
         }
     }
 
+    // See:
+    // https://github.com/Kotlin/kotlinx-kover?tab=readme-ov-file#to-create-report-combining-coverage-info-from-different-gradle-projects
+    // https://github.com/Kotlin/kotlinx-kover/blob/main/kover-gradle-plugin/examples/jvm/merged/build.gradle.kts
+    rootProject.dependencies {
+        kover(this)
+    }
+
     kover {
         useJacoco(version = Jacoco.version)
-        reports.total.xml.onCheck = true
+        reports {
+            total {
+                xml {
+                    onCheck = true
+                }
+            }
+        }
     }
 }
 
@@ -111,11 +130,16 @@ fun Module.configureKotlin(javaVersion: JavaLanguageVersion) {
 fun Module.addDependencies() = dependencies {
     errorprone(ErrorProne.core)
 
+    Protobuf.libs.forEach { api(it) }
+    api(Guava.lib)
+
     compileOnlyApi(CheckerFramework.annotations)
+    compileOnlyApi(JavaX.annotations)
     ErrorProne.annotations.forEach { compileOnlyApi(it) }
 
-    // https://jspecify.dev/docs/using/#gradle
-    api(JSpecify.annotations)
+    implementation(Logging.lib)
+
+    testImplementation(TestLib.lib)
 }
 
 fun Module.forceConfigurations() {
@@ -127,10 +151,20 @@ fun Module.forceConfigurations() {
                 force(
                     Dokka.BasePlugin.lib,
                     Reflect.lib,
-                    Base.lib,
-                    Logging.lib,
                 )
             }
+        }
+    }
+}
+
+fun Module.setupTests() {
+    tasks {
+        registerTestTasks()
+        test.configure {
+            useJUnitPlatform {
+                includeEngines("junit-jupiter")
+            }
+            configureLogging()
         }
     }
 }

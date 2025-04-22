@@ -42,8 +42,6 @@ project.run {
 }
 
 dependencies {
-    forceJunitPlatform()
-
     testImplementation(JUnit.Jupiter.api)
     testImplementation(JUnit.pioneer)
 
@@ -54,13 +52,6 @@ dependencies {
     testImplementation(Kotest.datatest)
 
     testRuntimeOnly(JUnit.Jupiter.engine)
-}
-
-/**
- * Forces the version of [JUnit] platform and its dependencies via [JUnit.bom].
- */
-private fun DependencyHandlerScope.forceJunitPlatform() {
-    testImplementation(enforcedPlatform(JUnit.bom))
 }
 
 typealias Module = Project
@@ -103,5 +94,8 @@ private fun ResolutionStrategy.forceTestDependencies() {
         Guava.testLib,
         Truth.libs,
         Kotest.assertions,
+        JUnit.bom,
+        JUnit.Jupiter.api,
+        JUnit.Jupiter.params
     )
 }

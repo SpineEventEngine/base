@@ -24,4 +24,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.314")
+@file:Suppress("unused")
+
+package io.spine.dependency.build
+
+/**
+ * The Gradle plugin for publishing Gradle plugins to the Gradle Plugin Portal.
+ *
+ * @see <a href="https://plugins.gradle.org/plugin/com.gradle.plugin-publish">
+ *     The plugin page at the Portal</a>
+ * @see <a href="https://plugins.gradle.org/docs/publish-plugin">Publishing Rules</a>
+ */
+@Suppress("ConstPropertyName")
+object PluginPublishPlugin {
+    const val version = "1.3.1"
+    const val id = "com.gradle.plugin-publish"
+}
