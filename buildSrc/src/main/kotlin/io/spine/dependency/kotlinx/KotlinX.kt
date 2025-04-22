@@ -24,21 +24,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dependency.lib
+package io.spine.dependency.kotlinx
 
-/**
- * gRPC-Kotlin/JVM.
- *
- * @see <a href="https://github.com/grpc/grpc-kotlin">GitHub project</a>
- */
-@Suppress("unused")
-object GrpcKotlin {
-    const val version = "1.4.1"
-    const val stub = "io.grpc:grpc-kotlin-stub:$version"
-
-    object ProtocPlugin {
-        const val id = "grpckt"
-        // https://central.sonatype.com/artifact/io.grpc/protoc-gen-grpc-kotlin
-        const val artifact = "io.grpc:protoc-gen-grpc-kotlin:$version:jdk8@jar"
-    }
+@Suppress("ConstPropertyName") // https://bit.ly/kotlin-prop-names
+object KotlinX {
+    const val group = "org.jetbrains.kotlinx"
 }

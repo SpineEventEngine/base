@@ -24,21 +24,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dependency.lib
+@file:Suppress("unused")
+
+package io.spine.dependency.build
 
 /**
- * gRPC-Kotlin/JVM.
+ * The Gradle plugin for publishing Gradle plugins to the Gradle Plugin Portal.
  *
- * @see <a href="https://github.com/grpc/grpc-kotlin">GitHub project</a>
+ * @see <a href="https://plugins.gradle.org/plugin/com.gradle.plugin-publish">
+ *     The plugin page at the Portal</a>
+ * @see <a href="https://plugins.gradle.org/docs/publish-plugin">Publishing Rules</a>
  */
-@Suppress("unused")
-object GrpcKotlin {
-    const val version = "1.4.1"
-    const val stub = "io.grpc:grpc-kotlin-stub:$version"
-
-    object ProtocPlugin {
-        const val id = "grpckt"
-        // https://central.sonatype.com/artifact/io.grpc/protoc-gen-grpc-kotlin
-        const val artifact = "io.grpc:protoc-gen-grpc-kotlin:$version:jdk8@jar"
-    }
+@Suppress("ConstPropertyName")
+object PluginPublishPlugin {
+    const val version = "1.3.1"
+    const val id = "com.gradle.plugin-publish"
 }

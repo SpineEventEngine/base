@@ -60,7 +60,7 @@ dependencies {
  * Forces the version of [JUnit] platform and its dependencies via [JUnit.bom].
  */
 private fun DependencyHandlerScope.forceJunitPlatform() {
-    testImplementation(enforcedPlatform(JUnit.bom))
+    testImplementation(platform(JUnit.bom))
 }
 
 typealias Module = Project
