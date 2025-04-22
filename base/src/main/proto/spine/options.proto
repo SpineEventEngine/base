@@ -1427,25 +1427,24 @@ message ChoiceOption {
     string error_msg = 2;
 }
 
-// The constraint to require at least one of the fields or combinations of fields
-// to be set.
+// Declares the field groups, at least one of which must have all of its fields set.
 //
-// Unlike the `(required)` field constraint, which requires the presence of a specific
-// field, this option allows to specify alternative fields or combinations of them.
+// Unlike the `(required)` field constraint, which requires the presence of
+// a specific field, this option allows to specify alternative field groups.
 //
 message RequireOption {
 
     // The default error message.
     option (default_message) = "The message `${message.type}` must have at least one of"
-        " the following fields or combinations of them specified: `${require.fields}`.";
+        " the following field groups set: `${require.fields}`.";
 
-    // A set of fields or combinations of fields, at least one of which must be specified.
+    // A set of field groups, at least one of which must have all of its fields set.
     //
-    // Fields are separated using the pipe (`|`) symbol. The combination of fields is defined
-    // using the ampersand (`&`) symbol. `oneof` group names are also valid and can be used
-    // as alternatives.
+    // A field group can include one or more fields joined by the ampersand (`&`) symbol.
+    // `oneof` group names are also valid and can be used along with field names.
+    // Groups are separated using the pipe (`|`) symbol.
     //
-    // The field type determines when the field is considered specified:
+    // The field type determines when the field is considered set:
     //
     // 1. For message or enum fields, it must have a non-default instance.
     // 2. For `string` and `bytes` fields, it must be non-empty.
@@ -1453,11 +1452,11 @@ message RequireOption {
     //
     // Fields of other types are not supported by this option.
     //
-    // For `oneof` groups, the restrictions above do not apply. Any `oneof` group can be used
+    // For `oneof`s, the restrictions above do not apply. Any `oneof` group can be used
     // without considering the field types, and its value will be checked directly without
-    // relying on the default values of the fields within the group.
+    // relying on the default values of the fields within the `oneof`.
     //
-    // Example: defining alternative required fields.
+    // Example: defining two field groups.
     //
     //     message PersonName {
     //         option (require).fields = "given_name | honorific_prefix & family_name";
@@ -1469,8 +1468,8 @@ message RequireOption {
     //         string honorific_suffix = 5;
     //     }
     //
-    // In this example, at least `given_name` or a combination of `honorific_prefix`
-    // and `family_name` must be set.
+    // In this example, at least `given_name` or a group of `honorific_prefix`
+    // and `family_name` fields must be set.
     //
     string fields = 1;
 
@@ -1479,7 +1478,7 @@ message RequireOption {
     // The specified message may include the following placeholders:
     //
     // 1. `${message.type}` – the fully qualified name of the validated message.
-    // 2. `${require.fields}` – the specified set of fields and combinations of them.
+    // 2. `${require.fields}` – the specified field groups.
     //
     // The placeholders will be replaced at runtime when the error is constructed.
     //
