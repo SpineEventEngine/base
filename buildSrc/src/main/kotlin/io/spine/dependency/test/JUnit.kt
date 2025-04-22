@@ -31,17 +31,6 @@ package io.spine.dependency.test
 object JUnit {
     const val version = "5.12.2"
 
-    /**
-     * The BOM of JUnit.
-     *
-     * This one should be forced in a project via:
-     *
-     * ```kotlin
-     * dependencies {
-     *     testImplementation(enforcedPlatform(JUnit.bom))
-     * }
-     * ```
-     */
     const val bom = "org.junit:junit-bom:$version"
 
     private const val legacyVersion = "4.13.1"
@@ -72,10 +61,9 @@ object JUnit {
         const val group = "org.junit.jupiter"
         private const val infix = "junit-jupiter"
 
-        // We do not use versions because they are forced via BOM.
-        const val api = "$group:$infix-api"
-        const val params = "$group:$infix-params"
-        const val engine = "$group:$infix-engine"
+        const val api = "$group:$infix-api:$version"
+        const val params = "$group:$infix-params:$version"
+        const val engine = "$group:$infix-engine:$version"
     }
 
     object Platform {
