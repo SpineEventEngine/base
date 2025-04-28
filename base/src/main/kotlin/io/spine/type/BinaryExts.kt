@@ -43,7 +43,7 @@ public val <M : Message> Class<M>.parser: Parser<M>
     get() = defaultInstance.parserForType as Parser<M>
 
 /**
- * Creates new message instance by parsing it from the given input stream.
+ * Creates a new message instance by parsing it from the given input stream.
  *
  * This function uses [ExtensionRegistry][extensionRegistry] with all known
  * custom Protobuf options.
@@ -55,7 +55,7 @@ public fun <M : Message> Class<M>.parse(input: InputStream): M =
     parser.parseFrom(input, extensionRegistry)
 
 /**
- * Creates new message instance by parsing it from the given input stream.
+ * Creates a new message instance by parsing it from the given input stream.
  *
  * This function uses [ExtensionRegistry][extensionRegistry] with all known
  * custom Protobuf options.
