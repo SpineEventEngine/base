@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -29,7 +29,7 @@ package io.spine.code.proto;
 import com.google.errorprone.annotations.Immutable;
 import com.google.errorprone.annotations.ImmutableTypeParameter;
 import com.google.protobuf.Descriptors.GenericDescriptor;
-import com.google.protobuf.GeneratedMessage.ExtendableMessage;
+import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 
 import java.util.Optional;
@@ -68,7 +68,9 @@ public abstract class AbstractOption<@ImmutableTypeParameter T,
      */
     protected abstract E optionsFrom(K object);
 
-    /** Returns extension that represents this option. */
+    /**
+     * Returns the extension that represents this option.
+     */
     public GeneratedExtension<E, T> extension() {
         return extension;
     }
