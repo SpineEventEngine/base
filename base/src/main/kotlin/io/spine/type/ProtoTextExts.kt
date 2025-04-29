@@ -1,11 +1,11 @@
 /*
- * Copyright 2024, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -62,7 +62,7 @@ private object TextOutput {
  * The output is produced using [TypeRegistry] populated with [KnownTypes].
  */
 public fun MessageOrBuilder.shortDebugString(): String =
-    TextOutput.printer.emittingSingleLine(true).printToString(this)
+    TextOutput.printer.shortDebugString(this)
 
 /**
  * Prints a textual representation of the `MessageOrBuilder` to the returned string.
