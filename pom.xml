@@ -68,19 +68,19 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.protobuf</groupId>
     <artifactId>protobuf-java</artifactId>
-    <version>4.30.2</version>
+    <version>3.25.7</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>com.google.protobuf</groupId>
     <artifactId>protobuf-java-util</artifactId>
-    <version>4.30.2</version>
+    <version>3.25.7</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>com.google.protobuf</groupId>
     <artifactId>protobuf-kotlin</artifactId>
-    <version>4.30.2</version>
+    <version>3.25.7</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -219,7 +219,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.protobuf</groupId>
     <artifactId>protoc</artifactId>
-    <version>4.30.2</version>
+    <version>3.25.7</version>
   </dependency>
   <dependency>
     <groupId>com.puppycrawl.tools</groupId>
