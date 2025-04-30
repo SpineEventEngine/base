@@ -25,6 +25,7 @@
  */
 
 import BuildSettings.javaVersion
+import io.spine.dependency.boms.BomsPlugin
 import io.spine.dependency.build.CheckerFramework
 import io.spine.dependency.build.Dokka
 import io.spine.dependency.build.ErrorProne
@@ -54,6 +55,7 @@ plugins {
     id("detekt-code-analysis")
     id("dokka-for-kotlin")
 }
+apply<BomsPlugin>()
 LicenseReporter.generateReportIn(project)
 JavadocConfig.applyTo(project)
 CheckStyleConfig.applyTo(project)

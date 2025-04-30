@@ -25,6 +25,7 @@
  */
 
 import io.gitlab.arturbosch.detekt.Detekt
+import io.spine.dependency.lib.Kotlin
 
 /**
  * This script-plugin sets up Kotlin code analyzing with Detekt.

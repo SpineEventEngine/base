@@ -26,14 +26,15 @@
 
 @file:Suppress("RemoveRedundantQualifierName") // Cannot use imports in some places.
 
+import io.spine.dependency.boms.BomsPlugin
 import io.spine.dependency.local.Base
 import io.spine.dependency.local.Logging
 import io.spine.gradle.publish.PublishingRepos
 import io.spine.gradle.publish.spinePublishing
+import io.spine.gradle.repo.standardToSpineSdk
 import io.spine.gradle.report.coverage.JacocoConfig
 import io.spine.gradle.report.license.LicenseReporter
 import io.spine.gradle.report.pom.PomGenerator
-import io.spine.gradle.standardToSpineSdk
 
 buildscript {
     standardSpineSdkRepositories()
@@ -47,6 +48,7 @@ plugins {
     `project-report`
     `dokka-for-kotlin`
 }
+apply<BomsPlugin>()
 
 spinePublishing {
     destinations = with(PublishingRepos) {
@@ -105,6 +107,7 @@ afterEvaluate {
     }
 }
 
+@Suppress("unused")
 val dokkaGeneratePublicationHtml by tasks.getting {
     dependsOn(tasks.jar)
 }

@@ -28,19 +28,23 @@ package io.spine.dependency.kotlinx
 
 /**
  * Kotlin Coroutines.
- * 
+ *
  * @see <a href="https://github.com/Kotlin/kotlinx.coroutines">GitHub project</a>
  */
 @Suppress("unused", "ConstPropertyName")
 object Coroutines {
     const val group = KotlinX.group
     const val version = "1.10.2"
-    private const val infix = "kotlinx-coroutines"
+    const val infix = "kotlinx-coroutines"
     const val bom = "$group:$infix-bom:$version"
-    const val core = "$group:$infix-core:$version"
-    const val coreJvm = "$group:$infix-core-jvm:$version"
-    const val jdk8 = "$group:$infix-jdk8:$version"
-    const val debug = "$group:$infix-debug:$version"
-    const val test = "$group:$infix-test:$version"
-    const val testJvm = "$group:$infix-test-jvm:$version"
+
+    const val core = "$group:$infix-core"
+    const val coreJvm = "$group:$infix-core-jvm"
+    const val jdk7 = "$group:$infix-jdk7"
+    const val jdk8 = "$group:$infix-jdk8"
+    const val debug = "$group:$infix-debug"
+    const val test = "$group:$infix-test"
+    const val testJvm = "$group:$infix-test-jvm"
+
+    val artefacts = listOf(core, coreJvm, jdk8, debug, test, testJvm).map { "$it:$version"}
 }

@@ -27,10 +27,23 @@
 import io.spine.dependency.lib.Guava
 import io.spine.dependency.local.TestLib
 import io.spine.dependency.test.JUnit
+import io.spine.dependency.test.JUnit.Jupiter
 import io.spine.dependency.test.Kotest
 import io.spine.dependency.test.Truth
 import io.spine.gradle.testing.configureLogging
 import io.spine.gradle.testing.registerTestTasks
+
+/**
+ * This convention plugin applies test dependencies and configures test-related tasks.
+ *
+ * The version of the [JUnit] platform must be applied via the [BomsPlugin][io.spine.dependency.boms.BomsPlugin]:
+ *
+ * ```kotlin
+ * apply<BomsPlugin>()
+ * ```
+ */
+@Suppress("unused")
+private val about = ""
 
 plugins {
     `java-library`
@@ -42,7 +55,10 @@ project.run {
 }
 
 dependencies {
-    testImplementation(JUnit.Jupiter.api)
+    forceJunitPlatform()
+
+    testImplementation(Jupiter.api)
+    testImplementation(Jupiter.params)
     testImplementation(JUnit.pioneer)
 
     testImplementation(Guava.testLib)
@@ -51,7 +67,14 @@ dependencies {
     testImplementation(Kotest.assertions)
     testImplementation(Kotest.datatest)
 
-    testRuntimeOnly(JUnit.Jupiter.engine)
+    testRuntimeOnly(Jupiter.engine)
+}
+
+/**
+ * Forces the version of [JUnit] platform and its dependencies via [JUnit.bom].
+ */
+private fun DependencyHandlerScope.forceJunitPlatform() {
+    testImplementation(enforcedPlatform(JUnit.bom))
 }
 
 typealias Module = Project
@@ -94,8 +117,5 @@ private fun ResolutionStrategy.forceTestDependencies() {
         Guava.testLib,
         Truth.libs,
         Kotest.assertions,
-        JUnit.bom,
-        JUnit.Jupiter.api,
-        JUnit.Jupiter.params
     )
 }
