@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.util
+package io.spine.collect
 
 import io.kotest.matchers.shouldBe
 import java.util.stream.Stream
@@ -33,11 +33,10 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
-import org.junit.jupiter.params.provider.Arguments.arguments
 import org.junit.jupiter.params.provider.MethodSource
 
-@DisplayName("Extensions for collections should")
-class MoreCollectionsSpec {
+@DisplayName("Extensions for `Iterable` should")
+class MoreIterablesSpec {
 
     @Test
     fun `obtain the only element of a collection`() {
@@ -68,13 +67,13 @@ class MoreCollectionsSpec {
         @Suppress("unused") // Used by JUnit.
         @JvmStatic
         fun interlaceCollections(): Stream<Arguments> = Stream.of(
-            arguments(listOf(0, 1, 2), 42, listOf(0, 42, 1, 42, 2)),
-            arguments(
+            Arguments.arguments(listOf(0, 1, 2), 42, listOf(0, 42, 1, 42, 2)),
+            Arguments.arguments(
                 listOf("sea", "Moon", "Earth", "Sun"),
                 "of",
                 listOf("sea", "of", "Moon", "of", "Earth", "of", "Sun")
             ),
-            arguments(listOf<String>(), "doesn't matter", listOf<String>()),
+            Arguments.arguments(listOf<String>(), "doesn't matter", listOf<String>()),
         )
     }
 }
