@@ -133,7 +133,7 @@ class BomsPlugin : Plugin<Project>  {
 private fun Configuration.applyBoms(project: Project, boms: List<String>) {
     boms.forEach { bom ->
         withDependencies {
-            val platform = project.dependencies.enforcedPlatform(bom)
+            val platform = project.dependencies.platform(bom)
             addLater(project.provider { platform })
             project.log { "Applied BOM: `$bom` to the configuration: `${this@applyBoms.name}`." }
         }
