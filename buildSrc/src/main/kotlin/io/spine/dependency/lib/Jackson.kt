@@ -61,6 +61,9 @@ object Jackson {
 
         // https://github.com/FasterXML/jackson-dataformats-text/releases
         const val yaml = "$group:$infix-yaml"
+
+        const val xmlArtifact = "$xml:$version"
+        const val yamlArtifact = "$yaml:$version"
     }
 
     object DataType {

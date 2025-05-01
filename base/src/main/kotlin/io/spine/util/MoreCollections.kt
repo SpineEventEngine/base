@@ -24,11 +24,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:JvmName("MoreCollections")
-
 package io.spine.util
 
-import com.google.common.collect.Iterables
+import io.spine.collect.interlaced
+import io.spine.collect.theOnly
 
 /**
  * Obtains the only element in the receiver `Iterable`.
@@ -36,7 +35,11 @@ import com.google.common.collect.Iterables
  * @throws NoSuchElementException if the iterable is empty.
  * @throws IllegalArgumentException if the iterable contains multiple elements.
  */
-public fun <E> Iterable<E>.theOnly(): E = Iterables.getOnlyElement(this)
+@Deprecated(
+    message = "Please use `io.spine.collect.theOnly()` instead.",
+    replaceWith = ReplaceWith(imports = ["io.spine.collect.theOnly"], expression = "theOnly()")
+)
+public fun <E> Iterable<E>.theOnly(): E = theOnly()
 
 /**
  * Builds a `Sequence` which consists of the elements of this `Iterable` and
@@ -48,11 +51,11 @@ public fun <E> Iterable<E>.theOnly(): E = Iterables.getOnlyElement(this)
  *    `["sea", "of", "Moon", "of", "Earth", "of", "Sun"]`;
  *  - `listOf<String>().interlaced("")` -> `[]`.
  */
-public fun <T> Iterable<T>.interlaced(infix: T): Sequence<T> = sequence {
-    forEachIndexed { index, element ->
-        if (index != 0) {
-            yield(infix)
-        }
-        yield(element)
-    }
-}
+@Deprecated(
+    message = "Please use `io.spine.collect.interlaced()` instead.",
+    replaceWith = ReplaceWith(
+        imports = ["io.spine.collect.interlaced"],
+        expression = "interlaced()"
+    )
+)
+public fun <T> Iterable<T>.interlaced(infix: T): Sequence<T> = interlaced(infix)

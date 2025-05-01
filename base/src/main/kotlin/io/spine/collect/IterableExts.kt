@@ -24,23 +24,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dependency.local
+@file:JvmName("MoreIterables")
+
+package io.spine.collect
+
+import com.google.common.collect.Iterables
 
 /**
- * Artifacts of the `tool-base` module.
+ * Obtains the only element in the receiver `Iterable`.
  *
- * @see <a href="https://github.com/SpineEventEngine/tool-base">spine-tool-base</a>
+ * @throws NoSuchElementException if the iterable is empty.
+ * @throws IllegalArgumentException if the iterable contains multiple elements.
  */
-@Suppress("ConstPropertyName", "unused")
-object ToolBase {
-    const val group = Spine.toolsGroup
-    const val version = "2.0.0-SNAPSHOT.321"
+public fun <E> Iterable<E>.theOnly(): E = Iterables.getOnlyElement(this)
 
-    const val lib = "$group:spine-tool-base:$version"
-    const val pluginBase = "$group:spine-plugin-base:$version"
-    const val pluginTestlib = "$group:spine-plugin-testlib:$version"
-
-    const val intellijPlatformJava = "$group:intellij-platform-java:$version"
-
-    const val psiJava = "$group:spine-psi-java:$version"
+/**
+ * Builds a `Sequence` which consists of the elements of this `Iterable` and
+ * the given [infix] between them.
+ *
+ * Example:
+ *  - `listOf(0, 1, 2).interlaced(42)` -> `[0, 42, 1, 42, 2]`;
+ *  - `listOf("sea", "Moon", "Earth", "Sun").interlaced("of")` ->
+ *    `["sea", "of", "Moon", "of", "Earth", "of", "Sun"]`;
+ *  - `listOf<String>().interlaced("")` -> `[]`.
+ */
+public fun <T> Iterable<T>.interlaced(infix: T): Sequence<T> = sequence {
+    forEachIndexed { index, element ->
+        if (index != 0) {
+            yield(infix)
+        }
+        yield(element)
+    }
 }

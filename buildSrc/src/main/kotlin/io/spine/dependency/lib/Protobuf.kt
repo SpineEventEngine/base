@@ -60,7 +60,7 @@ object Protobuf {
     object GradlePlugin {
         /**
          * The version of this plugin is already specified in `buildSrc/build.gradle.kts` file.
-         * Thus, when applying the plugin to projects build files, only the [id] should be used.
+         * Thus, when applying the plugin to project build files, only the [id] should be used.
          *
          * When changing the version, also change the version used in the `build.gradle.kts`.
          */
