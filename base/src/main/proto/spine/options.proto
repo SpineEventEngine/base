@@ -779,9 +779,9 @@ message MinOption {
     // message MinimumValues {
     //     int32 temperature = 1 [(min).value = "0"];
     //     uint32 employees = 2 [(min).value = "5"];
-    //     float degree = 1 [(min).value = "0.0"];
-    //     double angle = 2 [(min).value = "30.0"];
-    //     float pressure = 3 [(min).value = "950.0E-2"];
+    //     float degree = 3 [(min).value = "0.0"];
+    //     double angle = 4 [(min).value = "30.0"];
+    //     float pressure = 5 [(min).value = "950.0E-2"];
     //  }
     //
     // ## Field Type Limitations
@@ -794,6 +794,33 @@ message MinOption {
     //     float price = 1 [(min).value = "-5.5E38"]; // Falls below the `float` minimum.
     //     uint32 size = 2 [(min).value = "-5"]; // Falls below the `uint32` minimum.
     // }
+    //
+    // ## Field references
+    //
+    // Instead of numeric literals, you can reference another numeric field.
+    // At runtime, the field’s value will be used as the bound. Nested fields are supported.
+    //
+    // Example: defining minimum values using field references.
+    //
+    // message MinimumValues {
+    //
+    //     int32 min_employees = 1;
+    //     int32 employees = 2 [(min).value = "min_employees"];
+    //
+    //     Thresholds thresholds = 3;
+    //     int32 temperature = 4 [(min).value = "thresholds.temperature"];
+    //     float pressure = 5 [(min).value = "thresholds.pressure"];
+    //  }
+    //
+    // message Thresholds {
+    //     int32 temperature = 1;
+    //     float pressure = 2;
+    // }
+    //
+    // Note: Field type compatibility is not required in this case; the value is
+    // automatically converted. However, only numeric fields can be referenced.
+    // Repeated and map fields are not supported.
+    //
     //
     string value = 1;
 
@@ -814,7 +841,8 @@ message MinOption {
     // 2. `${field.path}` – the field path.
     // 3. `${field.type}` – the fully qualified name of the field type.
     // 4. `${parent.type}` – the fully qualified name of the validated message.
-    // 5. `${min.value}` – the specified minimum `value`.
+    // 5. `${min.value}` – the specified minimum `value`. For referenced fields, the actual
+    //    field value is also printed in round brackets along with the reference itself.
     // 6. `${min.operator}` – if `exclusive` is set to `true`, this placeholder equals to ">".
     //    Otherwise, ">=".
     //
@@ -849,9 +877,9 @@ message MaxOption {
     // message MaximumValues {
     //     int32 temperature = 1 [(max).value = "270"];
     //     uint32 employees = 2 [(max).value = "1200"];
-    //     float degree = 1 [(max).value = "360.0"];
-    //     double angle = 2 [(max).value = "90.0"];
-    //     float pressure = 3 [(max).value = "1050.0E-2"];
+    //     float degree = 3 [(max).value = "360.0"];
+    //     double angle = 4 [(max).value = "90.0"];
+    //     float pressure = 5 [(max).value = "1050.0E-2"];
     //  }
     //
     // ## Field Type Limitations
@@ -864,6 +892,32 @@ message MaxOption {
     //     float price = 1 [(min).value = "5.5E38"]; // Exceeds the `float` maximum.
     //     int32 size = 2 [(min).value = "2147483648"]; // Exceeds the `int32` maximum.
     // }
+    //
+    // ## Field references
+    //
+    // Instead of numeric literals, you can reference another numeric field.
+    // At runtime, the field’s value will be used as the bound. Nested fields are supported.
+    //
+    // Example: defining maximum values using field references.
+    //
+    // message MaximumValues {
+    //
+    //     int32 max_employees = 1;
+    //     int32 employees = 2 [(max).value = "max_employees"];
+    //
+    //     Thresholds thresholds = 3;
+    //     int32 temperature = 4 [(max).value = "thresholds.temperature"];
+    //     float pressure = 5 [(max).value = "thresholds.pressure"];
+    //  }
+    //
+    // message Thresholds {
+    //     int32 temperature = 1;
+    //     float pressure = 2;
+    // }
+    //
+    // Note: Field type compatibility is not required in this case; the value is
+    // automatically converted. However, only numeric fields can be referenced.
+    // Repeated and map fields are not supported.
     //
     string value = 1;
 
@@ -884,7 +938,8 @@ message MaxOption {
     // 2. `${field.value}` - the field value.
     // 3. `${field.type}` – the fully qualified name of the field type.
     // 4. `${parent.type}` – the fully qualified name of the validated message.
-    // 5. `${max.value}` – the specified maximum `value`.
+    // 5. `${max.value}` – the specified maximum `value`. For referenced fields, the actual
+    //    field value is also printed in round brackets along with the reference itself.
     // 6. `${max.operator}` – if `exclusive` is set to `true`, this placeholder equals to "<".
     //    Otherwise, "<=".
     //
