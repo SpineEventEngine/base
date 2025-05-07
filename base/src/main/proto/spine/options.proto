@@ -810,7 +810,7 @@ message MinOption {
     //     Limits limits = 3;
     //     int32 temperature = 4 [(min).value = "limits.min_temperature"];
     //     float pressure = 5 [(min).value = "limits.min_pressure"];
-    //  }
+    // }
     //
     // message Limits {
     //     int32 min_temperature = 1;
@@ -820,7 +820,6 @@ message MinOption {
     // Note: Field type compatibility is not required in this case; the value is
     // automatically converted. However, only numeric fields can be referenced.
     // Repeated and map fields are not supported.
-    //
     //
     string value = 1;
 
@@ -908,7 +907,7 @@ message MaxOption {
     //     Limits limits = 3;
     //     int32 temperature = 4 [(max).value = "limits.max_temperature"];
     //     float pressure = 5 [(max).value = "limits.max_pressure"];
-    //  }
+    // }
     //
     // message Limits {
     //     int32 max_temperature = 1;
@@ -1453,7 +1452,7 @@ message RangeOption {
     //
     //     Limits limits = 3;
     //     int32 temperature = 4 [(range).value = "[limits.low_temp .. limits.high_temp]"];
-    //  }
+    // }
     //
     // message Limits {
     //     int32 low_temp = 1;
@@ -1463,7 +1462,6 @@ message RangeOption {
     // Note: Field type compatibility is not required in this case; the value is
     // automatically converted. However, only numeric fields can be referenced.
     // Repeated and map fields are not supported.
-    //
     //
     string value = 1;
 
