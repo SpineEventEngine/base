@@ -776,9 +776,9 @@ message MinOption {
     //
     // Example: defining minimum values for integer and floating-point fields.
     //
-    // message MinimumValues {
+    // message Measurements {
     //     int32 temperature = 1 [(min).value = "0"];
-    //     uint32 employees = 2 [(min).value = "5"];
+    //     uint32 mass = 2 [(min).value = "5"];
     //     float degree = 3 [(min).value = "0.0"];
     //     double angle = 4 [(min).value = "30.0"];
     //     float pressure = 5 [(min).value = "950.0E-2"];
@@ -790,9 +790,9 @@ message MinOption {
     //
     // Example: invalid values that fall below the field type limits.
     //
-    // message OverflowValues {
-    //     float price = 1 [(min).value = "-5.5E38"]; // Falls below the `float` minimum.
-    //     uint32 size = 2 [(min).value = "-5"]; // Falls below the `uint32` minimum.
+    // message OverflowMeasurements {
+    //     float pressure = 1 [(min).value = "-5.5E38"]; // Falls below the `float` minimum.
+    //     uint32 mass = 2 [(min).value = "-5"]; // Falls below the `uint32` minimum.
     // }
     //
     // ## Field references
@@ -802,19 +802,19 @@ message MinOption {
     //
     // Example: defining minimum values using field references.
     //
-    // message MinimumValues {
+    // message Measurements {
     //
-    //     int32 min_employees = 1;
-    //     int32 employees = 2 [(min).value = "min_employees"];
+    //     int32 min_length = 1;
+    //     int32 length = 2 [(min).value = "min_length"];
     //
-    //     Thresholds thresholds = 3;
-    //     int32 temperature = 4 [(min).value = "thresholds.temperature"];
-    //     float pressure = 5 [(min).value = "thresholds.pressure"];
+    //     Limits limits = 3;
+    //     int32 temperature = 4 [(min).value = "limits.min_temperature"];
+    //     float pressure = 5 [(min).value = "limits.min_pressure"];
     //  }
     //
-    // message Thresholds {
-    //     int32 temperature = 1;
-    //     float pressure = 2;
+    // message Limits {
+    //     int32 min_temperature = 1;
+    //     float min_pressure = 2;
     // }
     //
     // Note: Field type compatibility is not required in this case; the value is
@@ -874,9 +874,9 @@ message MaxOption {
     //
     // Example: defining maximum values for integer and floating-point fields.
     //
-    // message MaximumValues {
+    // message Measurements {
     //     int32 temperature = 1 [(max).value = "270"];
-    //     uint32 employees = 2 [(max).value = "1200"];
+    //     uint32 mass = 2 [(max).value = "1200"];
     //     float degree = 3 [(max).value = "360.0"];
     //     double angle = 4 [(max).value = "90.0"];
     //     float pressure = 5 [(max).value = "1050.0E-2"];
@@ -888,9 +888,9 @@ message MaxOption {
     //
     // Example: invalid values that exceed the field type limits.
     //
-    // message OverflowValues {
-    //     float price = 1 [(min).value = "5.5E38"]; // Exceeds the `float` maximum.
-    //     int32 size = 2 [(min).value = "2147483648"]; // Exceeds the `int32` maximum.
+    // message OverflowMeasurements {
+    //     float pressure = 1 [(min).value = "5.5E38"]; // Exceeds the `float` maximum.
+    //     int32 mass = 2 [(min).value = "2147483648"]; // Exceeds the `int32` maximum.
     // }
     //
     // ## Field references
@@ -900,19 +900,19 @@ message MaxOption {
     //
     // Example: defining maximum values using field references.
     //
-    // message MaximumValues {
+    // message Measurements {
     //
-    //     int32 max_employees = 1;
-    //     int32 employees = 2 [(max).value = "max_employees"];
+    //     int32 max_length = 1;
+    //     int32 length = 2 [(max).value = "max_length"];
     //
-    //     Thresholds thresholds = 3;
-    //     int32 temperature = 4 [(max).value = "thresholds.temperature"];
-    //     float pressure = 5 [(max).value = "thresholds.pressure"];
+    //     Limits limits = 3;
+    //     int32 temperature = 4 [(max).value = "limits.max_temperature"];
+    //     float pressure = 5 [(max).value = "limits.max_pressure"];
     //  }
     //
-    // message Thresholds {
-    //     int32 temperature = 1;
-    //     float pressure = 2;
+    // message Limits {
+    //     int32 max_temperature = 1;
+    //     float max_pressure = 2;
     // }
     //
     // Note: Field type compatibility is not required in this case; the value is
@@ -1409,9 +1409,9 @@ message RangeOption {
     //
     // Example: defining ranges for integer fields.
     //
-    // message IntegerRanges {
-    //      int32 hour = 1 [(range).value = "[0..24)"];
-    //      uint32 minute = 2 [(range).value = "[0..59]"];
+    // message Measurements {
+    //      int32 length = 1 [(range).value = "[0..100)"];
+    //      uint32 mass = 2 [(range).value = "(0..100]"];
     //  }
     //
     // ## Floating-Point Fields
@@ -1422,7 +1422,7 @@ message RangeOption {
     //
     // Example: defining ranges for floating-point fields.
     //
-    // message FloatRanges {
+    // message Measurements {
     //     float degree = 1 [(range).value = "[0.0 .. 360.0)"];
     //     double angle = 2 [(range).value = "(0.0 .. 180.0)"];
     //     float pressure = 3 [(range).value = "[950.0E-2 .. 1050.0E-2]"];
@@ -1434,7 +1434,7 @@ message RangeOption {
     //
     // Example: invalid ranges that exceed the field type limits.
     //
-    // message OverflowRanges {
+    // message OverflowMeasurements {
     //     float price = 1 [(range).value = "[0, 5.5E38]"]; // Exceeds the `float` maximum.
     //     uint32 size = 2 [(range).value = "[-5; 10]"]; // Falls below the `uint32` minimum.
     // }
@@ -1446,18 +1446,18 @@ message RangeOption {
     //
     // Example: defining ranges using field references.
     //
-    // message Ranges {
+    // message Measurements {
     //
-    //     int32 max_employees = 1;
-    //     int32 employees = 2 [(range).value = "[1 .. max_employees"];
+    //     int32 max_length = 1;
+    //     int32 length = 2 [(range).value = "[1 .. max_length"];
     //
-    //     TempLimits limits = 3;
-    //     int32 temperature = 4 [(range).value = "[limits.low .. limits.high]"];
+    //     Limits limits = 3;
+    //     int32 temperature = 4 [(range).value = "[limits.low_temp .. limits.high_temp]"];
     //  }
     //
-    // message TempLimits {
-    //     int32 low = 1;
-    //     int32 high = 2;
+    // message Limits {
+    //     int32 low_temp = 1;
+    //     int32 high_temp = 2;
     // }
     //
     // Note: Field type compatibility is not required in this case; the value is
