@@ -1475,7 +1475,8 @@ message RangeOption {
     // 2. `${field.value}` - the field value.
     // 3. `${field.type}` – the fully qualified name of the field type.
     // 4. `${parent.type}` – the fully qualified name of the validated message.
-    // 5. `${range.value}` – the specified range.
+    // 5. `${range.value}` – the specified range. For referenced fields, the actual
+    //    field value is also printed in round brackets along with the reference itself.
     //
     // The placeholders will be replaced at runtime when the error is constructed.
     //
