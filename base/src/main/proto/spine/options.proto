@@ -1439,6 +1439,32 @@ message RangeOption {
     //     uint32 size = 2 [(range).value = "[-5; 10]"]; // Falls below the `uint32` minimum.
     // }
     //
+    // ## Field references
+    //
+    // Instead of numeric literals, you can reference another numeric field.
+    // At runtime, the field’s value will be used as the bound. Nested fields are supported.
+    //
+    // Example: defining ranges using field references.
+    //
+    // message Ranges {
+    //
+    //     int32 max_employees = 1;
+    //     int32 employees = 2 [(range).value = "[1 .. max_employees"];
+    //
+    //     TempLimits limits = 3;
+    //     int32 temperature = 4 [(range).value = "[limits.low .. limits.high]"];
+    //  }
+    //
+    // message TempLimits {
+    //     int32 low = 1;
+    //     int32 high = 2;
+    // }
+    //
+    // Note: Field type compatibility is not required in this case; the value is
+    // automatically converted. However, only numeric fields can be referenced.
+    // Repeated and map fields are not supported.
+    //
+    //
     string value = 1;
 
     // A user-defined error message.
