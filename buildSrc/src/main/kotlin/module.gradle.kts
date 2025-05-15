@@ -46,7 +46,6 @@ import io.spine.gradle.report.license.LicenseReporter
 
 plugins {
     `java-library`
-    idea
     id("module-testing")
     id("net.ltgt.errorprone")
     id("pmd-settings")
@@ -72,7 +71,6 @@ project.run {
     setTaskDependencies(generatedDir)
 
     configureGitHubPages()
-    configureIdea()
 }
 
 typealias Module = Project
