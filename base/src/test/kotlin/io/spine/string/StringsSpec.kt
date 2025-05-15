@@ -176,4 +176,10 @@ class StringsSpec {
         "mouse".pluralize(3, "mice") shouldBe "mice"
         "cat".pluralize(1) shouldBe "cat"
     }
+
+    @Test
+    fun `obtain a simple class name of an instance`() {
+        simpleNameOf("Something") shouldBe "String"
+        simpleNameOf( object { } ) shouldBe "<unknown>"
+    }
 }
