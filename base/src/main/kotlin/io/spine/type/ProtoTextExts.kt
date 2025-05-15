@@ -62,7 +62,9 @@ private object TextOutput {
  * The output is produced using [TypeRegistry] populated with [KnownTypes].
  */
 public fun MessageOrBuilder.shortDebugString(): String =
-    TextOutput.printer.shortDebugString(this)
+    TextOutput.printer
+        .emittingSingleLine(true)
+        .printToString(this)
 
 /**
  * Prints a textual representation of the `MessageOrBuilder` to the returned string.
