@@ -41,10 +41,12 @@ import io.spine.gradle.javac.configureJavac
 import io.spine.gradle.javadoc.JavadocConfig
 import io.spine.gradle.kotlin.applyJvmToolchain
 import io.spine.gradle.kotlin.setFreeCompilerArgs
+import io.spine.gradle.protobuf.configureIdea
 import io.spine.gradle.report.license.LicenseReporter
 
 plugins {
     `java-library`
+    idea
     id("module-testing")
     id("net.ltgt.errorprone")
     id("pmd-settings")
@@ -70,6 +72,7 @@ project.run {
     setTaskDependencies(generatedDir)
 
     configureGitHubPages()
+    configureIdea()
 }
 
 typealias Module = Project
