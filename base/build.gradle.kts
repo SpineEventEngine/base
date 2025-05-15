@@ -24,6 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import io.spine.dependency.build.JSpecify
 import io.spine.dependency.lib.AutoService
 import io.spine.dependency.lib.AutoServiceKsp
 import io.spine.dependency.lib.Guava
@@ -49,6 +50,7 @@ dependencies {
     compileOnly(AutoService.annotations)
     ksp(AutoServiceKsp.processor)
 
+    api(JSpecify.annotations)
     Protobuf.libs.forEach { api(it) }
     api(Guava.lib)
 
