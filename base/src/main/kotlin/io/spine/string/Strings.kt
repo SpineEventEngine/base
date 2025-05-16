@@ -257,12 +257,6 @@ public val Any.qualifiedClassName: String
     get() = this::class.qualifiedName ?: "<unknown>"
 
 /**
- * Obtains a simple class name of the [instance] or `<unknown>` if the simple name
- * is not available, e.g., for an instance of an anonymous class.
- */
-public fun simpleNameOf(instance: Any): String = instance::class.simpleName ?: "<unknown>"
-
-/**
  * A shortcut for [shortDebugString] call.
  */
 public fun Message.shortly(): String = shortDebugString()
