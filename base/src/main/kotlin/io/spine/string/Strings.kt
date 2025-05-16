@@ -235,6 +235,11 @@ public fun String.ensurePrefix(prefix: String): String {
 public inline  fun <reified T> simply(): String = T::class.simpleName!!
 
 /**
+ * Returns the simple class name of the given [instance].
+ */
+public fun simpleNameOf(instance: Any): String = instance::class.simpleName!!
+
+/**
  * A shortcut for [shortDebugString] call.
  */
 public fun com.google.protobuf.Message.shortly(): String = shortDebugString()

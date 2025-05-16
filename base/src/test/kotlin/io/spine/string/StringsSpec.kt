@@ -32,6 +32,7 @@ import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldStartWith
 import io.spine.testing.TestValues.randomString
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
@@ -155,9 +156,19 @@ class StringsSpec {
         }
     }
 
-    @Test
-    fun `provide shortcut for simple class name`() {
-        simply<Any>() shouldBe "Any"
+    @Nested inner class
+    `provide simple class name` {
+
+        @Test
+        fun `for type parameter`() {
+            simply<Any>() shouldBe "Any"
+        }
+
+        @Test
+        fun `for given instance`() {
+            val instance = Any()
+            simpleNameOf(instance) shouldBe "Any"
+        }
     }
 
     /**
