@@ -171,6 +171,21 @@ class StringsSpec {
         }
     }
 
+    @Nested inner class
+    `provide qualified class name` {
+
+        @Test
+        fun `for type parameter`() {
+            qualified<Any>() shouldBe "kotlin.Any"
+        }
+
+        @Test
+        fun `for given instance`() {
+            val instance = Any()
+            qualifiedNameOf(instance) shouldBe "kotlin.Any"
+        }
+    }
+
     /**
      * This test does cover the variety of outputs because
      * the function under the test simply calls [io.spine.type.shortDebugString].

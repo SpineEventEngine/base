@@ -240,6 +240,16 @@ public inline  fun <reified T> simply(): String = T::class.simpleName!!
 public fun simpleNameOf(instance: Any): String = instance::class.simpleName!!
 
 /**
+ * Returns the fully qualified class name of the type [T].
+ */
+public inline fun <reified T> qualified(): String = T::class.qualifiedName!!
+
+/**
+ * Returns the fully qualified class name of the given [instance].
+ */
+public fun qualifiedNameOf(instance: Any): String = instance::class.qualifiedName!!
+
+/**
  * A shortcut for [shortDebugString] call.
  */
 public fun com.google.protobuf.Message.shortly(): String = shortDebugString()
