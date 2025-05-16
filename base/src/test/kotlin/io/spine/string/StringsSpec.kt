@@ -26,12 +26,15 @@
 
 package io.spine.string
 
+import com.google.protobuf.Timestamp
 import com.google.protobuf.stringValue
+import com.google.protobuf.timestamp
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldStartWith
 import io.spine.testing.TestValues.randomString
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
@@ -155,9 +158,52 @@ class StringsSpec {
         }
     }
 
-    @Test
-    fun `provide shortcut for simple class name`() {
-        simply<Any>() shouldBe "Any"
+    @Nested inner class
+    `provide simple class name` {
+
+        @Test
+        fun `for type parameter`() {
+            simply<Any>() shouldBe "Any"
+            simply<Timestamp>() shouldBe "Timestamp"
+        }
+
+        @Test
+        fun `for instance`() {
+            val any = Any()
+            val timestamp = timestamp {  }
+            any.simpleClassName shouldBe "Any"
+            timestamp.simpleClassName shouldBe "Timestamp"
+        }
+
+        @Test
+        fun `for anonymous object`(){
+            val anonymous = object {}
+            anonymous.simpleClassName shouldBe "<unknown>"
+        }
+    }
+
+    @Nested inner class
+    `provide qualified class name` {
+
+        @Test
+        fun `for type parameter`() {
+            qualified<Any>() shouldBe "kotlin.Any"
+            qualified<Timestamp>() shouldBe "com.google.protobuf.Timestamp"
+        }
+
+        @Test
+        fun `for instance`() {
+            val any = Any()
+            val timestamp = timestamp {  }
+            any.qualifiedClassName shouldBe "kotlin.Any"
+            timestamp.qualifiedClassName shouldBe "com.google.protobuf.Timestamp"
+        }
+
+        @Test
+        fun `for anonymous object`() {
+            val anonymous = object {}
+            anonymous.qualifiedClassName shouldBe "<unknown>"
+        }
     }
 
     /**
