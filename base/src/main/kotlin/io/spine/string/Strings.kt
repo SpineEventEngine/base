@@ -29,6 +29,7 @@
 
 package io.spine.string
 
+import com.google.protobuf.Message
 import io.spine.type.shortDebugString
 import java.util.Base64
 import kotlin.text.Charsets.UTF_8
@@ -230,14 +231,35 @@ public fun String.ensurePrefix(prefix: String): String {
 }
 
 /**
- * Returns the simple class name of the type [T].
+ * Returns a simple class name of the type [T] or `<unknown>` if the simple name
+ * is not available.
  */
-public inline  fun <reified T> simply(): String = T::class.simpleName!!
+public inline fun <reified T : Any> simply(): String = T::class.simpleName ?: "<unknown>"
+
+/**
+ * Returns a simple class name of this [Any] or `<unknown>` if the simple name
+ * is not available, e.g., for an instance of an anonymous class.
+ */
+public val Any.simpleClassName: String
+    get() = this::class.simpleName ?: "<unknown>"
+
+/**
+ * Returns a fully qualified class name of the type [T] or `<unknown>` if the qualified
+ * name is not available.
+ */
+public inline fun <reified T : Any> qualified(): String = T::class.qualifiedName ?: "<unknown>"
+
+/**
+ * Returns a fully qualified class name of this [Any] or `<unknown>` if the qualified
+ * name is not available, e.g., for an instance of an anonymous class.
+ */
+public val Any.qualifiedClassName: String
+    get() = this::class.qualifiedName ?: "<unknown>"
 
 /**
  * A shortcut for [shortDebugString] call.
  */
-public fun com.google.protobuf.Message.shortly(): String = shortDebugString()
+public fun Message.shortly(): String = shortDebugString()
 
 /**
  * Transforms this string into a plural form if the count is greater than one.
