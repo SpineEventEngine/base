@@ -178,7 +178,7 @@ class StringsSpec {
         @Test
         fun `for anonymous object`(){
             val anonymous = object {}
-            anonymous.simpleClassName shouldBe "<unknown>"
+            anonymous.simpleClassName shouldBe CLASS_NAME_UNKNOWN
         }
     }
 
@@ -202,7 +202,7 @@ class StringsSpec {
         @Test
         fun `for anonymous object`() {
             val anonymous = object {}
-            anonymous.qualifiedClassName shouldBe "<unknown>"
+            anonymous.qualifiedClassName shouldBe CLASS_NAME_UNKNOWN
         }
     }
 

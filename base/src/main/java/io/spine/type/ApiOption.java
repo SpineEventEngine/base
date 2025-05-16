@@ -33,7 +33,7 @@ import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.DescriptorProtos.ServiceOptions;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
-import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
+import com.google.protobuf.GeneratedMessage.ExtendableMessage;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import org.jspecify.annotations.Nullable;
 
@@ -60,7 +60,7 @@ import static io.spine.option.OptionsProto.sPIType;
  * A set of Protobuf options marking an API element.
  *
  * <p>The options in a single set have different targets (such as files, message types, fields,
- * etc.), but always represent a singe concept in terms of API visibility, status, etc.
+ * etc.), but always represent a single concept in terms of API visibility, status, etc.
  *
  * <p>For example, options {@code (beta)}, {@code (beta_type)}, and {@code (beta_all)} target,
  * respectively, fields, messages, and files, but all represent a single concept -
