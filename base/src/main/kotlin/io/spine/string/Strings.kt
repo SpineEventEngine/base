@@ -231,30 +231,38 @@ public fun String.ensurePrefix(prefix: String): String {
 }
 
 /**
+ * The placeholder for the output of utilities printing a class name
+ * for a case when the class name is not available.
+ */
+public const val CLASS_NAME_UNKNOWN: String = "<unknown>"
+
+/**
  * Returns a simple class name of the type [T] or `<unknown>` if the simple name
  * is not available.
  */
-public inline fun <reified T : Any> simply(): String = T::class.simpleName ?: "<unknown>"
+public inline fun <reified T : Any> simply(): String =
+    T::class.simpleName ?: CLASS_NAME_UNKNOWN
 
 /**
  * Returns a simple class name of this [Any] or `<unknown>` if the simple name
  * is not available, e.g., for an instance of an anonymous class.
  */
 public val Any.simpleClassName: String
-    get() = this::class.simpleName ?: "<unknown>"
+    get() = this::class.simpleName ?: CLASS_NAME_UNKNOWN
 
 /**
  * Returns a fully qualified class name of the type [T] or `<unknown>` if the qualified
  * name is not available.
  */
-public inline fun <reified T : Any> qualified(): String = T::class.qualifiedName ?: "<unknown>"
+public inline fun <reified T : Any> qualified(): String =
+    T::class.qualifiedName ?: CLASS_NAME_UNKNOWN
 
 /**
  * Returns a fully qualified class name of this [Any] or `<unknown>` if the qualified
  * name is not available, e.g., for an instance of an anonymous class.
  */
 public val Any.qualifiedClassName: String
-    get() = this::class.qualifiedName ?: "<unknown>"
+    get() = this::class.qualifiedName ?: CLASS_NAME_UNKNOWN
 
 /**
  * A shortcut for [shortDebugString] call.
