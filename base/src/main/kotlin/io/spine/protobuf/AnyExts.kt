@@ -37,7 +37,10 @@ import com.google.protobuf.Any as AnyProto
  */
 @Deprecated(
     message = "Please use `com.google.protobuf.kotlin.unpack()` instead",
-    replaceWith = ReplaceWith(expression = "unpack()", imports = arrayOf("com.google.protobuf.kotlin.unpack"))
+    replaceWith = ReplaceWith(
+        expression = "unpack()",
+        imports = arrayOf("com.google.protobuf.kotlin.unpack")
+    )
 )
 public inline fun <reified T : Message> AnyProto.unpack(): T {
     val cls = T::class
