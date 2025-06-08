@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -33,15 +33,19 @@ import com.google.protobuf.Any as AnyProto
  * Unpacks this `Any` into the given message type.
  *
  * @param T the concrete type of the message stored in the `Any`.
- * @see unpackGuessingType
+ * @see unpackKnownType
  */
+@Deprecated(
+    message = "Please use `com.google.protobuf.kotlin.unpack()` instead",
+    replaceWith = ReplaceWith(expression = "unpack()", imports = arrayOf("com.google.protobuf.kotlin.unpack"))
+)
 public inline fun <reified T : Message> AnyProto.unpack(): T {
     val cls = T::class
     if (!cls.isFinal) {
-        throw IllegalArgumentException(
+        error(
             "Message type for the `unpack` call must be a concrete message, with a `final` class." +
                     " `${cls.qualifiedName}` is not `final`." +
-                    " Please use `unpackGuessingType()` if concrete message type is not available."
+                    " Please use `unpackKnownType()` if concrete message type is not available."
         )
     }
     return AnyPacker.unpack(this, cls.java)
@@ -53,7 +57,23 @@ public inline fun <reified T : Message> AnyProto.unpack(): T {
  * The concrete type of the message is looked up among the known types by
  * the value of the `Any.type_url` field.
  */
+@Deprecated(
+    message = "Please use `unpackKnownType()` instead.",
+    replaceWith = ReplaceWith("unpackKnownType()")
+)
 public fun AnyProto.unpackGuessingType(): Message =
+    unpackKnownType()
+
+/**
+ * Unpacks this `Any`.
+ *
+ * The concrete type of the message is looked up among
+ * the [known types][io.spine.type.KnownTypes] by
+ * the value of the `Any.type_url` field.
+ *
+ * @see AnyPacker
+ */
+public fun AnyProto.unpackKnownType(): Message =
     AnyPacker.unpack(this)
 
 /**
