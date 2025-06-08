@@ -74,11 +74,20 @@ import java.io.File
  * while Protobuf types created in Java or Kotlin are to be handled by [ProtoBinary] or
  * [ProtoJson] formats.
  *
+ * @param T The type of the upper bound served by this format.
+ *   For example, if the format supports only Protobuf message types,
+ *   the argument would be [Message].
+ *   If there is no upper bound for a format, it would be [kotlin.Any].
+ *
+ * @property writer The writer of this format.
+ * @property parser The parser of this format.
+ *
  * @param extensions One or more extensions of the files that are conventionally used
  *   for files in the corresponding format.
  *   If a format has multiple file extensions, the first in the list is the primary one.
  *   This [extension] will be used for [composing][io.spine.format.ensureFormatExtension]
  *   a file name for this format.
+ *   
  * @see parse
  * @see write
  */
