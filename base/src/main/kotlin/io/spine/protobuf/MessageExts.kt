@@ -28,11 +28,8 @@
 
 package io.spine.protobuf
 
-import com.google.common.cache.CacheBuilder
-import com.google.common.cache.CacheLoader
 import com.google.protobuf.Any
 import com.google.protobuf.Message
-import io.spine.annotation.Experimental
 import io.spine.annotation.Internal
 import java.lang.reflect.Type
 import kotlin.reflect.KClass
@@ -55,10 +52,7 @@ public val <M : Message> Class<M>.defaultInstance: M
 
 /**
  * Associates default message instances with their classes using the [ClassValue] API.
- *
- * This is an experimental API, which aims to replace the [defaultInstances] cache.
  */
-@Experimental
 private object DefaultInstanceValue : ClassValue<Message>() {
 
     /**
@@ -70,29 +64,6 @@ private object DefaultInstanceValue : ClassValue<Message>() {
         // It is safe to use the `Internal` utility class from Protobuf since it relies on
         // the fact that the generated class has the `getDefaultInstance()` static method.
         return com.google.protobuf.Internal.getDefaultInstance(messageType)
-    }
-}
-
-/**
- * The cache of the default instances per [Message] class.
- *
- * Creates and caches objects in a lazy mode.
- */
-@Suppress("unused") // See `DefaultInstanceValue` object.
-private val defaultInstances = CacheBuilder.newBuilder()
-    .maximumSize(1000.toLong())
-    .build(MessageCacheLoader())
-
-/**
- * The loader of the cache of default instances per [Message] class.
- *
- * Loads a default instance of `Message` for the given type passed.
- */
-private class MessageCacheLoader : CacheLoader<Class<out Message>, Message>() {
-    override fun load(messageClass: Class<out Message>): Message {
-        // It is safe to use the `Internal` utility class from Protobuf since it relies on
-        // the fact that the generated class has the `getDefaultInstance()` static method.
-        return com.google.protobuf.Internal.getDefaultInstance(messageClass)!!
     }
 }
 
