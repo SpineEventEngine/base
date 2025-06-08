@@ -77,7 +77,7 @@ import java.io.File
  * @param T The type of the upper bound served by this format.
  *   For example, if the format supports only Protobuf message types,
  *   the argument would be [Message].
- *   If there is no upper bound for a format, it would be [kotlin.Any]
+ *   If there is no upper bound for a format, it would be [kotlin.Any].
  *
  * @property writer The writer of this format.
  * @property parser The parser of this format.
