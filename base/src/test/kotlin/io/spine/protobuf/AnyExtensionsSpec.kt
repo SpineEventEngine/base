@@ -72,7 +72,7 @@ class AnyExtensionsSpec {
         }
         val any = AnyPacker.pack(msg)
 
-        assertThrows<IllegalArgumentException> {
+        assertThrows<IllegalStateException> {
             any.unpack<Message>()
         }
     }
