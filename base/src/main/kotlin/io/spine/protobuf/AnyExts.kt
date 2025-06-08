@@ -36,17 +36,15 @@ import com.google.protobuf.Any as AnyProto
  * for the memory efficiency reasons. For more details on this recommendation, please see
  * the "Implementation Note" section of the [AnyPacker] class documentation.
  *
- * @param T the concrete type of the message stored in the `Any`.
+ * @param T the concrete type of the message stored in the `Any`. The type cannot
  * @see unpackKnownType
  */
 public inline fun <reified T : Message> AnyProto.unpack(): T {
     val cls = T::class
-    if (!cls.isFinal) {
-        error(
-            "Message type for the `unpack` call must be a concrete message, with a `final` class." +
-                    " `${cls.qualifiedName}` is not `final`." +
-                    " Please use `unpackKnownType()` if concrete message type is not available."
-        )
+    require(cls.isFinal) {
+        "Message type for the `unpack` call must be a concrete message, with a `final` class." +
+                " `${cls.qualifiedName}` is not `final`." +
+                " Please use `unpackKnownType()` if concrete message type is not available."
     }
     return AnyPacker.unpack(this, cls.java)
 }
