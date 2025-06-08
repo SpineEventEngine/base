@@ -42,6 +42,7 @@ import io.spine.logging.LoggingFactory;
 import io.spine.security.InvocationGuard;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
@@ -84,6 +85,7 @@ import static java.util.stream.Collectors.toSet;
 @Immutable
 public class KnownTypes implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 0L;
 
     @SuppressWarnings("TransientFieldNotInitialized") // Instance is substituted on deserialization.
@@ -121,6 +123,7 @@ public class KnownTypes implements Serializable {
         return result;
     }
 
+    @Serial
     private Object readResolve() {
         return load();
     }
