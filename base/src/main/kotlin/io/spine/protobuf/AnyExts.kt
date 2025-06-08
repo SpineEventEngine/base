@@ -32,16 +32,13 @@ import com.google.protobuf.Any as AnyProto
 /**
  * Unpacks this `Any` into the given message type.
  *
+ * Prefer this extension function over the [com.google.protobuf.kotlin.unpack] extension
+ * for the memory efficiency reasons. For more details on this recommendation, please see
+ * the "Implementation Note" section of the [AnyPacker] class documentation.
+ *
  * @param T the concrete type of the message stored in the `Any`.
  * @see unpackKnownType
  */
-@Deprecated(
-    message = "Please use `com.google.protobuf.kotlin.unpack()` instead",
-    replaceWith = ReplaceWith(
-        expression = "unpack()",
-        imports = arrayOf("com.google.protobuf.kotlin.unpack")
-    )
-)
 public inline fun <reified T : Message> AnyProto.unpack(): T {
     val cls = T::class
     if (!cls.isFinal) {
@@ -74,7 +71,7 @@ public fun AnyProto.unpackGuessingType(): Message =
  * the [known types][io.spine.type.KnownTypes] by
  * the value of the `Any.type_url` field.
  *
- * @see AnyPacker
+ * @see AnyPacker.unpack
  */
 public fun AnyProto.unpackKnownType(): Message =
     AnyPacker.unpack(this)

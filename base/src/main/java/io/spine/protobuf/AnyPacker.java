@@ -29,7 +29,6 @@ package io.spine.protobuf;
 import com.google.protobuf.Any;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
-import com.google.protobuf.Parser;
 import io.spine.type.TypeUrl;
 import io.spine.type.UnexpectedTypeException;
 import org.jspecify.annotations.Nullable;
@@ -45,11 +44,21 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>When packing, the {@code AnyPacker} takes care of obtaining correct type URL prefix
  * for the passed messages.
  *
- * <p>When unpacking, the {@code AnyPacker} obtains Java class matching the type URL
- * from the passed {@code Any}.
+ * <p>When unpacking, the {@code AnyPacker} obtains a Java class matching the type URL
+ * from the given instance of {@link Any}.
+ *
+ * @implNote This class does not use the {@link Any#unpack(Class)} method for unpacking
+ *  because for the performance reasons.
+ *
+ *  <p>The implementation of {@link Any#unpack(Class)} invokes the {@link Any#is(Class) is(Class)}
+ *  method which obtains a default instance of a message by calling a method
+ *  {@code getDefaultInstance()} reflectively.
+ *
+ *  <p>We are aiming for better performance by caching the default instances
+ *  when {@link Messages#getDefaultInstance(Class)} is called.
  *
  * @see Any#pack(Message, String)
- * @see Any#unpack(Class)
+ * @see #unpack(Any)
  */
 public final class AnyPacker {
 
@@ -79,7 +88,7 @@ public final class AnyPacker {
     }
 
     /**
-     * Unwraps {@code Any} value into an instance of type specified by value
+     * Unwraps {@code Any} value into an instance of the type specified by value
      * returned by {@link Any#getTypeUrl()}.
      *
      * @param any instance of {@link Any} that should be unwrapped
@@ -93,10 +102,14 @@ public final class AnyPacker {
     }
 
     /**
-     * Unwraps {@code Any} value into an instance of the passed class.
+     * Unwraps {@link Any} value into an instance of the given class.
      *
      * <p>If there is no Java class for the type, {@link UnexpectedTypeException
      * UnexpectedTypeException} is thrown.
+     *
+     * <p>Prefer this function for unpacking over the {@link Any#unpack(Class)}
+     * method for performance reasons.
+     * Please see the "Implementation Note" section of this class for details.
      *
      * @param any
      *         instance of {@link Any} that should be unwrapped
@@ -105,12 +118,6 @@ public final class AnyPacker {
      * @param <T>
      *         the type enclosed into {@code Any}
      * @return unwrapped message instance
-     * @implNote Protobuf {@link Any#unpack(Class)} isn't used by this
-     *         implementation, since it creates a redundant default {@code Message} instance in its
-     *         internal {@link Any#is(Class) is(Class)} sub-call. We are aiming for better
-     *         performance and lower memory footprint. Therefore, we use the same default instance
-     *         of the target {@code Message} to both verify the type name (complying
-     *         {@code is(Class)} sub-call) and parse its contents.
      */
     public static <T extends Message> T unpack(Any any, Class<T> cls) {
         checkNotNull(any);
@@ -163,24 +170,9 @@ public final class AnyPacker {
     public static <T extends Message> Function<@Nullable Any, @Nullable T>
     unpackFunc(Class<T> type) {
         checkNotNull(type);
-        var defaultInstance = Messages.getDefaultInstance(type);
-        @SuppressWarnings("unchecked")
-        var parser = (Parser<T>) defaultInstance.getParserForType();
-        var expectedTypeUrl = TypeUrl.of(defaultInstance);
         return any -> any == null
                       ? null
-                      : parseMessage(parser, expectedTypeUrl, any);
-    }
-
-    private static <T extends Message> T
-    parseMessage(Parser<T> parser, TypeUrl expectedTypeUrl, Any any) {
-        checkType(any, expectedTypeUrl);
-        try {
-            var message = parser.parseFrom(any.getValue());
-            return message;
-        } catch (InvalidProtocolBufferException e) {
-            throw new UnexpectedTypeException(e);
-        }
+                      : unpack(any, type);
     }
 
     private static void checkType(Any any, TypeUrl expectedType) {

@@ -59,7 +59,7 @@ class AnyExtensionsSpec {
         }
         val any = AnyPacker.pack(msg)
 
-        val unpacked = any.unpackGuessingType()
+        val unpacked = any.unpackKnownType()
 
         unpacked shouldBe instanceOf<MessageToPack>()
         unpacked shouldBe msg
