@@ -674,36 +674,36 @@
      * **Project URL:** [http://jspecify.org/](http://jspecify.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.junit. **Name** : junit-bom. **Version** : 5.12.2.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
+1.  **Group** : org.junit. **Name** : junit-bom. **Version** : 5.13.2.
+     * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
 1.  **Group** : org.junit-pioneer. **Name** : junit-pioneer. **Version** : 2.3.0.
      * **Project URL:** [https://junit-pioneer.org/](https://junit-pioneer.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-api. **Version** : 5.12.2.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-api. **Version** : 5.13.2.
+     * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-engine. **Version** : 5.12.2.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-engine. **Version** : 5.13.2.
+     * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-params. **Version** : 5.12.2.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-params. **Version** : 5.13.2.
+     * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-commons. **Version** : 1.12.2.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
+1.  **Group** : org.junit.platform. **Name** : junit-platform-commons. **Version** : 1.13.2.
+     * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-engine. **Version** : 1.12.2.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
+1.  **Group** : org.junit.platform. **Name** : junit-platform-engine. **Version** : 1.13.2.
+     * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-launcher. **Version** : 1.12.2.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
+1.  **Group** : org.junit.platform. **Name** : junit-platform-launcher. **Version** : 1.13.2.
+     * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
 1.  **Group** : org.opentest4j. **Name** : opentest4j. **Version** : 1.3.0.
@@ -757,7 +757,7 @@
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Mon Jul 21 12:18:42 WEST 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Mon Jul 21 12:22:28 WEST 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -913,15 +913,15 @@ This report was generated on **Mon Jul 21 12:18:42 WEST 2025** using [Gradle-Lic
      * **Project URL:** [https://github.com/google/gson](https://github.com/google/gson)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.devtools.ksp. **Name** : symbol-processing. **Version** : 2.1.21-2.0.1.
+1.  **Group** : com.google.devtools.ksp. **Name** : symbol-processing. **Version** : 2.1.21-2.0.2.
      * **Project URL:** [https://goo.gle/ksp](https://goo.gle/ksp)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.devtools.ksp. **Name** : symbol-processing-api. **Version** : 2.1.21-2.0.1.
+1.  **Group** : com.google.devtools.ksp. **Name** : symbol-processing-api. **Version** : 2.1.21-2.0.2.
      * **Project URL:** [https://goo.gle/ksp](https://goo.gle/ksp)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.devtools.ksp. **Name** : symbol-processing-cmdline. **Version** : 2.1.21-2.0.1.
+1.  **Group** : com.google.devtools.ksp. **Name** : symbol-processing-cmdline. **Version** : 2.1.21-2.0.2.
      * **Project URL:** [https://goo.gle/ksp](https://goo.gle/ksp)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -1553,36 +1553,36 @@ This report was generated on **Mon Jul 21 12:18:42 WEST 2025** using [Gradle-Lic
      * **Project URL:** [http://jspecify.org/](http://jspecify.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.junit. **Name** : junit-bom. **Version** : 5.12.2.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
+1.  **Group** : org.junit. **Name** : junit-bom. **Version** : 5.13.2.
+     * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
 1.  **Group** : org.junit-pioneer. **Name** : junit-pioneer. **Version** : 2.3.0.
      * **Project URL:** [https://junit-pioneer.org/](https://junit-pioneer.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-api. **Version** : 5.12.2.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-api. **Version** : 5.13.2.
+     * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-engine. **Version** : 5.12.2.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-engine. **Version** : 5.13.2.
+     * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-params. **Version** : 5.12.2.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-params. **Version** : 5.13.2.
+     * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-commons. **Version** : 1.12.2.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
+1.  **Group** : org.junit.platform. **Name** : junit-platform-commons. **Version** : 1.13.2.
+     * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-engine. **Version** : 1.12.2.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
+1.  **Group** : org.junit.platform. **Name** : junit-platform-engine. **Version** : 1.13.2.
+     * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-launcher. **Version** : 1.12.2.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
+1.  **Group** : org.junit.platform. **Name** : junit-platform-launcher. **Version** : 1.13.2.
+     * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
 1.  **Group** : org.opentest4j. **Name** : opentest4j. **Version** : 1.3.0.
@@ -1636,7 +1636,7 @@ This report was generated on **Mon Jul 21 12:18:42 WEST 2025** using [Gradle-Lic
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Mon Jul 21 12:18:42 WEST 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Mon Jul 21 12:22:28 WEST 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -2463,36 +2463,36 @@ This report was generated on **Mon Jul 21 12:18:42 WEST 2025** using [Gradle-Lic
      * **Project URL:** [http://jspecify.org/](http://jspecify.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.junit. **Name** : junit-bom. **Version** : 5.12.2.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
+1.  **Group** : org.junit. **Name** : junit-bom. **Version** : 5.13.2.
+     * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
 1.  **Group** : org.junit-pioneer. **Name** : junit-pioneer. **Version** : 2.3.0.
      * **Project URL:** [https://junit-pioneer.org/](https://junit-pioneer.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-api. **Version** : 5.12.2.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-api. **Version** : 5.13.2.
+     * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-engine. **Version** : 5.12.2.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-engine. **Version** : 5.13.2.
+     * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-params. **Version** : 5.12.2.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-params. **Version** : 5.13.2.
+     * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-commons. **Version** : 1.12.2.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
+1.  **Group** : org.junit.platform. **Name** : junit-platform-commons. **Version** : 1.13.2.
+     * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-engine. **Version** : 1.12.2.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
+1.  **Group** : org.junit.platform. **Name** : junit-platform-engine. **Version** : 1.13.2.
+     * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-launcher. **Version** : 1.12.2.
-     * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
+1.  **Group** : org.junit.platform. **Name** : junit-platform-launcher. **Version** : 1.13.2.
+     * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
 1.  **Group** : org.opentest4j. **Name** : opentest4j. **Version** : 1.3.0.
@@ -2550,4 +2550,4 @@ This report was generated on **Mon Jul 21 12:18:42 WEST 2025** using [Gradle-Lic
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Mon Jul 21 12:18:42 WEST 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Mon Jul 21 12:22:28 WEST 2025** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
