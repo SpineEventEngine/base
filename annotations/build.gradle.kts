@@ -35,7 +35,8 @@ plugins {
 apply<IncrementGuard>()
 
 dependencies {
-    // This module contains only annotations with no external dependencies
+    // Contains Spine framework annotations (e.g., @Internal) used for marking internal APIs.
+    // This module has no external dependencies.
     
     // Test dependencies
     testImplementation(TestLib.lib)
