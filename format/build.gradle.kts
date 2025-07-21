@@ -34,6 +34,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":annotations"))
     implementation(project(":base"))
     implementation(platform(Jackson.bom))
     with(Jackson) {

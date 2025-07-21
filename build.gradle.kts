@@ -73,6 +73,7 @@ allprojects {
 }
 
 dependencies {
+    dokka(project(":annotations"))
     dokka(project(":base"))
     dokka(project(":format"))
 }

@@ -50,6 +50,7 @@ dependencies {
     compileOnly(AutoService.annotations)
     ksp(AutoServiceKsp.processor)
 
+    api(project(":annotations"))
     api(JSpecify.annotations)
     Protobuf.libs.forEach { api(it) }
     api(Guava.lib)
