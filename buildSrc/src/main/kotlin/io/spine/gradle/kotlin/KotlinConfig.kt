@@ -58,6 +58,8 @@ fun KotlinJvmCompilerOptions.setFreeCompilerArgs() {
             "-Xskip-prerelease-check",
             "-Xjvm-default=all",
             "-Xinline-classes",
+            "-Xexpect-actual-classes",
+            "-Xcontext-parameters",
             "-opt-in=" +
                     "kotlin.contracts.ExperimentalContracts," +
                     "kotlin.io.path.ExperimentalPathApi," +
