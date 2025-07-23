@@ -366,22 +366,17 @@ public final class Identifier<I> {
     }
 
     @Override
+    @SuppressWarnings("UnnecessaryDefault") // have `default` for future extensibility.
     public String toString() {
-        String result;
-        switch (type) {
-            case INTEGER:
-            case LONG:
-            case STRING:
-                result = value.toString();
-                break;
-            case MESSAGE:
-                result = MessageIdToString.toString((Message) value);
-                break;
-            default:
-                throw newIllegalStateException(
-                        "`toString()` is not supported for type: `%s`.", type
-                );
-        }
+        var result = switch (type) {
+            case INTEGER,
+                 LONG,
+                 STRING -> value.toString();
+            case MESSAGE -> MessageIdToString.convert((Message) value);
+            default -> throw newIllegalStateException(
+                    "`toString()` is not supported for type: `%s`.", type
+            );
+        };
         if (result.isEmpty()) {
             result = EMPTY_ID;
         }

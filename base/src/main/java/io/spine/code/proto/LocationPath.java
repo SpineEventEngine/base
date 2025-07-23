@@ -142,15 +142,13 @@ public final class LocationPath {
     }
 
     @Override
+    @SuppressWarnings("PMD.SimplifyBooleanReturns")
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof LocationPath)) {
-            return false;
-        }
-        var that = (LocationPath) o;
-        return path.equals(that.path);
+        return (o instanceof LocationPath that)
+                && path.equals(that.path);
     }
 
     @Override
