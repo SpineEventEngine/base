@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,37 +24,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.annotation;
+package io.spine.annotation
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
-import static java.lang.annotation.ElementType.CONSTRUCTOR;
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PACKAGE;
-import static java.lang.annotation.ElementType.TYPE;
+import kotlin.annotation.AnnotationTarget.ANNOTATION_CLASS
+import kotlin.annotation.AnnotationTarget.CLASS
+import kotlin.annotation.AnnotationTarget.CONSTRUCTOR
+import kotlin.annotation.AnnotationTarget.FIELD
+import kotlin.annotation.AnnotationTarget.FILE
+import kotlin.annotation.AnnotationTarget.FUNCTION
+import kotlin.annotation.AnnotationTarget.PROPERTY
 
 /**
  * Signifies that a public API is subject to incompatible changes, or even removal
  * in a future release.
  *
- * <p>An API bearing this annotation is exempt from any compatibility guarantees made by its
+ * An API bearing this annotation is exempt from any compatibility guarantees made by its
  * containing library. Note that the presence of this annotation implies nothing about the
  * quality of the API in question, only the fact that it is not "API-frozen."
  * It is generally safe for applications to depend on beta APIs at the cost of some extra work
  * during upgrades.
+ *
+ * @property value Context information such as links to discussion thread, tracking issue, etc.
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({PACKAGE, TYPE, ANNOTATION_TYPE, CONSTRUCTOR, METHOD, FIELD,})
-@Documented
-public @interface Beta {
-    /**
-     * Context information such as links to discussion thread, tracking issue, etc.
-     */
-    String value() default "";
-}
+@Retention(AnnotationRetention.RUNTIME)
+@Target(
+    ANNOTATION_CLASS,
+    CLASS,
+    CONSTRUCTOR,
+    FIELD,
+    FILE,
+    FUNCTION,
+    PROPERTY
+)
+@MustBeDocumented
+public annotation class Beta(val value: String = "")
