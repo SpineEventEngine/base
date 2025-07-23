@@ -40,22 +40,22 @@ import kotlin.annotation.AnnotationTarget.VALUE_PARAMETER
 /**
  * The `Generated` annotation is used to mark source code that has been generated.
  *
- * When applied to a package or a type, it means the whole package or a type was generated.
- * It can be also applied to an element of Java code to differentiate generated code
- * from handcrafted.
+ * When applied to a type, it means the whole type was generated.
+ * It can be also applied to an element of Java or Kotlin code to differentiate
+ * generated code from handcrafted.
  *
- * The {code value} element must contain the name of the generator.
+ * The [value] element must contain the name of the generator.
  * The recommended convention is to use the fully qualified name of
  * the corresponding component, such as a class.
  * Alternatively, consider using Maven coordinates of the "generator".
  *
- * The `timestamp`, which is optional, is the time when the code was generated.
+ * The [timestamp], which is optional, is the time when the code was generated.
  * It should follow the ISO 8601 standard.
  *
- * The `comment` element is the place for comments authors of code generators
+ * The [comments] element is the place for comments authors of code generators
  * may want to leave about the generated code.
  *
- * ## About the name
+ * ### About the name
  *
  * The name of this annotation type must be `Generated` so that development tools
  * exclude the generated code from test coverage.
