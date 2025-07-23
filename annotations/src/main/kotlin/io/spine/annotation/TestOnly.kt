@@ -37,24 +37,22 @@ import kotlin.annotation.AnnotationTarget.PROPERTY_SETTER
 import kotlin.annotation.AnnotationTarget.VALUE_PARAMETER
 
 /**
- * Annotates a program element that exists, or is more widely visible than otherwise necessary,
- * only for use in test code.
+ * Annotates a program element that is intended to be used only in test code.
  *
- * This annotation serves as a marker to indicate that the visibility of a class, method, field,
- * or other program element has been increased specifically to support testing.
+ * This annotation serves as a marker to indicate that the annotated class, function, field,
+ * or other program element should not be used in production code, even though it may be
+ * accessible from there.
  *
- * Apply this annotation to elements that would normally have more restricted visibility
- * (e.g., `private` or `internal`) but need to be more visible for testing purposes.
+ * Apply this annotation to elements that are specifically designed for testing purposes
+ * and should not be used in production code.
  *
  * This annotation does not actually restrict access to the annotated element.
  * It is purely informational and serves as documentation.
  *
- * Avoid using this annotation on `public` or `protected` API elements that are
- * part of your public contract. Instead, consider redesigning your API to avoid
- * exposing implementation details.
+ * Consider using static analysis tools that can detect usages of `@TestOnly` annotated
+ * elements in production code.
  *
- * @see TestOnly
- * @see Internal
+ * @see VisibleForTesting
  * @since 2.0.0
  */
 @Retention(RUNTIME)
@@ -69,4 +67,4 @@ import kotlin.annotation.AnnotationTarget.VALUE_PARAMETER
     VALUE_PARAMETER
 )
 @MustBeDocumented
-public annotation class VisibleForTesting
+public annotation class TestOnly
