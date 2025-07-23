@@ -48,7 +48,7 @@ final class MessageIdToString {
     private MessageIdToString() {
     }
 
-    static String toString(Message message) {
+    static String convert(Message message) {
         checkNotNull(message);
         String result;
         var registry = StringifierRegistry.instance();
@@ -60,12 +60,12 @@ final class MessageIdToString {
             var converter = optional.get();
             result = converter.convert(message);
         } else {
-            result = convert(message);
+            result = doConvert(message);
         }
         return requireNonNull(result);
     }
 
-    private static String convert(Message message) {
+    private static String doConvert(Message message) {
         var values = message.getAllFields().values();
         String result;
         if (values.isEmpty()) {
@@ -73,7 +73,7 @@ final class MessageIdToString {
         } else if (values.size() == 1) {
             var object = values.iterator().next();
             result = object instanceof Message
-                     ? toString((Message) object)
+                     ? convert((Message) object)
                      : object.toString();
         } else {
             result = messageWithMultipleFieldsToString(message);
