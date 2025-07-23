@@ -63,7 +63,6 @@ import static java.lang.String.format;
  *
  * @see Any#getTypeUrl()
  */
-@SuppressWarnings("ClassWithTooManyMethods")
 @Immutable
 public final class TypeUrl implements Serializable {
 
