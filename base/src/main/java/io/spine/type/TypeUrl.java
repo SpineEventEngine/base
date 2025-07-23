@@ -328,6 +328,7 @@ public final class TypeUrl implements Serializable {
         /**
          * The prefix for standard Protobuf types.
          */
+        @SuppressWarnings("DuplicateStringLiteralInspection") // the other is in Protobuf itself.
         GOOGLE_APIS("type.googleapis.com"),
 
         /**
