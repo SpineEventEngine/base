@@ -26,10 +26,10 @@
 
 package io.spine.base;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.errorprone.annotations.ThreadSafe;
 import com.google.protobuf.Timestamp;
 import io.spine.annotation.Internal;
+import io.spine.annotation.VisibleForTesting;
 
 import java.time.Instant;
 import java.time.ZoneId;

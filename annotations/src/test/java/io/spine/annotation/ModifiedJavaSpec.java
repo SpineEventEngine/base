@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2024, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,35 +26,52 @@
 
 package io.spine.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
+import com.google.common.collect.ImmutableList;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static com.google.common.truth.Truth.assertThat;
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
 import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.LOCAL_VARIABLE;
 import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PACKAGE;
+import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
 
 /**
- * Signifies that a public API is subject to incompatible changes, or even removal
- * in a future release.
- *
- * <p>An API bearing this annotation is exempt from any compatibility guarantees made by its
- * containing library. Note that the presence of this annotation implies nothing about the
- * quality of the API in question, only the fact that it is not "API-frozen."
- * It is generally safe for applications to depend on beta APIs at the cost of some extra work
- * during upgrades.
+ * Tests for the {@link Modified} annotation on how it is viewed from the Java API perspective.
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({PACKAGE, TYPE, ANNOTATION_TYPE, CONSTRUCTOR, METHOD, FIELD,})
-@Documented
-public @interface Beta {
-    /**
-     * Context information such as links to discussion thread, tracking issue, etc.
-     */
-    String value() default "";
+@DisplayName("`@Modified` annotation should")
+class ModifiedJavaSpec {
+
+    @Test
+    @DisplayName("have `SOURCE` retention")
+    void retention() {
+        var retention = Modified.class.getAnnotation(Retention.class);
+        assertThat(retention.value()).isEqualTo(RetentionPolicy.SOURCE);
+    }
+
+    @Test
+    @DisplayName("target many things")
+    void targeting() {
+        var target = Modified.class.getAnnotation(Target.class);
+        assertThat(target.value())
+                .asList()
+                .containsAtLeastElementsIn(
+                        ImmutableList.of(
+                                ANNOTATION_TYPE,
+                                CONSTRUCTOR,
+                                FIELD,
+                                LOCAL_VARIABLE,
+                                METHOD,
+                                PARAMETER,
+                                TYPE
+                        )
+                );
+    }
 }

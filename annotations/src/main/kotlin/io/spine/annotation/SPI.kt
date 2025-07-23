@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,14 +24,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.annotation
+
+import kotlin.annotation.AnnotationRetention.RUNTIME
+import kotlin.annotation.AnnotationTarget.ANNOTATION_CLASS
+import kotlin.annotation.AnnotationTarget.CLASS
+import kotlin.annotation.AnnotationTarget.CONSTRUCTOR
+import kotlin.annotation.AnnotationTarget.FIELD
+import kotlin.annotation.AnnotationTarget.FILE
+import kotlin.annotation.AnnotationTarget.FUNCTION
+import kotlin.annotation.AnnotationTarget.PROPERTY
+
 /**
- * This package contains common annotation types for Java code and
- * generated classes for annotations of Proto types.
+ * Annotates a program element (class, method, package, etc.) as an element of
+ * Service Provider Interface (SPI).
+ *
+ * SPI is used to enable framework extension and replaceable components
+ * (implement a new storage, etc.).
+ *
+ * Please see "Effective Java, 3rd Edition" by Joshua Bloch, chapter 2, item 1, page 8,
+ * for more information on the service provider framework pattern.
  */
-
-@CheckReturnValue
-@NullMarked
-package io.spine.annotation;
-
-import com.google.errorprone.annotations.CheckReturnValue;
-import org.jspecify.annotations.NullMarked;
+@SPI
+@Retention(RUNTIME)
+@Target(
+    ANNOTATION_CLASS,
+    CLASS,
+    CONSTRUCTOR,
+    FIELD,
+    FILE,
+    FUNCTION,
+    PROPERTY
+)
+@MustBeDocumented
+public annotation class SPI

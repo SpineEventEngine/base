@@ -26,7 +26,6 @@
 
 package io.spine.base;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -35,6 +34,7 @@ import com.google.protobuf.Int64Value;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import io.spine.annotation.Internal;
+import io.spine.annotation.VisibleForTesting;
 import io.spine.protobuf.AnyPacker;
 import io.spine.string.StringifierRegistry;
 import io.spine.type.TypeUrl;
@@ -366,22 +366,17 @@ public final class Identifier<I> {
     }
 
     @Override
+    @SuppressWarnings("UnnecessaryDefault") // have `default` for future extensibility.
     public String toString() {
-        String result;
-        switch (type) {
-            case INTEGER:
-            case LONG:
-            case STRING:
-                result = value.toString();
-                break;
-            case MESSAGE:
-                result = MessageIdToString.toString((Message) value);
-                break;
-            default:
-                throw newIllegalStateException(
-                        "`toString()` is not supported for type: `%s`.", type
-                );
-        }
+        var result = switch (type) {
+            case INTEGER,
+                 LONG,
+                 STRING -> value.toString();
+            case MESSAGE -> MessageIdToString.convert((Message) value);
+            default -> throw newIllegalStateException(
+                    "`toString()` is not supported for type: `%s`.", type
+            );
+        };
         if (result.isEmpty()) {
             result = EMPTY_ID;
         }

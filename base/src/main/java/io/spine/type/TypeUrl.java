@@ -26,7 +26,6 @@
 
 package io.spine.type;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.errorprone.annotations.Immutable;
 import com.google.errorprone.annotations.InlineMe;
@@ -39,6 +38,7 @@ import com.google.protobuf.Descriptors.ServiceDescriptor;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
+import io.spine.annotation.VisibleForTesting;
 import io.spine.code.proto.PackageName;
 import io.spine.option.OptionsProto;
 import io.spine.protobuf.Messages;
@@ -63,7 +63,6 @@ import static java.lang.String.format;
  *
  * @see Any#getTypeUrl()
  */
-@SuppressWarnings("ClassWithTooManyMethods")
 @Immutable
 public final class TypeUrl implements Serializable {
 
@@ -329,6 +328,7 @@ public final class TypeUrl implements Serializable {
         /**
          * The prefix for standard Protobuf types.
          */
+        @SuppressWarnings("DuplicateStringLiteralInspection") // the other is in Protobuf itself.
         GOOGLE_APIS("type.googleapis.com"),
 
         /**

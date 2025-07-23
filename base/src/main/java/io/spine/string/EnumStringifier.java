@@ -26,7 +26,9 @@
 
 package io.spine.string;
 
-import com.google.common.annotations.VisibleForTesting;
+import io.spine.annotation.VisibleForTesting;
+
+import java.io.Serial;
 
 import static java.lang.String.format;
 
@@ -38,6 +40,7 @@ import static java.lang.String.format;
  */
 final class EnumStringifier<E extends Enum<E>> extends SerializableStringifier<E> {
 
+    @Serial
     private static final long serialVersionUID = 0L;
 
     private final Class<E> enumClass;
@@ -48,12 +51,12 @@ final class EnumStringifier<E extends Enum<E>> extends SerializableStringifier<E
     }
 
     @Override
-    protected final String toString(E e) {
+    protected String toString(E e) {
         return e.toString();
     }
 
     @Override
-    protected final E fromString(String s) {
+    protected E fromString(String s) {
         var result = Enum.valueOf(enumClass, s);
         return result;
     }

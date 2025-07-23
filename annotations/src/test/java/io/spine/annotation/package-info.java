@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,33 +24,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@CheckReturnValue
+@NullMarked
 package io.spine.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-/**
- * Annotates a program element (class, method, package, etc.) as an element of
- * Service Provider Interface (SPI).
- *
- * <p>SPI is used to enable framework extension and replaceable components
- * (implement a new storage, etc.).
- *
- * <p>Please see "Effective Java, 3rd Edition" by Joshua Bloch, chapter 2, item 1, page 8,
- * for more information on the service provider framework pattern.
- */
-@SPI
-@Retention(RetentionPolicy.RUNTIME)
-@Target({
-        ElementType.ANNOTATION_TYPE,
-        ElementType.CONSTRUCTOR,
-        ElementType.FIELD,
-        ElementType.METHOD,
-        ElementType.PACKAGE,
-        ElementType.TYPE})
-@Documented
-public @interface SPI {
-}
+import com.google.errorprone.annotations.CheckReturnValue;
+import org.jspecify.annotations.NullMarked;

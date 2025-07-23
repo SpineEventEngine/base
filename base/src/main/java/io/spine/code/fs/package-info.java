@@ -31,11 +31,9 @@
  * <p>Abstract classes in this package are named with the {@code Abstract} prefix to make
  * implementing language-specific derived types a bit easier.
  */
-@Internal
 @CheckReturnValue
 @NullMarked
 package io.spine.code.fs;
 
 import com.google.errorprone.annotations.CheckReturnValue;
-import io.spine.annotation.Internal;
 import org.jspecify.annotations.NullMarked;

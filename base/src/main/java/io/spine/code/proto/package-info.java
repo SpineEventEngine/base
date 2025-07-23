@@ -27,11 +27,9 @@
 /**
  * This package provides classes for working with Protobuf code.
  */
-@Internal
 @CheckReturnValue
 @NullMarked
 package io.spine.code.proto;
 
 import com.google.errorprone.annotations.CheckReturnValue;
-import io.spine.annotation.Internal;
 import org.jspecify.annotations.NullMarked;

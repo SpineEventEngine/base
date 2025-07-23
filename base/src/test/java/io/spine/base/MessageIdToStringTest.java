@@ -46,7 +46,7 @@ class MessageIdToStringTest extends UtilityClassTest<MessageIdToString> {
         var test = UuidMessage.newBuilder()
                 .setUuid("0bd2d85f-8a07-4041-a62a-6852654d44e6")
                 .build();
-        var value = MessageIdToString.toString(test);
+        var value = MessageIdToString.convert(test);
 
         assertThat(value).contains(test.getUuid());
     }

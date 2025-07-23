@@ -26,7 +26,6 @@
 
 package io.spine.base;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
@@ -35,6 +34,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
+import io.spine.annotation.VisibleForTesting;
 import io.spine.code.proto.ScalarType;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;

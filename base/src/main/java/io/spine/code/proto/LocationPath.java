@@ -26,13 +26,13 @@
 
 package io.spine.code.proto;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.SourceCodeInfo;
 import com.google.protobuf.DescriptorProtos.SourceCodeInfo.Location;
 import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.annotation.VisibleForTesting;
 import io.spine.type.MessageType;
 
 import java.util.ArrayDeque;
@@ -142,15 +142,13 @@ public final class LocationPath {
     }
 
     @Override
+    @SuppressWarnings("PMD.SimplifyBooleanReturns")
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof LocationPath)) {
-            return false;
-        }
-        var that = (LocationPath) o;
-        return path.equals(that.path);
+        return (o instanceof LocationPath that)
+                && path.equals(that.path);
     }
 
     @Override

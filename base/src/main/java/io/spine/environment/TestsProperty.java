@@ -26,9 +26,9 @@
 
 package io.spine.environment;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
+import io.spine.annotation.VisibleForTesting;
 import org.jspecify.annotations.Nullable;
 
 import java.util.regex.Pattern;
