@@ -40,15 +40,14 @@ import static java.lang.annotation.ElementType.CONSTRUCTOR;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.LOCAL_VARIABLE;
 import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PACKAGE;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
 
 /**
- * Tests for the {@link Modified} annotation.
+ * Tests for the {@link Modified} annotation on how it is viewed from the Java API perspective.
  */
 @DisplayName("`@Modified` annotation should")
-class ModifiedSpec {
+class ModifiedJavaSpec {
 
     @Test
     @DisplayName("have `SOURCE` retention")
@@ -70,7 +69,6 @@ class ModifiedSpec {
                                 FIELD,
                                 LOCAL_VARIABLE,
                                 METHOD,
-                                PACKAGE,
                                 PARAMETER,
                                 TYPE
                         )
