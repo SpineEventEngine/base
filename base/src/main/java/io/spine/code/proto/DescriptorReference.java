@@ -26,10 +26,10 @@
 
 package io.spine.code.proto;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
+import io.spine.annotation.VisibleForTesting;
 import io.spine.io.Resource;
 import io.spine.string.Separator;
 import org.jspecify.annotations.Nullable;

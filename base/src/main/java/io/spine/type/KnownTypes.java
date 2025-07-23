@@ -26,7 +26,6 @@
 
 package io.spine.type;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Any;
@@ -34,6 +33,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
 import com.google.protobuf.TypeRegistry;
 import io.spine.annotation.Internal;
+import io.spine.annotation.VisibleForTesting;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;

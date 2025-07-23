@@ -26,10 +26,10 @@
 
 package io.spine.environment;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.annotation.SPI;
+import io.spine.annotation.VisibleForTesting;
 import io.spine.logging.WithLogging;
 import org.jspecify.annotations.Nullable;
 
@@ -365,7 +365,7 @@ public final class Environment implements WithLogging {
     }
 
     private void setCurrentType(@Nullable Class<? extends EnvironmentType<?>> newCurrent) {
-        @Nullable Class<? extends EnvironmentType<?>> previous = this.currentType;
+        var previous = this.currentType;
         this.currentType = newCurrent;
         if (previous == null) {
             if (newCurrent != null) {

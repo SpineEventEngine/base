@@ -26,7 +26,6 @@
 
 package io.spine.type;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.errorprone.annotations.Immutable;
 import com.google.errorprone.annotations.InlineMe;
@@ -39,6 +38,7 @@ import com.google.protobuf.Descriptors.ServiceDescriptor;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
+import io.spine.annotation.VisibleForTesting;
 import io.spine.code.proto.PackageName;
 import io.spine.option.OptionsProto;
 import io.spine.protobuf.Messages;

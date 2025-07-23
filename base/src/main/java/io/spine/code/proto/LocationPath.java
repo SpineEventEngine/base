@@ -26,13 +26,13 @@
 
 package io.spine.code.proto;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.SourceCodeInfo;
 import com.google.protobuf.DescriptorProtos.SourceCodeInfo.Location;
 import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.annotation.VisibleForTesting;
 import io.spine.type.MessageType;
 
 import java.util.ArrayDeque;

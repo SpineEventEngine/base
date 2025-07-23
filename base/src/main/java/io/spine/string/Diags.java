@@ -26,9 +26,9 @@
 
 package io.spine.string;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import io.spine.annotation.Internal;
+import io.spine.annotation.VisibleForTesting;
 
 import java.util.stream.Collector;
 import java.util.stream.Collectors;

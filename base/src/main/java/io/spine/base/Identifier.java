@@ -26,7 +26,6 @@
 
 package io.spine.base;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -35,6 +34,7 @@ import com.google.protobuf.Int64Value;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import io.spine.annotation.Internal;
+import io.spine.annotation.VisibleForTesting;
 import io.spine.protobuf.AnyPacker;
 import io.spine.string.StringifierRegistry;
 import io.spine.type.TypeUrl;
