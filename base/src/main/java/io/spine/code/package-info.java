@@ -27,11 +27,9 @@
 /**
  * This package contains language-neutral classes and interfaces for Spine tools.
  */
-@Internal
 @CheckReturnValue
 @NullMarked
 package io.spine.code;
 
 import com.google.errorprone.annotations.CheckReturnValue;
-import io.spine.annotation.Internal;
 import org.jspecify.annotations.NullMarked;
