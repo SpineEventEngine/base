@@ -41,7 +41,7 @@ import static java.lang.String.format;
  */
 public final class Delete {
 
-    private static final Logger<?> logger = LoggingFactory.forEnclosingClass();
+    private static final Logger logger = LoggingFactory.forEnclosingClass();
 
     /** Prevents instantiation of this utility class. */
     private Delete() {

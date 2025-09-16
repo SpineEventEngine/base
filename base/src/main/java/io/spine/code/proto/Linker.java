@@ -52,7 +52,7 @@ import static java.util.stream.Collectors.toList;
  */
 final class Linker {
 
-    private static final Logger<?> logger = LoggingFactory.forEnclosingClass();
+    private static final Logger logger = LoggingFactory.forEnclosingClass();
 
     private static final FileDescriptor[] NO_DEPENDENCIES = {};
 

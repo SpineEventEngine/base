@@ -24,9 +24,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dependency.kotlinx
+package io.spine.annotation;
 
-@Suppress("ConstPropertyName", "unused") // https://bit.ly/kotlin-prop-names
-object KotlinX {
-    const val group = "org.jetbrains.kotlinx"
+import org.junit.jupiter.api.DisplayName;
+
+@DisplayName("`@Generated` annotation in Java should")
+class GeneratedJavaSpec {
+
+    /**
+     * This class mimics a generated class which has one line annotation.
+     */
+    @SuppressWarnings("UnusedNestedClass")
+    @Generated("With one line value")
+    private static class SingleLineAnnotation {
+    }
+
+    /**
+     * This class mimics a generated class annotated with an array of strings.
+     */
+    @SuppressWarnings("UnusedNestedClass")
+    @Generated({"Line 1", "Line 2", "Line 3"})
+    private static class ValueArrayAnnotation {
+    }
+
+    @SuppressWarnings("UnusedNestedClass")
+    @Generated(
+            value = {"With array", "of strings"},
+            timestamp = "20:05",
+            comments = "Some comments"
+    )
+    private static class AllArguments {
+    }
 }

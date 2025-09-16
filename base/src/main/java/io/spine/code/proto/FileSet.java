@@ -65,7 +65,7 @@ import static java.util.stream.Collectors.toSet;
  */
 public final class FileSet {
 
-    private static final Logger<?> logger = LoggingFactory.forEnclosingClass();
+    private static final Logger logger = LoggingFactory.forEnclosingClass();
 
     private static final FileDescriptor[] EMPTY = {};
 
@@ -135,7 +135,7 @@ public final class FileSet {
     private static void onUnknownFiles(Set<FileName> knownFiles,
                                        Set<FileName> requestedFiles,
                                        File descriptorSetFile) {
-        var detailLevel = Level.Companion.getDEBUG();
+        var detailLevel = Level.DEBUG;
         logger.atWarning().log(() -> format(
                 "Some files are unknown. " +
                 "%s files are present in classpath but %s files are discovered in `%s`.%n" +
