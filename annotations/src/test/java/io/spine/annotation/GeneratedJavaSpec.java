@@ -28,13 +28,13 @@ package io.spine.annotation;
 
 import org.junit.jupiter.api.DisplayName;
 
+@SuppressWarnings("UnusedNestedClass") // Nested classes are annotation targets.
 @DisplayName("`@Generated` annotation in Java should")
 class GeneratedJavaSpec {
 
     /**
      * This class mimics a generated class which has one line annotation.
      */
-    @SuppressWarnings("UnusedNestedClass")
     @Generated("With one line value")
     private static class SingleLineAnnotation {
     }
@@ -42,12 +42,10 @@ class GeneratedJavaSpec {
     /**
      * This class mimics a generated class annotated with an array of strings.
      */
-    @SuppressWarnings("UnusedNestedClass")
     @Generated({"Line 1", "Line 2", "Line 3"})
     private static class ValueArrayAnnotation {
     }
 
-    @SuppressWarnings("UnusedNestedClass")
     @Generated(
             value = {"With array", "of strings"},
             timestamp = "20:05",
