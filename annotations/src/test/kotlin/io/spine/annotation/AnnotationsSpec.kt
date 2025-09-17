@@ -68,16 +68,12 @@ internal class AnnotationsSpec {
     fun `have the 'CLASS' retention in the 'Generated' annotation`() {
         Generated::class.java.retention() shouldBe CLASS
     }
+
+    @Test
+    fun `have the 'SOURCE' retention in the 'Modified' annotation`() {
+        Modified::class.java.retention() shouldBe SOURCE
+    }
 }
 
 private fun <T: Annotation> Class<in T>.retention() =
     getAnnotation(java.lang.annotation.Retention::class.java).value
-
-
-@Suppress("EmptyClassBlock", "unused")
-@Generated("Single line")
-private class AnnotatedWithSingleLine
-
-@Suppress("EmptyClassBlock", "unused")
-@Generated("Line 1", "Line 2", "Line 3", timestamp = "12:45", comments = "Some comments")
-private class AnnotatedMoreLines

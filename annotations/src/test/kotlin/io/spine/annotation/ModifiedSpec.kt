@@ -24,40 +24,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.annotation;
-
-import org.junit.jupiter.api.DisplayName;
+package io.spine.annotation
 
 /**
- * This test suite documents the way the {@link Generated} annotation
- * can be used on a class.
- *
- * <p>
+ * This class shows using the [Modified] annotation with single line in Kotlin.
  */
-@SuppressWarnings("UnusedNestedClass") // Nested classes are annotation targets.
-@DisplayName("`@Generated` annotation in Java should")
-class GeneratedJavaSpec {
+@Suppress("EmptyClassBlock", "unused")
+@Modified("Single line")
+private class ModifiedWithSingleLine
 
-    /**
-     * This class mimics a generated class which has one line annotation.
-     */
-    @Generated("With one line value")
-    private static class SingleLineAnnotation {
-    }
-
-    /**
-     * This class mimics a generated class annotated with an array of strings.
-     */
-    @Generated({"Line 1", "Line 2", "Line 3"})
-    private static class ValueArrayAnnotation {
-    }
-
-    @Generated(
-            value = {"With array", "of strings"},
-            timestamp = "20:05", // could be any string, but the ISO format is preferred.
-            comments = "Some comments"
-    )
-    @SuppressWarnings("EmptyClass")
-    private static class AllArguments {
-    }
-}
+/**
+ * This class shows using the [Modified] annotation with
+ * multi-line [Modified.value] argument in Kotlin.
+ */
+@Suppress("EmptyClassBlock", "unused")
+@Modified("Line 1", "Line 2", "Line 3", timestamp = "2025-09-17", comments = "Some comments")
+private class ModifiedMultipleLines
+/**
+ * This class shows using the [Modified] annotation with
+ * multi-line [Modified.value] argument in Kotlin when
+ * the [value][Modified.value] parameter is named.
+ */
+@Suppress("EmptyClassBlock", "unused")
+@Modified(value = ["Line 1", "Line 2", "Line 3"], timestamp = "12:45", comments = "Some comments")
+private class ModifiedMultipleLinesInArray
