@@ -32,7 +32,9 @@ import org.junit.jupiter.api.DisplayName;
  * This test suite documents the way the {@link Generated} annotation
  * can be used on a class.
  *
- * <p>
+ * <p>This test suite does not run assertions because it does
+ * not make much sense for annotations.
+ * Instead, it contains nested static classes with the annotations applied.
  */
 @SuppressWarnings("UnusedNestedClass") // Nested classes are annotation targets.
 @DisplayName("`@Generated` annotation in Java should")
