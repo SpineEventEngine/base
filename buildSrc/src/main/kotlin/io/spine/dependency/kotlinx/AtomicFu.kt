@@ -24,4 +24,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.360")
+package io.spine.dependency.kotlinx
+
+import io.spine.dependency.Dependency
+
+/**
+ * Kotlin/Multiplatform AtomicFU library.
+ *
+ * https://github.com/Kotlin/kotlinx.atomicfu
+ */
+object AtomicFu : Dependency() {
+
+    override val version: String = "0.29.0"
+
+    override val group: String = KotlinX.group
+
+    @Suppress("ConstPropertyName") // https://bit.ly/kotlin-prop-names
+    const val module = "atomicfu"
+
+    /**
+     * The base artifact without platform classifier.
+     */
+    val std = "$group:$module"
+
+    override val modules: List<String> = listOf(std)
+
+    /** Convenience: full coordinates with the version for the standard artifact. */
+    val lib: String get() = artifact(std)
+}

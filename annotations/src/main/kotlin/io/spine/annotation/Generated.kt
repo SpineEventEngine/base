@@ -88,7 +88,7 @@ import kotlin.annotation.AnnotationTarget.VALUE_PARAMETER
 )
 @MustBeDocumented
 public annotation class Generated(
-    val value: Array<String>,
+    vararg val value: String,
     val timestamp: String = "",
     val comments: String = ""
 )

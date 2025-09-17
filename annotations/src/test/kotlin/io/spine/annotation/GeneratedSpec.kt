@@ -24,4 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.360")
+package io.spine.annotation
+
+/**
+ * This class shows using the [Generated] annotation with single line in Kotlin.
+ */
+@Suppress("EmptyClassBlock", "unused")
+@Generated("Single line")
+private class GeneratedWithSingleLine
+
+/**
+ * This class shows using the [Generated] annotation with
+ * multi-line [Generated.value] argument in Kotlin.
+ */
+@Suppress("EmptyClassBlock", "unused")
+@Generated("Line 1", "Line 2", "Line 3", timestamp = "12:45", comments = "Some comments")
+private class GeneratedMultipleLines
+
+/**
+ * This class shows using the [Generated] annotation with
+ * multi-line [Generated.value] argument in Kotlin when
+ * the [value][Generated.value] parameter is named.
+ */
+@Suppress("EmptyClassBlock", "unused")
+@Generated(value = ["Line 1", "Line 2", "Line 3"], timestamp = "12:45", comments = "Some comments")
+private class GeneratedMultipleLinesInArray

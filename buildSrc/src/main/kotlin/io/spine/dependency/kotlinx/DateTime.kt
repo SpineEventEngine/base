@@ -24,4 +24,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.360")
+package io.spine.dependency.kotlinx
+
+// https://github.com/Kotlin/kotlinx-datetime
+@Suppress("ConstPropertyName", "unused")
+object DateTime {
+    const val group = KotlinX.group
+    const val lib = "$group:kotlinx-datetime:0.7.1"
+}

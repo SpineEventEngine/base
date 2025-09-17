@@ -68,8 +68,12 @@ internal class AnnotationsSpec {
     fun `have the 'CLASS' retention in the 'Generated' annotation`() {
         Generated::class.java.retention() shouldBe CLASS
     }
+
+    @Test
+    fun `have the 'SOURCE' retention in the 'Modified' annotation`() {
+        Modified::class.java.retention() shouldBe SOURCE
+    }
 }
 
 private fun <T: Annotation> Class<in T>.retention() =
     getAnnotation(java.lang.annotation.Retention::class.java).value
-

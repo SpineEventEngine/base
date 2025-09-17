@@ -54,7 +54,7 @@ import static java.util.stream.Collectors.toSet;
  */
 public final class FileDescriptors {
 
-    private static final Logger<?> logger = LoggingFactory.forEnclosingClass();
+    private static final Logger logger = LoggingFactory.forEnclosingClass();
 
     /**
      * Extension of the descriptor set files.

@@ -26,6 +26,7 @@
 
 package io.spine.annotation
 
+import kotlin.annotation.AnnotationRetention.SOURCE
 import kotlin.annotation.AnnotationTarget.ANNOTATION_CLASS
 import kotlin.annotation.AnnotationTarget.CLASS
 import kotlin.annotation.AnnotationTarget.CONSTRUCTOR
@@ -66,7 +67,7 @@ import kotlin.annotation.AnnotationTarget.VALUE_PARAMETER
  * @see Generated
  * @since 2.0.0
  */
-@Retention(AnnotationRetention.SOURCE)
+@Retention(SOURCE)
 @Target(
     ANNOTATION_CLASS,
     CLASS,
@@ -80,7 +81,7 @@ import kotlin.annotation.AnnotationTarget.VALUE_PARAMETER
 )
 @MustBeDocumented
 public annotation class Modified(
-    val value: Array<String>,
+    vararg val value: String,
     val timestamp: String = "",
     val comments: String = ""
 )

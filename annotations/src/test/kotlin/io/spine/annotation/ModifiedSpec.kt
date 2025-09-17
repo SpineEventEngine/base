@@ -24,4 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.360")
+package io.spine.annotation
+
+/**
+ * This class shows using the [Modified] annotation with single line in Kotlin.
+ */
+@Suppress("EmptyClassBlock", "unused")
+@Modified("Single line")
+private class ModifiedWithSingleLine
+
+/**
+ * This class shows using the [Modified] annotation with
+ * multi-line [Modified.value] argument in Kotlin.
+ */
+@Suppress("EmptyClassBlock", "unused")
+@Modified("Line 1", "Line 2", "Line 3", timestamp = "2025-09-17", comments = "Some comments")
+private class ModifiedMultipleLines
+
+/**
+ * This class shows using the [Modified] annotation with
+ * multi-line [Modified.value] argument in Kotlin when
+ * the [value][Modified.value] parameter is named.
+ */
+@Suppress("EmptyClassBlock", "unused")
+@Modified(value = ["Line 1", "Line 2", "Line 3"], timestamp = "12:45", comments = "Some comments")
+private class ModifiedMultipleLinesInArray
