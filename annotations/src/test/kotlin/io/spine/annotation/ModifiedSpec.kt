@@ -40,6 +40,7 @@ private class ModifiedWithSingleLine
 @Suppress("EmptyClassBlock", "unused")
 @Modified("Line 1", "Line 2", "Line 3", timestamp = "2025-09-17", comments = "Some comments")
 private class ModifiedMultipleLines
+
 /**
  * This class shows using the [Modified] annotation with
  * multi-line [Modified.value] argument in Kotlin when
