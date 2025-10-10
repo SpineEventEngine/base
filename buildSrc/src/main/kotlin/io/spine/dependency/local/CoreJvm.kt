@@ -26,32 +26,31 @@
 
 package io.spine.dependency.local
 
+// For backward compatibility.
+typealias CoreJava = CoreJvm
+
 /**
- * Dependencies on the artifacts of the Spine Logging library.
+ * Dependencies on `core-java` modules.
  *
- * @see <a href="https://github.com/SpineEventEngine/logging">spine-logging</a>
+ * See [`SpineEventEngine/core-java`](https://github.com/SpineEventEngine/core-java/).
  */
 @Suppress("ConstPropertyName", "unused")
-object Logging {
-    const val version = "2.0.0-SNAPSHOT.411"
+object CoreJvm {
     const val group = Spine.group
+    const val version = "2.0.0-SNAPSHOT.332"
 
-    const val loggingArtifact = "spine-logging"
+    const val coreArtifact = "spine-core"
+    const val clientArtifact = "spine-client"
+    const val serverArtifact = "spine-server"
 
-    const val lib = "$group:$loggingArtifact:$version"
-    const val libJvm = "$group:spine-logging-jvm:$version"
+    const val core = "$group:$coreArtifact:$version"
+    const val client = "$group:$clientArtifact:$version"
+    const val server = "$group:$serverArtifact:$version"
 
-    const val log4j2Backend = "$group:spine-logging-log4j2-backend:$version"
-    const val stdContext = "$group:spine-logging-std-context:$version"
-    const val grpcContext = "$group:spine-logging-grpc-context:$version"
-    const val smokeTest = "$group:spine-logging-smoke-test:$version"
+    @Deprecated("Use `serverTestLib` instead.", ReplaceWith("serverTestLib"))
+    const val testUtilServer = "${Spine.toolsGroup}:spine-server-testlib:$version"
 
-    const val testLib = "${Spine.toolsGroup}:spine-logging-testlib:$version"
-
-    // Transitive dependencies.
-    // Make `public` and use them to force a version in a particular repository, if needed.
-    internal const val julBackend = "$group:spine-logging-jul-backend:$version"
-    const val middleware = "$group:spine-logging-middleware:$version"
-    internal const val platformGenerator = "$group:spine-logging-platform-generator:$version"
-    internal const val jvmDefaultPlatform = "$group:spine-logging-jvm-default-platform:$version"
+    const val coreTestLib = "${Spine.toolsGroup}:spine-core-testlib:$version"
+    const val clientTestLib = "${Spine.toolsGroup}:spine-client-testlib:$version"
+    const val serverTestLib = "${Spine.toolsGroup}:spine-server-testlib:$version"
 }

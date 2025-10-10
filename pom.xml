@@ -10,7 +10,7 @@ all modules and does not describe the project structure per-subproject.
  -->
 <groupId>io.spine</groupId>
 <artifactId>base-libraries</artifactId>
-<version>2.0.0-SNAPSHOT.360</version>
+<version>2.0.0-SNAPSHOT.361</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -26,7 +26,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.fasterxml.jackson</groupId>
     <artifactId>jackson-bom</artifactId>
-    <version>2.18.3</version>
+    <version>2.20.0</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -86,7 +86,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-logging</artifactId>
-    <version>2.0.0-SNAPSHOT.410</version>
+    <version>2.0.0-SNAPSHOT.411</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -152,19 +152,19 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-logging-smoke-test</artifactId>
-    <version>2.0.0-SNAPSHOT.410</version>
+    <version>2.0.0-SNAPSHOT.411</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>io.spine.tools</groupId>
     <artifactId>spine-logging-testlib</artifactId>
-    <version>2.0.0-SNAPSHOT.410</version>
+    <version>2.0.0-SNAPSHOT.411</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>io.spine.tools</groupId>
     <artifactId>spine-testlib</artifactId>
-    <version>2.0.0-SNAPSHOT.202</version>
+    <version>2.0.0-SNAPSHOT.210</version>
     <scope>test</scope>
   </dependency>
   <dependency>
@@ -206,17 +206,17 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.devtools.ksp</groupId>
     <artifactId>symbol-processing</artifactId>
-    <version>2.1.21-2.0.2</version>
+    <version>2.1.21-2.0.1</version>
   </dependency>
   <dependency>
     <groupId>com.google.devtools.ksp</groupId>
     <artifactId>symbol-processing-api</artifactId>
-    <version>2.1.21-2.0.2</version>
+    <version>2.1.21-2.0.1</version>
   </dependency>
   <dependency>
     <groupId>com.google.devtools.ksp</groupId>
     <artifactId>symbol-processing-cmdline</artifactId>
-    <version>2.1.21-2.0.2</version>
+    <version>2.1.21-2.0.1</version>
   </dependency>
   <dependency>
     <groupId>com.google.errorprone</groupId>
