@@ -47,14 +47,14 @@ import static java.util.Objects.requireNonNull;
  *
  * <p>The following singular types can be converted in both directions:
  * <ul>
- *     <li>{@link Message} - converted via {@link AnyPacker}.
- *     <li>Java primitives - the passed {@link Any} is unpacked into one of the types
+ *     <li>{@link Message} — converted via {@link AnyPacker}.
+ *     <li>Java primitives — the passed {@link Any} is unpacked into one of the types
  *         {@code Int32Value, Int64Value, UInt32Value, UInt64Value, FloatValue, DoubleValue,
  *         BoolValue, StringValue, BytesValue} and then transformed into the corresponding Java
  *         type, either a primitive value, or {@code String} of {@link ByteString}. For more info,
  *         see <a href="https://developers.google.com/protocol-buffers/docs/proto3#scalar">
  *         the official document</a>.
- *     <li>{@linkplain Enum Java Enum} types - the passed {@link Any} is unpacked into the {@link
+ *     <li>{@linkplain Enum Java Enum} types — the passed {@link Any} is unpacked into the {@link
  *         EnumValue} type and then is converted to the Java Enum through the value {@linkplain
  *         EnumValue#getName() name} or {@linkplain EnumValue#getNumber() number}.
  * </ul>
@@ -102,7 +102,7 @@ public final class TypeConverter {
         checkNotRawEnum(message, target);
         Converter<? super Message, T> converter = ProtoConverter.forType(target);
         var genericMessage = unpack(message);
-        var result = converter.convert(genericMessage);
+        var result = requireNonNull(converter.convert(genericMessage));
         return requireNonNull(result);
     }
 
