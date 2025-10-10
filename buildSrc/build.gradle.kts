@@ -130,7 +130,7 @@ val kotestJvmPluginVersion = "0.4.10"
 /**
  * @see [io.spine.dependency.test.Kotest.MultiplatformGradlePlugin]
  */
-val kotestMultiplatformPluginVersion = "5.9.1"
+val kotestMultiplatformPluginVersion = "6.0.0.M4"
 
 /**
  * @see [io.spine.dependency.test.Kover]
