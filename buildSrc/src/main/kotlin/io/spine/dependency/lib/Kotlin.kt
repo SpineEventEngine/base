@@ -49,7 +49,7 @@ object Kotlin : DependencyWithBom() {
      * This is the version of
      * [Kotlin embedded into Gradle](https://docs.gradle.org/current/userguide/compatibility.html#kotlin).
      */
-    const val embeddedVersion = "2.1.21"
+    const val embeddedVersion = "2.2.20"
 
     /**
      * The version of the JetBrains annotations library, which is a transitive
