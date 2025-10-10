@@ -24,6 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 /**
  * This script uses two declarations of the constant [licenseReportVersion] because
  * currently there is no way to define a constant _before_ a build script of `buildSrc`.
@@ -36,7 +38,7 @@ plugins {
     `kotlin-dsl`
 
     // https://github.com/jk1/Gradle-License-Report/releases
-    id("com.github.jk1.dependency-license-report").version("2.7")
+    id("com.github.jk1.dependency-license-report").version("2.9")
 }
 
 repositories {
@@ -73,7 +75,7 @@ val grGitVersion = "4.1.1"
  * This version may change from the [version of Kotlin][io.spine.dependency.lib.Kotlin.version]
  * used by the project.
  */
-val kotlinEmbeddedVersion = "2.1.21"
+val kotlinEmbeddedVersion = "2.2.20"
 
 /**
  * The version of Guava used in `buildSrc`.
@@ -128,7 +130,7 @@ val kotestJvmPluginVersion = "0.4.10"
 /**
  * @see [io.spine.dependency.test.Kotest.MultiplatformGradlePlugin]
  */
-val kotestMultiplatformPluginVersion = "5.9.1"
+val kotestMultiplatformPluginVersion = "6.0.0.M4"
 
 /**
  * @see [io.spine.dependency.test.Kover]
@@ -140,7 +142,7 @@ val koverVersion = "0.9.1"
  *
  * `7.1.2` is the last version compatible with Gradle 7.x. Newer versions require Gradle v8.x.
  *
- * @see <a href="https://github.com/johnrengelman/shadow/releases">Shadow Plugin releases</a>
+ * @see <a href="https://github.com/GradleUp/shadow">Shadow Plugin releases</a>
  */
 val shadowVersion = "8.3.6"
 
@@ -155,6 +157,17 @@ configurations.all {
             "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinEmbeddedVersion",
             "org.jetbrains.kotlin:kotlin-reflect:$kotlinEmbeddedVersion"
         )
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
     }
 }
 
