@@ -38,7 +38,7 @@ plugins {
     `kotlin-dsl`
 
     // https://github.com/jk1/Gradle-License-Report/releases
-    id("com.github.jk1.dependency-license-report").version("2.7")
+    id("com.github.jk1.dependency-license-report").version("2.9")
 }
 
 repositories {
