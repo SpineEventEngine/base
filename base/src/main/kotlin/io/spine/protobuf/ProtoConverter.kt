@@ -30,6 +30,7 @@ import com.google.common.base.Converter
 import com.google.protobuf.ByteString
 import com.google.protobuf.Message
 import com.google.protobuf.ProtocolMessageEnum
+import io.spine.annotation.Internal
 
 /**
  * Performs conversion of a [Protobuf Message][Message] to its Java counterpart and back.
@@ -39,6 +40,7 @@ import com.google.protobuf.ProtocolMessageEnum
  * @param M The type of the message to convert.
  * @param T Target conversion type.
  */
+@Internal
 internal abstract class ProtoConverter<M : Message, T : Any> : Converter<M, T>() {
 
     override fun doForward(input: M): T = toObject(input)
