@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,121 +24,104 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.protobuf;
+package io.spine.protobuf
 
-import com.google.common.base.Converter;
-import com.google.protobuf.ByteString;
-import com.google.protobuf.Message;
-import com.google.protobuf.ProtocolMessageEnum;
-
-import java.util.List;
-import java.util.Map;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.protobuf.PrimitiveConverter.supportedPrimitives;
+import com.google.common.base.Converter
+import com.google.protobuf.ByteString
+import com.google.protobuf.Message
+import com.google.protobuf.ProtocolMessageEnum
 
 /**
- * Performs conversion of a {@linkplain Message Protobuf Message} to its Java counterpart and back.
+ * Performs conversion of a [Protobuf Message][Message] to its Java counterpart and back.
  *
- * <p>The inheritors implement the actual conversion to a specific Message and Object.
+ * The inheritors implement the actual conversion to a specific [Message] and [Any].
  *
- * @param <M>
- *         the type of a message to convert
- * @param <T>
- *         target conversion type
+ * @param M The type of the message to convert.
+ * @param T Target conversion type.
  */
-abstract class ProtoConverter<M extends Message, T> extends Converter<M, T> {
+internal abstract class ProtoConverter<M : Message, T : Any> : Converter<M, T>() {
+
+    override fun doForward(input: M): T = toObject(input)
+
+    override fun doBackward(t: T): M = toMessage(t)
 
     /**
-     * Returns a converter for the specified {@code type}.
-     *
-     * <p>Protobuf {@linkplain Message messages} are returned {@linkplain AsIs as is}.
-     *
-     * <p>{@link ByteString} instances are {@linkplain BytesConverter converted} to
-     * {@link com.google.protobuf.BytesValue BytesValue}.
-     *
-     * <p>{@linkplain ProtocolMessageEnum Protobuf enums} are converted using a dedicated
-     * {@link EnumConverter} which handles conversions by name or by number.
-     *
-     * <p>{@linkplain List Java lists} are converted to {@link io.spine.base.ListOfAnys}.</p>
-     *
-     * <p>{@linkplain Map Java maps} are converted to {@link io.spine.base.MapOfAnys}.</p>
-     *
-     * <p>All other types are considered primitives and are {@linkplain PrimitiveConverter handled}
-     * respectively.
+     * Converts supplied `input` message into a typed object.
      */
-    static <M extends Message, T> Converter<M, T> forType(Class<T> type) {
-        checkNotNull(type);
-        ProtoConverter<?, ?> converter;
-        if (Message.class.isAssignableFrom(type)) {
-            converter = new AsIs();
-        } else if (ByteString.class.isAssignableFrom(type)) {
-            converter = new BytesConverter();
-        } else if (isProtoEnum(type)) {
-            converter = new EnumConverter(asProtoEnum(type));
-        } else if (List.class.isAssignableFrom(type)) {
-            converter = new ListConverter();
-        } else if (Map.class.isAssignableFrom(type)) {
-            converter = new MapConverter();
-        } else if (supportedPrimitives().contains(type)) {
-            converter = new PrimitiveConverter<>();
-        } else {
-            var requestedType = '`' + type.getCanonicalName() + '`';
-            throw new UnsupportedOperationException(
-                    "Cannot find a `ProtoConverter` for Protobuf type: " + requestedType + '.'
-            );
-        }
-        @SuppressWarnings("unchecked") // Logically checked.
-        var result = (Converter<M, T>) converter;
-        return result;
-    }
-
-    private static <T> boolean isProtoEnum(Class<T> type) {
-        return Enum.class.isAssignableFrom(type)
-                && ProtocolMessageEnum.class.isAssignableFrom(type);
-    }
-
-    @SuppressWarnings("unchecked") // Checked at runtime.
-    private static <T> Class<? extends Enum<? extends ProtocolMessageEnum>>
-    asProtoEnum(Class<T> type) {
-        return (Class<? extends Enum<? extends ProtocolMessageEnum>>) type;
-    }
-
-    @Override
-    protected final T doForward(M input) {
-        checkNotNull(input);
-        return toObject(input);
-    }
-
-    @Override
-    protected final M doBackward(T t) {
-        checkNotNull(t);
-        return toMessage(t);
-    }
+    protected abstract fun toObject(input: M): T
 
     /**
-     * Converts supplied {@code input} message into a typed object.
+     * Converts supplied `input` object into a Protobuf message.
      */
-    protected abstract T toObject(M input);
+    protected abstract fun toMessage(input: T): M
 
-    /**
-     * Converts supplied {@code input} object into a Protobuf message.
-     */
-    protected abstract M toMessage(T input);
+    companion object {
 
-    /**
-     * Returns the supplied {@code input} {@link Message} as is.
-     */
-    private static final class AsIs extends ProtoConverter<Message, Message> {
-
-        @Override
-        protected Message toObject(Message input) {
-            return input;
+        /**
+         * Returns a converter for the specified `type`.
+         *
+         * Protobuf [messages][Message] are returned [as is][AsIs].
+         *
+         * [ByteString] instances are [converted][BytesConverter] to
+         * [BytesValue][com.google.protobuf.BytesValue].
+         *
+         * [Protobuf enums][ProtocolMessageEnum] are converted using a dedicated
+         * [EnumConverter] which handles conversions by name or by number.
+         *
+         *  * [lists][List] are converted to [io.spine.base.ListOfAnys].
+         *
+         *  * [maps][Map] are converted to [io.spine.base.MapOfAnys].
+         *
+         * All other types are considered primitives and are
+         * [handled][PrimitiveConverter] respectively.
+         */
+        @JvmStatic
+        fun <M : Message, T : Any> forType(type: Class<T>): Converter<M, T> {
+            val converter: ProtoConverter<*, *>
+            if (Message::class.java.isAssignableFrom(type)) {
+                converter = AsIs()
+            } else if (ByteString::class.java.isAssignableFrom(type)) {
+                converter = BytesConverter()
+            } else if (isProtoEnum(type)) {
+                @Suppress("UNCHECKED_CAST")
+                val enumType = asProtoEnum(type) as Class<out Enum<out ProtocolMessageEnum>>
+                converter = EnumConverter(enumType)
+            } else if (List::class.java.isAssignableFrom(type)) {
+                converter = ListConverter()
+            } else if (Map::class.java.isAssignableFrom(type)) {
+                converter = MapConverter()
+            } else if (PrimitiveConverter.supportedPrimitives().contains(type)) {
+                converter = PrimitiveConverter<Message, Any>()
+            } else {
+                throw UnsupportedOperationException(
+                    "Cannot find a `ProtoConverter` for Protobuf type: `${type.canonicalName}`."
+                )
+            }
+            @Suppress("UNCHECKED_CAST") // Logically checked.
+            val result = converter as Converter<M, T>
+            return result
         }
 
-        @Override
-        protected Message toMessage(Message input) {
-            return input;
+        private fun <T : Any> isProtoEnum(type: Class<T>): Boolean {
+            return Enum::class.java.isAssignableFrom(type)
+                    && ProtocolMessageEnum::class.java.isAssignableFrom(type)
+        }
+
+        @Suppress("UNCHECKED_CAST") // Checked at runtime.
+        private fun <T : Any> asProtoEnum(
+            type: Class<T>
+        ): Class<out Enum<*>> {
+            return type as Class<out Enum<*>>
         }
     }
+}
+
+/**
+ * Returns the supplied `input` [Message] as is.
+ */
+private class AsIs : ProtoConverter<Message, Message>() {
+
+    override fun toObject(input: Message): Message = input
+
+    override fun toMessage(input: Message): Message = input
 }
