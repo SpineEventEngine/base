@@ -46,12 +46,13 @@ object Kotest {
 
     // https://plugins.gradle.org/plugin/io.kotest.multiplatform
     object MultiplatformGradlePlugin {
-        const val version = Kotest.version
+        const val version = "6.0.0.M4"
         const val id = "io.kotest.multiplatform"
         const val classpath = "$group:kotest-framework-multiplatform-plugin-gradle:$version"
     }
 
     // https://github.com/kotest/kotest-gradle-plugin
+    @Deprecated("The repository is archived. Use `io.kotest.multiplatform` plugin instead.")
     object JvmGradlePlugin {
         const val version = "0.4.11"
         const val id = "io.kotest"
