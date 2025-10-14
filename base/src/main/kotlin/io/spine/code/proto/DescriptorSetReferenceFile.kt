@@ -26,6 +26,7 @@
 
 package io.spine.code.proto
 
+import io.spine.annotation.VisibleForTesting
 import io.spine.io.Resource
 import io.spine.util.Exceptions.illegalStateWithCauseOf
 import java.io.IOException
@@ -37,11 +38,14 @@ import java.nio.charset.StandardCharsets
  * references to descriptor set files produced by `GenerateProtoTasks` of
  * a module to which Protobuf Gradle Plugin is applied.
  *
- * The plugin can be applied either directly, or indirectly, e.g. via Spine Compiler Gradle Plugin,
- * or CoreJvm Gradle Plugin.
+ * The plugin can be applied either directly or indirectly e.g.,
+ * via Spine Compiler Gradle Plugin, or CoreJvm Gradle Plugin.
  */
 public object DescriptorSetReferenceFile {
 
+    /**
+     * The class loader used to load resources.
+     */
     private val classLoader: ClassLoader = this::class.java.classLoader
 
     /**
@@ -58,24 +62,35 @@ public object DescriptorSetReferenceFile {
         Resource.file(FILE_NAME, classLoader)
     }
 
-    internal fun loadFromResources(resources: Collection<URL>): List<Resource> =
-        resources.map { readFile(it) }
-            .flatMap { it.lines().filter { line -> filterLine(line) } }
-            .distinct()
-            .map { Resource.file(it, classLoader) }
-
+    /**
+     * Loads all descriptor set reference files found in classpath resources.
+     *
+     * Searches for all [desc.ref][FILE_NAME] files in classpath resources,
+     * reads their contents and returns a list of [Resource]s corresponding to
+     * the descriptor set files referenced in them.
+     *
+     * Each returned resource corresponds to a unique descriptor set file.
+     * Duplicate entries are filtered out.
+     *
+     * @return list of resources pointing to descriptor set files.
+     */
     @JvmStatic
     public fun loadAll(): List<Resource> {
         val allDescRefFiles = resourceFile.locateAll()
         return loadFromResources(allDescRefFiles)
     }
 
+    @VisibleForTesting
+    internal fun loadFromResources(resources: Collection<URL>): List<Resource> =
+        resources.map { readFile(it) }
+            .flatMap { it.lines().filter { line -> filterLine(line) } }
+            .distinct()
+            .map { Resource.file(it, classLoader) }
+
     /**
-     * Accepts descriptor reference file lines that are not empty and
-     * do not start with the hash (`#`) symbol.
+     * Accepts descriptor reference file lines that are not empty.
      */
-    private fun filterLine(line: String): Boolean =
-        line.isNotBlank() && !line.startsWith("#")
+    private fun filterLine(line: String): Boolean = line.isNotBlank()
 }
 
 private fun readFile(resource: URL): String = try {
