@@ -29,9 +29,11 @@ package io.spine.code.proto
 import io.spine.annotation.VisibleForTesting
 import io.spine.io.Resource
 import io.spine.util.Exceptions.illegalStateWithCauseOf
+import java.io.File
 import java.io.IOException
 import java.net.URL
 import java.nio.charset.StandardCharsets
+import java.nio.file.Path
 
 /**
  * A descriptor set reference file ([desc.ref][NAME]) contains one or more references
@@ -67,6 +69,22 @@ public object DescriptorSetReferenceFile {
 
     private val resourceFile: Resource by lazy {
         Resource.file(NAME, classLoader)
+    }
+
+    /**
+     * Create a reference file pointing to the given descriptor set file.
+     *
+     * If the reference file already exists, it will be overwritten.
+     *
+     * @param dir The directory to place the file.
+     *        If the directory does not exist, it will be automatically created.
+     * @param target The descriptor set file to reference.
+     */
+    @JvmStatic
+    public fun create(dir: File, target: File) {
+        val result = File(dir, NAME)
+        result.parentFile.mkdirs()
+        result.writeText(target.name)
     }
 
     /**
