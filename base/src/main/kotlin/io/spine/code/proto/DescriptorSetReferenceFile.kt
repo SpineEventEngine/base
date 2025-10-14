@@ -34,9 +34,16 @@ import java.net.URL
 import java.nio.charset.StandardCharsets
 
 /**
- * Utilities for working with files [desc.ref][NAME] containing
- * references to descriptor set files produced by `GenerateProtoTasks` of
- * a module to which Protobuf Gradle Plugin is applied.
+ * A descriptor set reference file ([desc.ref][NAME]) contains one or more references
+ * to descriptor set files that are created by `GenerateProtoTask` files of
+ * Protobuf Gradle Plugin applied to a project.
+ *
+ * The references are file names of the resources packed along with the [desc.ref][NAME] file.
+ * The [desc.ref][NAME] file is needed to avoid walking through the whole classpath for
+ * finding descriptor set files.
+ *
+ * A module which contains proto files gets descriptor set file and the file with the reference
+ * to it when the Spine's Descriptor Set File Gradle Plugin is applied to the project.
  *
  * The plugin can be applied either directly or indirectly e.g.,
  * via Spine Compiler Gradle Plugin, or CoreJvm Gradle Plugin.
