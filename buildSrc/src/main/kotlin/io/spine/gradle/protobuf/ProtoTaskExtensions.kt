@@ -151,9 +151,7 @@ fun GenerateProtoTask.setupDescriptorSetFileCreation() {
     }
 
     // Add the descriptor set file into the resources.
-    project.sourceSets.named(ssn) {
-        resources.srcDirs(descriptorsDir)
-    }
+    sourceSet.resources.srcDirs(descriptorsDir)
 
     // Create a `desc.ref` in the same resource folder,
     // with the name of the descriptor set file created above.
