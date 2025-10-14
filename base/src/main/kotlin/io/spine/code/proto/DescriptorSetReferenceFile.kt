@@ -34,7 +34,7 @@ import java.net.URL
 import java.nio.charset.StandardCharsets
 
 /**
- * Utilities for working with files [desc.ref][FILE_NAME] containing
+ * Utilities for working with files [desc.ref][NAME] containing
  * references to descriptor set files produced by `GenerateProtoTasks` of
  * a module to which Protobuf Gradle Plugin is applied.
  *
@@ -49,23 +49,23 @@ public object DescriptorSetReferenceFile {
     private val classLoader: ClassLoader = this::class.java.classLoader
 
     /**
-     * A file that contains references to a number of Protobuf descriptor set files.
+     * A name of the file that contains references to a number of Protobuf descriptor set files.
      *
      * There may be multiple such files present in one project.
      * The file is created by Gradle plugins that instruct Protobuf Gradle Plugin
      * to create descriptor set files. This file gathers references to all such files that
      * come from dependencies of the module.
      */
-    public const val FILE_NAME: String = "desc.ref"
+    public const val NAME: String = "desc.ref"
 
     private val resourceFile: Resource by lazy {
-        Resource.file(FILE_NAME, classLoader)
+        Resource.file(NAME, classLoader)
     }
 
     /**
      * Loads all descriptor set reference files found in classpath resources.
      *
-     * Searches for all [desc.ref][FILE_NAME] files in classpath resources,
+     * Searches for all [desc.ref][NAME] files in classpath resources,
      * reads their contents and returns a list of [Resource]s corresponding to
      * the descriptor set files referenced in them.
      *

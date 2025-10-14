@@ -25,10 +25,8 @@
  */
 package io.spine.code.proto
 
-import com.google.common.truth.Truth.assertThat
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldHaveSize
-import io.spine.code.proto.DescriptorSetReferenceFile.FILE_NAME
 import io.spine.io.Resource
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
