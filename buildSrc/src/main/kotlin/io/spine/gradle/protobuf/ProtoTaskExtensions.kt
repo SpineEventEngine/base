@@ -150,7 +150,9 @@ fun GenerateProtoTask.setupDescriptorSetFileCreation() {
         includeSourceInfo = true
     }
 
-    // Add the descriptor set file into the resources.
+    // Add the `descriptors` directory to the resources so that
+    // the descriptor set file and the reference file which is created in
+    // the `doLast` block below are packed together with the class files.
     sourceSet.resources.srcDirs(descriptorsDir)
 
     // Create a `desc.ref` in the same resource folder,
