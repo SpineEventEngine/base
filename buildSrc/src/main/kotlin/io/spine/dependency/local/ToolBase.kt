@@ -45,7 +45,8 @@ object ToolBase {
     const val intellijPlatformJava = "$group:intellij-platform-java:$version"
 
     const val psi = "$group:psi:$version"
-    const val psiJava = "$group:psi-java:$version"
+    const val psiJavaArtifactName = "psi-java"
+    const val psiJava = "$group:$psiJavaArtifactName:$version"
 
     const val gradleRootPlugin = "$group:gradle-root-plugin:$version"
     const val gradlePluginApi = "$group:gradle-plugin-api:$version"

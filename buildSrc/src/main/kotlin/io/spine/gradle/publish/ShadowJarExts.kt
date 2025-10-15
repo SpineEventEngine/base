@@ -27,13 +27,16 @@
 package io.spine.gradle.publish
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.gradle.api.file.DuplicatesStrategy
 
 /**
  * Calls [ShadowJar.mergeServiceFiles] for the files we use in the Spine SDK.
  */
+@Suppress("unused")
 fun ShadowJar.handleMergingServiceFiles() {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     ServiceFiles.all.forEach {
-        mergeServiceFiles(it)
+        append(it)
     }
 }
 

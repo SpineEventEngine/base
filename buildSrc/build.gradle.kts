@@ -38,7 +38,7 @@ plugins {
     `kotlin-dsl`
 
     // https://github.com/jk1/Gradle-License-Report/releases
-    id("com.github.jk1.dependency-license-report").version("2.9")
+    id("com.github.jk1.dependency-license-report").version("2.7")
 }
 
 repositories {
@@ -130,7 +130,7 @@ val kotestJvmPluginVersion = "0.4.10"
 /**
  * @see [io.spine.dependency.test.Kotest.MultiplatformGradlePlugin]
  */
-val kotestMultiplatformPluginVersion = "6.0.0.M4"
+val kotestMultiplatformPluginVersion = "5.9.1"
 
 /**
  * @see [io.spine.dependency.test.Kover]
@@ -144,7 +144,7 @@ val koverVersion = "0.9.1"
  *
  * @see <a href="https://github.com/GradleUp/shadow">Shadow Plugin releases</a>
  */
-val shadowVersion = "8.3.6"
+val shadowVersion = "9.2.2"
 
 configurations.all {
     resolutionStrategy {

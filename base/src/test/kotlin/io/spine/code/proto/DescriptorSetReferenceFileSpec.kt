@@ -23,5 +23,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.code.proto
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.363")
+import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.collections.shouldHaveSize
+import io.spine.io.Resource
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+
+@DisplayName("`DescriptorSetReferenceFile` should")
+class DescriptorSetReferenceFileSpec {
+
+    private val classLoader = this::class.java.classLoader
+
+    @Test
+    fun `load references from provided resources`() {
+        val url = Resource.file("duplicate_entries.ref", classLoader).locate()
+        val resources = DescriptorSetReferenceFile.loadFromResources(listOf(url))
+
+        // Expect duplicates removed and comments/blank lines filtered out.
+        resources.shouldHaveSize(2)
+
+        val file1 = Resource.file("stub_file_1.desc", classLoader)
+        val file2 = Resource.file("known_types.desc", classLoader)
+        val resourceSet = resources.toSet()
+        resourceSet.contains(file1).shouldBeTrue()
+        resourceSet.contains(file2).shouldBeTrue()
+    }
+}

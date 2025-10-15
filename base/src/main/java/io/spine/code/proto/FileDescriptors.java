@@ -41,7 +41,6 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Streams.stream;
 import static io.spine.io.IoPreconditions.checkExists;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.util.Predicates2.distinctBy;
@@ -126,8 +125,8 @@ public final class FileDescriptors {
      *         contained in the loaded files
      */
     static Set<FileDescriptorProto> load() {
-        var resources = DescriptorReference.loadAll();
-        var files = stream(resources)
+        var resources = DescriptorSetReferenceFile.loadAll();
+        var files = resources.stream()
                 .map(FileDescriptors::loadFrom)
                 .flatMap(set -> set.getFileList().stream())
                 .filter(distinctBy(FileDescriptorProto::getName))
