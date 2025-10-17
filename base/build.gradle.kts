@@ -94,16 +94,9 @@ tasks {
 // For generating test fixtures. See `src/test/proto`.
 protobuf {
     configurations.excludeProtobufLite()
+
     protoc {
         artifact = Protobuf.compiler
-    }
-
-    afterEvaluate {
-        // Walk the collection of tasks to force the execution
-        // of the `configureEach` operations earlier.
-        // This hack allows to avoid `ConcurrentModificationException` on
-        // creating `kspKotlin` task.
-        generateProtoTasks.all().size
     }
 
     generateProtoTasks.all().configureEach {
