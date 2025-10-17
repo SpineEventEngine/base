@@ -112,13 +112,15 @@ protobuf {
 /**
  * Remove the code generated for Google Protobuf library types.
  *
- * Java code for the `com.google` package was generated because we wanted
+ * The code for the `com.google` package was generated because we wanted
  * to have descriptors for all the types, including those from Google Protobuf library.
  * We want all the descriptors so that they are included into the resources used by
  * the `io.spine.type.KnownTypes` class.
  *
- * Now, as we have the descriptors _and_ excessive Java or Kotlin code, we delete it to avoid
+ * Now, as we have the descriptors _and_ duplicating Java or Kotlin code, we delete it to avoid
  * classes that duplicate those coming from Protobuf library JARs.
+ *
+ * @param language The programming language, either `"java"` or `"kotlin"`.
  */
 fun GenerateProtoTask.deleteComGoogle(language: String) {
     val comDirectory = generatedDir(language).resolve("com")
