@@ -42,7 +42,7 @@ plugins {
     module
     id("com.google.protobuf")
     id("io.spine.descriptor-set-file")
-    id("io.spine.generated-source")
+    id("io.spine.generated-sources")
     `project-report`
     ksp
 }
