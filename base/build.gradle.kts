@@ -135,7 +135,7 @@ fun GenerateProtoTask.deleteComGoogle(language: String) {
 /**
  * Obtains the path of the `generated` directory under the project root directory.
  */
-private val Project.generatedDir: java.nio.file.Path
+private val Project.generatedDir
     get() = projectDir.resolve("generated").toPath()
 
 /**
