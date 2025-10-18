@@ -24,6 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import com.google.protobuf.gradle.GenerateProtoTask
 import io.spine.dependency.build.JSpecify
 import io.spine.dependency.lib.AutoService
 import io.spine.dependency.lib.AutoServiceKsp
@@ -37,10 +38,11 @@ import io.spine.dependency.local.TestLib
 import io.spine.gradle.publish.IncrementGuard
 import io.spine.gradle.publish.excludeGoogleProtoFromArtifacts
 
-// Apply some plugins to make type-safe extension accessors available in this script file.
 plugins {
     module
-    `compile-protobuf`
+    id("com.google.protobuf")
+    id("io.spine.descriptor-set-file")
+    id("io.spine.generated-sources")
     `project-report`
     ksp
 }
@@ -86,4 +88,64 @@ configurations.all {
 
 tasks {
     excludeGoogleProtoFromArtifacts()
+}
+
+
+// For generating test fixtures. See `src/test/proto`.
+protobuf {
+    configurations.excludeProtobufLite()
+
+    protoc {
+        artifact = Protobuf.compiler
+    }
+
+    generateProtoTasks.all().configureEach {
+        // Delete files generated in `com.google` packages because
+        // we add `protobuf(Protobuf.protoSrcLib)` dependency above.
+        doLast {
+            deleteComGoogle("java")
+            deleteComGoogle("kotlin")
+        }
+    }
+}
+
+/**
+ * Remove the code generated for Google Protobuf library types.
+ *
+ * The code for the `com.google` package was generated because we wanted
+ * to have descriptors for all the types, including those from Google Protobuf library.
+ * We want all the descriptors so that they are included into the resources used by
+ * the `io.spine.type.KnownTypes` class.
+ *
+ * Now, as we have the descriptors _and_ duplicating Java or Kotlin code, we delete it to avoid
+ * classes that duplicate those coming from Protobuf library JARs.
+ *
+ * @param language The programming language, either `"java"` or `"kotlin"`.
+ */
+fun GenerateProtoTask.deleteComGoogle(language: String) {
+    val comDirectory = generatedDir(language).resolve("com")
+    val googlePackage = comDirectory.resolve("google")
+
+    project.delete(googlePackage)
+
+    // If the `com` directory becomes empty, delete it too.
+    if (comDirectory.exists() && comDirectory.isDirectory && comDirectory.list()!!.isEmpty()) {
+        project.delete(comDirectory)
+    }
+}
+
+/**
+ * Obtains the path of the `generated` directory under the project root directory.
+ */
+private val Project.generatedDir
+    get() = projectDir.resolve("generated").toPath()
+
+/**
+ * Obtains the `generated` directory for the source set of the task.
+ *
+ * If [language] is specified returns the subdirectory for this language.
+ */
+private fun GenerateProtoTask.generatedDir(language: String = ""): File {
+    val path = "${project.generatedDir}/${sourceSet.name}/$language"
+    return File(path)
 }

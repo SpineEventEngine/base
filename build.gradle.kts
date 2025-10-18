@@ -39,6 +39,9 @@ import io.spine.gradle.report.pom.PomGenerator
 buildscript {
     standardSpineSdkRepositories()
     doForceVersions(configurations)
+    dependencies {
+        classpath(io.spine.dependency.local.ToolBase.protobufSetupPlugins)
+    }
 }
 
 plugins {
