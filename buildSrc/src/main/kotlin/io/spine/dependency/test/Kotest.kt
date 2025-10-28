@@ -35,8 +35,9 @@ package io.spine.dependency.test
  */
 @Suppress("unused", "ConstPropertyName")
 object Kotest {
-    const val version = "6.0.3"
+    const val version = "6.0.4"
     const val group = "io.kotest"
+    const val gradlePluginId = "io.kotest"
     const val assertions = "$group:kotest-assertions-core:$version"
     const val runnerJUnit5 = "$group:kotest-runner-junit5:$version"
     const val runnerJUnit5Jvm = "$group:kotest-runner-junit5-jvm:$version"
@@ -45,6 +46,7 @@ object Kotest {
     const val frameworkEngine = "$group:kotest-framework-engine:$version"
 
     // https://plugins.gradle.org/plugin/io.kotest.multiplatform
+    @Deprecated("The plugin is deprecated. Use `io.kotest` plugin instead.")
     object MultiplatformGradlePlugin {
         const val version = "6.0.0.M4"
         const val id = "io.kotest.multiplatform"

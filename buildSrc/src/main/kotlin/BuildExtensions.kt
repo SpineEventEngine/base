@@ -156,15 +156,15 @@ val PluginDependenciesSpec.`gradle-doctor`: PluginDependencySpec
     get() = id(GradleDoctor.pluginId).version(GradleDoctor.version)
 
 val PluginDependenciesSpec.kotest: PluginDependencySpec
-    get() = Kotest.MultiplatformGradlePlugin.let {
-        return id(it.id).version(it.version)
+    get() = Kotest.let {
+        return id(it.gradlePluginId).version(it.version)
     }
 
 val PluginDependenciesSpec.kover: PluginDependencySpec
     get() = id(Kover.id).version(Kover.version)
 
 val PluginDependenciesSpec.ksp: PluginDependencySpec
-    get() = id(Ksp.id).version(Ksp.version)
+    get() = id(Ksp.id).version(Ksp.dogfoodingVersion)
 
 val PluginDependenciesSpec.`plugin-publish`: PluginDependencySpec
     get() = id(PluginPublishPlugin.id).version(PluginPublishPlugin.version)
