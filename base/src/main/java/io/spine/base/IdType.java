@@ -186,7 +186,7 @@ public enum IdType {
         }
 
         /**
-         * Returns {@code true} if the passed field is message.
+         * Returns {@code true} if the given field is a message.
          *
          * <p>It does not necessarily mean that the type of identifiers matches.
          * Obtaining the class of the field is needed in this case.
@@ -231,7 +231,7 @@ public enum IdType {
     abstract <I> boolean matchClass(Class<I> idClass);
 
     /**
-     * Verifies if the passed field definition matches this type of identifiers.
+     * Verifies if the passed field definition matches this type of identifier.
      */
     abstract boolean matchField(FieldDescriptor field);
 
@@ -242,7 +242,7 @@ public enum IdType {
     abstract Object fromMessage(Message message);
 
     /**
-     * Obtains the default ID value for this type of identifiers.
+     * Obtains the default ID value for this type of identifier.
      */
     abstract <I> I defaultValue(Class<I> idClass);
 
