@@ -44,7 +44,7 @@ import io.spine.protobuf.TypeConverter;
             the sake of clarity since `fromMessage()` methods accept only `Message` parameters. */,
         "unchecked" /* We ensure type by matching it first. */
 })
-enum IdType {
+public enum IdType {
 
     STRING {
         @Override
