@@ -32,10 +32,10 @@ import com.google.errorprone.annotations.Immutable;
  * A common interface for entity state messages.
  *
  * <p>Any message that defines an {@code (entity)} option with a valid {@code kind} is marked with
- * this interface by the Model Compiler.
+ * this interface by the CoreJvm Compiler.
  *
- * <p>The first field of the entity state message is treated as its identifier. It is a convention
- * that has two goals:
+ * <p>The first field of the entity state message is treated as its identifier.
+ * It is a convention that has two goals:
  *
  * <ol>
  *     <li>The definition of an entity state always starts with its ID with no extra Protobuf
@@ -45,8 +45,8 @@ import com.google.errorprone.annotations.Immutable;
  *     to the entity ID.
  * </ol>
  *
- * <p>At codegen-time, the Model Compiler substitutes the generic parameter {@code <I>} with
- * an actual type of the first field of the entity state message.
+ * <p>During code generation, the CoreJvm Compiler substitutes the generic parameter
+ * {@code <I>} with an actual type of the first field of the entity state message.
  *
  * @param <I>
  *         the type of entity identifiers
