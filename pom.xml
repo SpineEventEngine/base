@@ -10,7 +10,7 @@ all modules and does not describe the project structure per-subproject.
  -->
 <groupId>io.spine</groupId>
 <artifactId>base-libraries</artifactId>
-<version>2.0.0-SNAPSHOT.366</version>
+<version>2.0.0-SNAPSHOT.367</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -32,31 +32,31 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.fasterxml.jackson.core</groupId>
     <artifactId>jackson-databind</artifactId>
-      <version>2.20.0</version>
+    <version>null</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>com.fasterxml.jackson.dataformat</groupId>
     <artifactId>jackson-dataformat-yaml</artifactId>
-      <version>2.20.0</version>
+    <version>null</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>com.fasterxml.jackson.datatype</groupId>
     <artifactId>jackson-datatype-guava</artifactId>
-      <version>2.20.0</version>
+    <version>null</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>com.fasterxml.jackson.datatype</groupId>
     <artifactId>jackson-datatype-jdk8</artifactId>
-    <version>2.20.0</version>
+    <version>null</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>com.fasterxml.jackson.datatype</groupId>
     <artifactId>jackson-datatype-jsr310</artifactId>
-    <version>2.20.0</version>
+    <version>null</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -128,7 +128,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.fasterxml.jackson.module</groupId>
     <artifactId>jackson-module-kotlin</artifactId>
-    <version>2.20.0</version>
+    <version>null</version>
     <scope>runtime</scope>
   </dependency>
   <dependency>
@@ -313,7 +313,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>org.jetbrains.kotlin</groupId>
     <artifactId>kotlin-build-tools-impl</artifactId>
-    <version>2.2.21</version>
+    <version>null</version>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.kotlin</groupId>
