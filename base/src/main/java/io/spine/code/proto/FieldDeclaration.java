@@ -193,7 +193,9 @@ public final class FieldDeclaration {
      *
      * <p>An ID satisfies the following conditions:
      * <ul>
-     *     <li>Declared as the first field.
+     *     <li>Declared as the first field. The "first" field is determined by the order in which
+     *         fields appear in the Protobuf message definition (reading order from top to bottom),
+     *         not by the field number. See {@link #isFirstField()} for more details.
      *     <li>Declared inside an {@linkplain EntityOption#getKind() entity state message} or
      *         a {@linkplain io.spine.base.CommandMessage command message};
      *     <li>Is not a map or a repeated field.
@@ -340,8 +342,32 @@ public final class FieldDeclaration {
     /**
      * Determines whether the field is the first within a declaration.
      *
-     * <p>The first field is declared at the top of the containing message,
+     * <p>The first field is determined by the order in which fields are declared in
+     * the Protobuf message definition (reading order from top to bottom), not by the field
+     * number. The first field is declared at the top of the containing message,
      * the last — at the bottom.
+     *
+     * <p>For example, in the following message:
+     * <pre>
+     * message UserView {
+     *     option (entity).kind = PROJECTION;
+     *
+     *     UserName name = 2;
+     *     UserId id = 1;
+     * }
+     * </pre>
+     * the {@code name} field is considered "first" (and thus will be treated as the entity
+     * identifier) because it appears first in the declaration, even though its field number (2)
+     * is greater than {@code id}'s field number (1).
+     *
+     * <p>This approach provides several benefits:
+     * <ul>
+     *   <li>Easier to read and understand — developers see the ID field immediately without
+     *       having to scan the entire message and sort fields by their numbers mentally.
+     *   <li>Supports field deprecation scenarios — if an ID field needs to be replaced
+     *       (e.g., upgrading from {@code int32} to {@code int64}), the new field can be
+     *       added at the top while the old field is deprecated in place.
+     * </ul>
      *
      * @return {@code true} if the field is the first in the containing declaration,
      *         {@code false} otherwise

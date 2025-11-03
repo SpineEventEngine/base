@@ -333,6 +333,27 @@ public final class Identifier<I> {
     /**
      * Finds the first ID field of the specified type in the passed message type.
      *
+     * <p>The "first" field is determined by the order in which fields are declared in
+     * the Protobuf message definition (reading order from top to bottom), not by the field
+     * number. For example, in the following message:
+     * <pre>
+     * message Example {
+     *     string name = 2;
+     *     string id = 1;
+     * }
+     * </pre>
+     * the {@code name} field is considered "first" because it appears first in the declaration,
+     * even though its field number (2) is greater than {@code id}'s field number (1).
+     *
+     * <p>This approach provides several benefits:
+     * <ul>
+     *   <li>Easier to read and understand — developers do not need to mentally sort fields
+     *       by their numbers.
+     *   <li>Supports field deprecation scenarios — if an ID field needs to be replaced
+     *       (e.g., upgrading from {@code int32} to {@code int64}), the new field can be
+     *       added at the top while the old field is deprecated in place.
+     * </ul>
+     *
      * @param idClass
      *          the class of identifiers
      * @param message
