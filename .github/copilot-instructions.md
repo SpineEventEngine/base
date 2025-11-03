@@ -101,4 +101,4 @@ We use [Semantic Versioning 2.0.0](https://semver.org/).
 
 ## Additional Resources
 
-For comprehensive agent guidelines, see: [.agents/_TOC.md](./.agents/_TOC.md)
+For comprehensive agent guidelines, see: [.agents/_TOC.md](../.agents/_TOC.md)
