@@ -41,18 +41,7 @@ import com.google.errorprone.annotations.Immutable
  * the generated message will implement [ProjectionState].
  *
  * The field of the entity state message, which is declared first in the code of
- * the message, is treated as its identifier. The "first" field is determined by the order
- * in which fields appear in the Protobuf message definition (reading order from top to bottom),
- * not by the field number. For example:
- *
- * ```
- * message UserView {
- *     option (entity).kind = PROJECTION;
- *
- *     UserName name = 2;  // This is the ID field (first in reading order)
- *     UserId id = 1;       // Not the ID field (second in reading order)
- * }
- * ```
+ * the message, is treated as its [identifier][Identifier].
  *
  * This convention has two goals:
  *
@@ -61,13 +50,6 @@ import com.google.errorprone.annotations.Immutable
  *
  *  2. Developers don't forget to specify which of the fields declared in Protobuf
  *   corresponds to the entity ID.
- *
- * The reading order approach also provides benefits:
- *
- *  - Easier to read and understand — developers see the ID field immediately.
- *  - Supports field deprecation scenarios — if an ID field needs to be replaced
- *    (e.g., upgrading from `int32` to `int64`), the new field can be added at the top
- *    while the old field is deprecated in place.
  *
  * During code generation, the CoreJvm Compiler substitutes the generic parameter
  * [I] with an actual type of the first field of the entity state message.

@@ -289,9 +289,11 @@
  * <p>This piece produces a query targeting the projects which are either done or started more
  * than thirty days ago.
  *
- * <p>The first field of the Message is treated as an identifier. It's important to understand that
- * Spine treats the field declared first in the order of reading (top to bottom in the message
- * definition), not the one with the least index value. For example:
+ * <p>The first field of the {@code Message} is treated as
+ * an {@linkplain io.spine.base.Identifier identifier}.
+ * The Spine framework treats the field declared first in the order of reading
+ * (top to bottom in the message definition), not the one with the least index value.
+ * For example:
  *
  * <pre>
  * message UserView {
@@ -303,9 +305,7 @@
  * </pre>
  *
  * <p>In this example, {@code name} is treated as the identifier because it appears first in
- * the declaration, even though its field number is 2. This approach makes code easier to read
- * and understand, and supports scenarios where ID fields need to be deprecated in favor of
- * broader types (e.g., upgrading from {@code int32} to {@code int64}).
+ * the declaration, even though its field number is 2.
  *
  * <p>The name of the ID field is preserved and is exposed for querying:
  *
