@@ -32,31 +32,31 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.fasterxml.jackson.core</groupId>
     <artifactId>jackson-databind</artifactId>
-      <version>2.20.0</version>
+    <version>null</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>com.fasterxml.jackson.dataformat</groupId>
     <artifactId>jackson-dataformat-yaml</artifactId>
-      <version>2.20.0</version>
+    <version>null</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>com.fasterxml.jackson.datatype</groupId>
     <artifactId>jackson-datatype-guava</artifactId>
-      <version>2.20.0</version>
+    <version>null</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>com.fasterxml.jackson.datatype</groupId>
     <artifactId>jackson-datatype-jdk8</artifactId>
-    <version>2.20.0</version>
+    <version>null</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>com.fasterxml.jackson.datatype</groupId>
     <artifactId>jackson-datatype-jsr310</artifactId>
-    <version>2.20.0</version>
+    <version>null</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -128,7 +128,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.fasterxml.jackson.module</groupId>
     <artifactId>jackson-module-kotlin</artifactId>
-    <version>2.20.0</version>
+    <version>null</version>
     <scope>runtime</scope>
   </dependency>
   <dependency>
