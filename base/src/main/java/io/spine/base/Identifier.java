@@ -26,6 +26,7 @@
 
 package io.spine.base;
 
+import com.google.errorprone.annotations.InlineMe;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -378,6 +379,7 @@ public final class Identifier<I> {
      *         empty {@code Optional} if there is no such a field
      */
     @Deprecated
+    @InlineMe(replacement = "Field.findIdField(idClass, message)", imports = "io.spine.base.Field")
     public static <I> Optional<FieldDescriptor> findField(Class<I> idClass, Descriptor message) {
         return Field.findIdField(idClass, message);
     }
