@@ -26,6 +26,7 @@
 
 package io.spine.base;
 
+import com.google.errorprone.annotations.InlineMe;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -33,11 +34,9 @@ import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
-import io.spine.annotation.Internal;
 import io.spine.annotation.VisibleForTesting;
 import io.spine.protobuf.AnyPacker;
 import io.spine.string.StringifierRegistry;
-import io.spine.type.TypeUrl;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
@@ -50,10 +49,62 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 /**
  * Wrapper of an identifier value.
  *
+ * <h2><a id="supported">Supported types of identifiers</a></h2>
+ *
+ * <p>The following types of IDs are supported:
+ * <ul>
+ *   <li>{@code String}
+ *   <li>{@code Long}
+ *   <li>{@code Integer}
+ *   <li>A class implementing {@link Message}.
+ * </ul>
+ *
+ * <p>Consider using {@code Message}-based IDs if you want to have typed IDs in your code,
+ * and/or if you need to have IDs with some structure inside.
+ *
+ * <p>Here are the examples of such structural IDs:
+ * <ul>
+ *   <li>EAN value used in bar codes
+ *   <li>ISBN
+ *   <li>Phone number.
+ * </ul>
+ *
+ * <h2><a id="first-field">"The first field" convention for IDs</a></h2>
+ *
+ * <p>Most data in Spine-based applications come in the form of Protobuf messages.
+ * If the data has an identity, we use the convention of the first message field.
+ *
+ * <p>The "first" field is determined by the order in which fields are declared in
+ * the Protobuf message definition (reading order from top to bottom), not by the field number.
+ * For example, in the following message:
+ *
+ * <pre>
+ * message Example {
+ *     string name = 2;
+ *     string id = 1;
+ * }
+ * </pre>
+ *
+ * the {@code name} field is considered "first" because it appears first in the declaration,
+ * even though its field number (2) is greater than {@code id}'s field number (1).
+ *
+ * <p>This approach provides several benefits:
+ * <ul>
+ *   <li>Easier to read and understand — developers do not need to mentally sort fields
+ *       by their numbers.
+ *   <li>Supports field deprecation scenarios — if an ID field needs to be replaced
+ *       (e.g., upgrading from {@code int32} to {@code int64}), the new field can be
+ *       added at the top while the old field is deprecated in place.
+ * </ul>
+ *
  * @param <I>
  *         type of the ID
+ *
+ * @apiNote This class is {@code @Internal} to the framework. It is not annotated as such
+ * so that it appears in the public documentation because it holds important information
+ * about the supported types, and the "first message field" convention referenced from
+ * other public types.
  */
-@Internal
 public final class Identifier<I> {
 
     /** A {@code null} ID string representation. */
@@ -106,7 +157,9 @@ public final class Identifier<I> {
     }
 
     /**
-     * Converts the class of identifiers to {@code Identifier.Type}.
+     * Converts the class of identifiers to the corresponding {@linkplain IdType identifier type}.
+     *
+     * @throws IllegalStateException if there is no matching {@code IdType} for this class
      */
     static <I> IdType toType(Class<I> idClass) {
         for (var type : IdType.values()) {
@@ -155,26 +208,7 @@ public final class Identifier<I> {
     }
 
     /**
-     * Ensures that the passed class of identifiers is supported.
-     *
-     * <p>The following types of IDs are supported:
-     * <ul>
-     *   <li>{@code String}
-     *   <li>{@code Long}
-     *   <li>{@code Integer}
-     *   <li>A class implementing {@link Message}
-     * </ul>
-     *
-     * <p>Consider using {@code Message}-based IDs if you want to have typed IDs in your code,
-     * and/or if you need to have IDs with some structure inside.
-     *
-     * <p>Here are the examples of such structural IDs:
-     * <ul>
-     *   <li>EAN value used in bar codes
-     *   <li>ISBN
-     *   <li>Phone number
-     *   <li>Email address as a couple consisting of a local-part and a domain
-     * </ul>
+     * Ensures that the passed class of identifiers is {@linkplain Identifier supported}.
      *
      * @param <I>
      *         the type of the ID
@@ -183,6 +217,8 @@ public final class Identifier<I> {
      * @throws IllegalArgumentException
      *         if the class of IDs is not of a supported type
      */
+    @SuppressWarnings("UnnecessaryJavaDocLink") /* We cannot link to HTML ID `#supported`
+        until Java 18. So we link to the class Javadoc where the header comes first. */
     public static <I> void checkSupported(Class<I> idClass) {
         checkNotNull(idClass);
         // Even through `getType()` can never return null, we use its return value here
@@ -221,7 +257,7 @@ public final class Identifier<I> {
     }
 
     /**
-     * Extracts ID object from the passed {@code Any} instance.
+     * Extracts an ID value from the passed {@code Any} instance.
      *
      * <p>Returned type depends on the type of the message wrapped into {@code Any}:
      * <ul>
@@ -331,7 +367,9 @@ public final class Identifier<I> {
     }
 
     /**
-     * Finds the first ID field of the specified type in the passed message type.
+     * Finds the first ID field of the specified type in the given message type.
+     *
+     * @deprecated Use {@link Field#findIdField(Class, Descriptor)} instead.
      *
      * @param idClass
      *          the class of identifiers
@@ -342,27 +380,10 @@ public final class Identifier<I> {
      * @return the descriptor of the matching field or
      *         empty {@code Optional} if there is no such a field
      */
+    @Deprecated
+    @InlineMe(replacement = "Field.findIdField(idClass, message)", imports = "io.spine.base.Field")
     public static <I> Optional<FieldDescriptor> findField(Class<I> idClass, Descriptor message) {
-        checkNotNull(idClass);
-        checkNotNull(message);
-        var idType = toType(idClass);
-        var found =
-                message.getFields()
-                       .stream()
-                       .filter(idType::matchField)
-                       .filter(f -> idType != IdType.MESSAGE || sameType(idClass, f))
-                       .findFirst();
-        return found;
-    }
-
-    /**
-     * Verifies if the class of identifiers and the type of the field represent the same type.
-     */
-    private static <I> boolean sameType(Class<I> idClass, FieldDescriptor f) {
-        @SuppressWarnings("unchecked") // safe since it's Message type.
-        var messageType = TypeUrl.of((Class<? extends Message>) idClass);
-        var fieldType = TypeUrl.from(f.getMessageType());
-        return fieldType.equals(messageType);
+        return Field.findIdField(idClass, message);
     }
 
     @Override

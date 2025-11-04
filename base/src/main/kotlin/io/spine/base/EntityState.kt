@@ -41,7 +41,9 @@ import com.google.errorprone.annotations.Immutable
  * the generated message will implement [ProjectionState].
  *
  * The field of the entity state message, which is declared first in the code of
- * the message, is treated as its identifier. This convention that has two goals:
+ * the message, is treated as its [identifier][Identifier].
+ *
+ * This convention has two goals:
  *
  *  1. The definition of an entity state always starts with its ID with no
  *   extra Protobuf options.

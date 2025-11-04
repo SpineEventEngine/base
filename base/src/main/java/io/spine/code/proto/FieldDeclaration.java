@@ -78,7 +78,7 @@ public final class FieldDeclaration {
     }
 
     /**
-     * Creates a new instance which potentially can have leading comments.
+     * Creates a new instance which can have leading comments.
      */
     public FieldDeclaration(FieldDescriptor field, MessageType message) {
         this.field = checkNotNull(field);
@@ -123,8 +123,7 @@ public final class FieldDeclaration {
     public boolean isDefault(Object fieldValue) {
         checkNotNull(fieldValue);
         if (isMessage()) {
-            if (fieldValue instanceof Message) {
-                var message = (Message) fieldValue;
+            if (fieldValue instanceof Message message) {
                 return Messages.isDefault(message) && sameMessageType(message);
             } else {
                 return false;
@@ -193,7 +192,10 @@ public final class FieldDeclaration {
      *
      * <p>An ID satisfies the following conditions:
      * <ul>
-     *     <li>Declared as the first field.
+     *     <li>Declared as the {@linkplain io.spine.base.Identifier first field}.
+     *         The "first" field is determined by the order in which fields appear in
+     *         the Protobuf message definition (reading order from top to bottom),
+     *         not by the field number.
      *     <li>Declared inside an {@linkplain EntityOption#getKind() entity state message} or
      *         a {@linkplain io.spine.base.CommandMessage command message};
      *     <li>Is not a map or a repeated field.
@@ -207,7 +209,7 @@ public final class FieldDeclaration {
     }
 
     /**
-     * Tells if the field is of scalar type.
+     * Tells if the field is of a scalar type.
      */
     public boolean isScalar() {
         return ScalarType.isScalarType(field.toProto());
@@ -323,7 +325,9 @@ public final class FieldDeclaration {
         return ClassName.of(javaTypeName());
     }
 
-    /** Obtains the descriptor of the value of a map. */
+    /**
+     * Obtains the descriptor of the value of a map.
+     */
     public FieldDeclaration valueDeclaration() {
         var valueDescriptor = FieldTypes.valueDescriptor(field);
         return new FieldDeclaration(valueDescriptor);
@@ -338,10 +342,7 @@ public final class FieldDeclaration {
     }
 
     /**
-     * Determines whether the field is the first within a declaration.
-     *
-     * <p>The first field is declared at the top of the containing message,
-     * the last — at the bottom.
+     * Determines whether the field is the first in the reading order within a declaration.
      *
      * @return {@code true} if the field is the first in the containing declaration,
      *         {@code false} otherwise
@@ -403,10 +404,9 @@ public final class FieldDeclaration {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof FieldDeclaration)) {
+        if (!(o instanceof FieldDeclaration that)) {
             return false;
         }
-        var that = (FieldDeclaration) o;
         return Objects.equal(declaringMessage, that.declaringMessage) &&
                 Objects.equal(field.getFullName(), that.field.getFullName());
     }
@@ -417,7 +417,7 @@ public final class FieldDeclaration {
     }
 
     /**
-     * Obtains qualified name of this field.
+     * Obtains a qualified name of this field.
      *
      * <p>Example: {@code spine.net.Uri.protocol}.
      */

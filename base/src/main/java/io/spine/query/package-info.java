@@ -156,7 +156,8 @@
  * January, 1, 1990, or the {@code isTraded} value equal to {@code true}.
  *
  * <p>Please note that {@code ManufacturerId} is used as a type of the record identifier when
- * creating a builder, as it is the first field declared in this message. Its values may
+ * creating a builder. It is the first field in this message — in the order of reading
+ * (top to bottom), which matches its field number (1) in this case. Its values may
  * also be used in a query builder:
  *
  * <pre>
@@ -288,9 +289,23 @@
  * <p>This piece produces a query targeting the projects which are either done or started more
  * than thirty days ago.
  *
- * <p>The first field of the Message is treated as an identifier. It's important to understand that
- * Spine treats the field declared first in the order of reading. And not the one with
- * the least index value.
+ * <p>The first field of the {@code Message} is treated as
+ * an {@linkplain io.spine.base.Identifier identifier}.
+ * The Spine framework treats the field declared first in the order of reading
+ * (top to bottom in the message definition), not the one with the least index value.
+ * For example:
+ *
+ * <pre>
+ * message UserView {
+ *    option (entity).kind = PROJECTION;
+ *
+ *    UserName name = 2;  // This is the ID field (first in reading order)
+ *    UserId id = 1;       // Not the ID field (second in reading order)
+ * }
+ * </pre>
+ *
+ * <p>In this example, {@code name} is treated as the identifier because it appears first in
+ * the declaration, even though its field number is 2.
  *
  * <p>The name of the ID field is preserved and is exposed for querying:
  *
