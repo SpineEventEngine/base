@@ -157,7 +157,9 @@ public final class Identifier<I> {
     }
 
     /**
-     * Converts the class of identifiers to {@link IdType identifier type}.
+     * Converts the class of identifiers to the corresponding {@linkplain IdType identifier type}.
+     *
+     * @throws IllegalStateException if there is no matching {@code IdType} for this class
      */
     static <I> IdType toType(Class<I> idClass) {
         for (var type : IdType.values()) {
