@@ -28,6 +28,7 @@ package io.spine.base;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.spine.test.protobuf.AnyHolder;
@@ -60,7 +61,9 @@ class FieldTest {
     @Test
     @DisplayName("pass null tolerance check")
     void nullCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(Field.class);
+        new NullPointerTester()
+                .setDefault(Descriptor.class, Empty.getDescriptor())
+                .testAllPublicStaticMethods(Field.class);
     }
 
 

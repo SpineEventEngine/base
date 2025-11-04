@@ -56,7 +56,6 @@ import static io.spine.base.IdType.STRING;
 import static io.spine.base.Identifier.EMPTY_ID;
 import static io.spine.base.Identifier.NULL_ID;
 import static io.spine.base.Identifier.checkSupported;
-import static io.spine.base.Identifier.findField;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.testing.Assertions.assertIllegalArgument;
@@ -587,8 +586,8 @@ class IdentifierTest {
             assertField(idClass, message).isEmpty();
         }
 
-        private <I> OptionalSubject assertField(Class<I> idClass, Descriptor message) {
-            return assertThat(findField(idClass, message));
+        private static <I> OptionalSubject assertField(Class<I> idClass, Descriptor message) {
+            return assertThat(Field.findIdField(idClass, message));
         }
     }
 

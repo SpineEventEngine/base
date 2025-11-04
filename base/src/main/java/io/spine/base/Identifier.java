@@ -36,7 +36,6 @@ import com.google.protobuf.StringValue;
 import io.spine.annotation.VisibleForTesting;
 import io.spine.protobuf.AnyPacker;
 import io.spine.string.StringifierRegistry;
-import io.spine.type.TypeUrl;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
@@ -364,9 +363,10 @@ public final class Identifier<I> {
         return result;
     }
 
-    //TODO:2025-11-04:alexander.yevsyukov: Move the implementation to the `Field` class, delegate to it and deprecate.
     /**
-     * Finds the first ID field of the specified type in the passed message type.
+     * Finds the first ID field of the specified type in the given message type.
+     *
+     * @deprecated Use {@link Field#findIdField(Class, Descriptor)} instead.
      *
      * @param idClass
      *          the class of identifiers
@@ -377,28 +377,9 @@ public final class Identifier<I> {
      * @return the descriptor of the matching field or
      *         empty {@code Optional} if there is no such a field
      */
+    @Deprecated
     public static <I> Optional<FieldDescriptor> findField(Class<I> idClass, Descriptor message) {
-        checkNotNull(idClass);
-        checkNotNull(message);
-        var idType = toType(idClass);
-        var found =
-                message.getFields()
-                       .stream()
-                       .filter(idType::matchField)
-                       .filter(f -> idType != IdType.MESSAGE || sameMessageType(idClass, f))
-                       .findFirst();
-        return found;
-    }
-
-    /**
-     * Verifies if the class of identifiers and the type of the field represent the same type.
-     */
-    private static <I> boolean sameMessageType(Class<I> idClass, FieldDescriptor f) {
-        @SuppressWarnings("unchecked") /* It is a `Message` type because we
-            checked `id != IdType.MESSAGE` before. */
-        var messageType = TypeUrl.of((Class<? extends Message>) idClass);
-        var fieldType = TypeUrl.from(f.getMessageType());
-        return fieldType.equals(messageType);
+        return Field.findIdField(idClass, message);
     }
 
     @Override

@@ -249,6 +249,46 @@ public final class Field extends ValueHolder<FieldPath> {
     }
 
     /**
+     * Finds the first ID field of the specified type in the given message type.
+     *
+     * <p>The "first" field is determined by the order in which fields are declared in
+     * the Protobuf message definition, not by the field number. See the documentation of
+     * {@link Identifier} for more details about the convention.
+     *
+     * @param idClass
+     *          the class of identifiers
+     * @param message
+     *          the descriptor of the message type in which to find a field
+     * @param <I>
+     *          the type of identifiers
+     * @return the descriptor of the matching field or
+     *         empty {@code Optional} if there is no such a field
+     */
+    public static <I> Optional<FieldDescriptor> findIdField(Class<I> idClass, Descriptor message) {
+        checkNotNull(idClass);
+        checkNotNull(message);
+        var idType = Identifier.toType(idClass);
+        var found =
+                message.getFields()
+                       .stream()
+                       .filter(idType::matchField)
+                       .filter(f -> idType != IdType.MESSAGE || sameMessageType(idClass, f))
+                       .findFirst();
+        return found;
+    }
+
+    /**
+     * Verifies if the class of identifiers and the type of the field represent the same type.
+     */
+    private static <I> boolean sameMessageType(Class<I> idClass, FieldDescriptor f) {
+        @SuppressWarnings("unchecked") /* It is a `Message` type because we
+            checked `idType != IdType.MESSAGE` before. */
+        var messageType = TypeUrl.of((Class<? extends Message>) idClass);
+        var fieldType = TypeUrl.from(f.getMessageType());
+        return fieldType.equals(messageType);
+    }
+
+    /**
      * Checks if the field is a nested field.
      */
     public boolean isNested() {
@@ -268,7 +308,7 @@ public final class Field extends ValueHolder<FieldPath> {
         return join(value().getFieldNameList());
     }
 
-    /** Creates a new path containing the passed elements. */
+    /** Creates a new path containing the given elements. */
     private static FieldPath create(List<String> elements) {
         elements.forEach(Field::checkName);
         var result = FieldPath.newBuilder()
@@ -277,7 +317,7 @@ public final class Field extends ValueHolder<FieldPath> {
         return result;
     }
 
-    /** Creates a path instance by parsing the passed non-empty string. */
+    /** Creates a path instance by parsing the given non-empty string. */
     @VisibleForTesting
     static FieldPath doParse(String fieldPath) {
         checkArgument(!fieldPath.isEmpty(), "A field path must not be empty.");
