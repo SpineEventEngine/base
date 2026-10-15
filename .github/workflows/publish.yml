@@ -16,6 +16,13 @@ name: Publish
 # called workflow can keep or reduce what it is given, never raise it — and
 # `secrets: inherit` passes the repository secrets the decryption steps need.
 
+# Consumers verify an artifact against the branch it was published from
+# (`gh attestation verify --source-ref`), which means something only while a
+# ruleset protects that branch. Publishing from `v<major>.x` release branches
+# takes `'v*.x'` added to this trigger in the template in `config`, not in a
+# consumer's copy, which `./config/pull` overwrites. The template reaches every
+# repository that publishes, so first make each of their rulesets cover that
+# pattern, including the creation of such branches.
 on:
   push:
     branches: [master]
@@ -23,7 +30,7 @@ on:
 jobs:
   publish:
     name: Publish to Maven repositories
-    uses: SpineEventEngine/config/.github/workflows/publishing.yml@3210ca6cc05c77ee59961721cf5c1c08327aa86b
+    uses: SpineEventEngine/config/.github/workflows/publishing.yml@a0cbbbfe66c12475224563439fb6deb3da71ba58
     permissions:
       contents: read
       packages: write

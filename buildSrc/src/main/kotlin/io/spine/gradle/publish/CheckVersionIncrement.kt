@@ -20,9 +20,13 @@ import io.spine.gradle.repo.Repository
 import java.net.URI
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
-import org.gradle.api.Project
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.Property
+import org.gradle.api.provider.SetProperty
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
+import org.gradle.work.DisableCachingByDefault
 
 /**
  * A task that verifies the project version is fit to be published.
@@ -36,11 +40,19 @@ import org.gradle.api.tasks.TaskAction
  *     parallel PRs that bumped to the same value, regardless of what is (or is not yet)
  *     published.
  *  2. [checkNotPublished] — the [version] must not already exist in the target Maven
- *     repository, so a publication cannot overwrite an immutable artifact.
+ *     repository for any of the [artifacts][artifactPaths] the project publishes, so
+ *     a publication cannot overwrite an immutable artifact.
  *
  * The two checks are complementary; neither subsumes the other.
+ *
+ * Neither the task action nor the `onlyIf` spec that gates it may access
+ * [project][org.gradle.api.Task.getProject]: Gradle deprecates that at execution time, and
+ * the configuration cache does not support it. Therefore, [version] is captured when the
+ * task is created, [IncrementGuard] sets [rootDir] and [artifactPaths] when it registers
+ * the task, and it sets [publishesToMavenLocal] once the task graph is ready.
  */
-open class CheckVersionIncrement : DefaultTask() {
+@DisableCachingByDefault(because = "Queries a remote Maven repository and produces no outputs.")
+abstract class CheckVersionIncrement : DefaultTask() {
 
     /**
      * The Maven repository in which to look for published artifacts.
@@ -53,6 +65,44 @@ open class CheckVersionIncrement : DefaultTask() {
 
     @Input
     val version: String = project.version as String
+
+    /**
+     * The root directory of the build, which holds `version.gradle.kts`.
+     *
+     * Only its location matters — the task reads `version.gradle.kts` and runs `git` there.
+     * Hence, it is not an [input directory][org.gradle.api.tasks.InputDirectory], which
+     * would fingerprint the whole build tree.
+     */
+    @get:Internal
+    abstract val rootDir: DirectoryProperty
+
+    /**
+     * The paths to the artifacts of the project in a Maven repository, such as
+     * `io/spine/spine-base`, one per Maven publication of the project.
+     *
+     * Empty for a project that publishes nothing.
+     */
+    @get:Input
+    abstract val artifactPaths: SetProperty<String>
+
+    /**
+     * Tells whether the build is going to publish this task's project to Maven Local.
+     *
+     * Integration tests in this and sibling projects consume freshly built artifacts
+     * from `~/.m2`. Publishing them under a version that already exists would let those
+     * tests pick up a stale artifact, so a local build verifies the version increment
+     * before any local publication of the project runs.
+     *
+     * Only this task's own project counts: a sibling module's local publish in the same
+     * invocation must not trigger this module's check (see
+     * [IncrementGuard.localPublishPlanned]).
+     *
+     * [IncrementGuard] scans the task graph once it is ready and sets this property, which
+     * the `onlyIf` spec it adds to the task then reads. The value affects only whether
+     * the task runs, not what it verifies, so it is not an [input][Input].
+     */
+    @get:Internal
+    abstract val publishesToMavenLocal: Property<Boolean>
 
     @TaskAction
     fun checkVersion() {
@@ -132,7 +182,8 @@ open class CheckVersionIncrement : DefaultTask() {
      * [VersionGradleFile.contentInBase] when the base ref itself cannot be resolved.
      */
     private fun baseVersionToCompare(baseRef: String): String? {
-        val headContent = VersionGradleFile.contentUnder(project.rootDir)
+        val root = rootDir.get().asFile
+        val headContent = VersionGradleFile.contentUnder(root)
         val key = headContent?.let { VersionGradleFile.keyForValue(it, version) }
         if (key == null) {
             logger.warn(
@@ -141,7 +192,7 @@ open class CheckVersionIncrement : DefaultTask() {
             )
             return null
         }
-        val baseContent = VersionGradleFile.contentInBase(project.rootDir, baseRef)
+        val baseContent = VersionGradleFile.contentInBase(root, baseRef)
         val baseVersion = baseContent?.let { VersionGradleFile.valueForKey(it, key) }
         if (baseVersion == null) {
             logger.info(
@@ -154,29 +205,76 @@ open class CheckVersionIncrement : DefaultTask() {
 
     /**
      * Verifies that the current [version] has not been published to the target Maven
-     * repository yet.
+     * repository yet, for any of the [artifactPaths].
      *
      * Both the `releases` and `snapshots` repositories are checked; artifacts in either
      * may not be overwritten.
      */
     private fun checkNotPublished() {
-        val artifact = "${project.artifactPath()}/${MavenMetadata.FILE_NAME}"
-        val snapshots = repository.target(snapshots = true)
-        checkInRepo(snapshots, artifact)
+        val paths = artifactPaths.get()
+        if (paths.isEmpty()) {
+            logger.info(
+                "The project has no Maven publications; " +
+                    "skipping the check for an already published version."
+            )
+            return
+        }
+        paths.forEach(::checkArtifactNotPublished)
+    }
 
-        if (!repository.hasOneTarget()) {
-            checkInRepo(repository.target(snapshots = false), artifact)
+    /**
+     * Verifies that the current [version] of the artifact at the given [path] has not been
+     * published to the target Maven repository yet.
+     *
+     * Each repository is checked as soon as its metadata is fetched, so a failure to reach
+     * one repository does not hide the version found in another one checked before it.
+     *
+     * When no repository has the metadata of the artifact, the version cannot be verified,
+     * and a warning is logged. This is expected before the first publication of the artifact.
+     * For an artifact published before, it means that [path] does not match the published one.
+     */
+    private fun checkArtifactNotPublished(path: String) {
+        val artifact = "$path/${MavenMetadata.FILE_NAME}"
+        val repositories = targetRepositories()
+        var found = false
+        for (repoUrl in repositories) {
+            val metadata = fetch(repoUrl, artifact) ?: continue
+            found = true
+            checkNotListed(path = path, repoUrl = repoUrl, metadata = metadata)
+        }
+        if (!found) {
+            logger.warn(
+                "No `${MavenMetadata.FILE_NAME}` is found for `$path` in " +
+                    "${repositories.joinToString { "`$it`" }}. Either the artifact has never " +
+                    "been published, or the path does not match the published artifact. " +
+                    "`$name` cannot tell whether the version `$version` is already published."
+            )
         }
     }
 
-    private fun checkInRepo(repoUrl: String, artifact: String) {
-        val metadata = fetch(repoUrl, artifact)
-        val versions = metadata?.versioning?.versions
-        val versionExists = versions?.contains(version) ?: false
-        if (versionExists) {
+    /**
+     * Returns the URLs of the target repositories: the `snapshots` one, and
+     * the `releases` one unless it is the same destination.
+     */
+    private fun targetRepositories(): List<String> {
+        val snapshots = repository.target(snapshots = true)
+        if (repository.hasOneTarget()) {
+            return listOf(snapshots)
+        }
+        return listOf(snapshots, repository.target(snapshots = false))
+    }
+
+    /**
+     * Throws if the [metadata] of the artifact at the given [path], fetched from [repoUrl],
+     * lists the current [version].
+     */
+    private fun checkNotListed(path: String, repoUrl: String, metadata: MavenMetadata) {
+        val versions = metadata.versioning.versions
+        if (version in versions) {
             throw GradleException(
                     """
-                    The version `$version` is already published to the Maven repository `$repoUrl`.
+                    The version `$version` of `$path` is already published
+                    to the Maven repository `$repoUrl`.
                     Try incrementing the library version.
                     All available versions are: ${versions.joinToString(separator = ", ")}.
 
@@ -189,30 +287,5 @@ open class CheckVersionIncrement : DefaultTask() {
     private fun fetch(repository: String, artifact: String): MavenMetadata? {
         val url = URI.create("$repository/$artifact").toURL()
         return MavenMetadata.fetchAndParse(url)
-    }
-
-    private fun Project.artifactPath(): String {
-        val group = this.group as String
-        val name = "${artifactPrefix()}${this.name}"
-
-        val pathElements = ArrayList(group.split('.'))
-        pathElements.add(name)
-        val path = pathElements.joinToString(separator = "/")
-        return path
-    }
-
-    /**
-     * Returns the artifact prefix used for the publishing of this project.
-     *
-     * All current Spine modules should be using `SpinePublishing`.
-     * Therefore, the corresponding extension should be present in the root project.
-     * However, just in case, we define the "standard" prefix here as well.
-     *
-     * This value MUST be the same as defined by the defaults in `SpinePublishing`.
-     */
-    private fun Project.artifactPrefix(): String {
-        val ext = rootProject.extensions.findByType(SpinePublishing::class.java)
-        val result = ext?.artifactPrefix ?: SpinePublishing.DEFAULT_PREFIX
-        return result
     }
 }
