@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <!-- NewPage -->
 <html lang="en"><head>
-    <title>SubscribableField 2.0.0-SNAPSHOT.460 API </title>
+    <title>SubscribableField 2.0.0-SNAPSHOT.461 API </title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="dc.created" content="2020-03-25">
     <link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
@@ -156,7 +156,7 @@ public final class OrderView // implements Message, etc. {
         }
     }
 }
-</code></pre><p>The values retrieved via methods of the <code>Field</code> type may then be passed to a client to form a subscription request. </p><p>The class descendants differentiate between the various field types to enable the typed filter creation on the client side. </p><p>See the Spine code generation routines in the <code>tool-base</code> module for extensive details on how the types are generated.</p></div>
+</code></pre><p>The values retrieved via methods of the <code>Field</code> type may then be passed to a client to form a subscription request. </p><p>The class descendants differentiate between the various field types to enable the typed filter creation on the client side. </p><p>See the Spine code generation routines in the <code>tool-base</code> module for extensive details on how the types are generated.</p><p>API Note: In the generated code this class is, among others, inherited by the types that declare nested message fields as own public instance methods, as follows: </p><pre><code>       public EntityStateField someFieldName() {...}</code></pre>Thus, the <code>SubscribableField</code> class has to avoid name clashes with proto fields declared this way, hence the otherwise redundant &quot;get-&quot; prefix on the getField method. For the same reason the class does not inherit from <a href=../value/ValueHolder.html>io.spine.value.ValueHolder</a>.</div>
 
                     <dl>
 

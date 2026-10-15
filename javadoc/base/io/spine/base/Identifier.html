@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <!-- NewPage -->
 <html lang="en"><head>
-    <title>Identifier 2.0.0-SNAPSHOT.460 API </title>
+    <title>Identifier 2.0.0-SNAPSHOT.461 API </title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="dc.created" content="2020-03-25">
     <link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
@@ -121,7 +121,7 @@ public final class <span class="typeNameLabel"><a href=Identifier.html>Identifie
     string name = 2;
     string id = 1;
 }
-</code></pre> the <code>name</code> field is considered &quot;first&quot; because it appears first in the declaration, even though its field number (2) is greater than <code>id</code>'s field number (1). <p>This approach provides several benefits: </p><ul><li>Easier to read and understand — developers do not need to mentally sort fields by their numbers. </li><li>Supports field deprecation scenarios — if an ID field needs to be replaced (e.g., upgrading from <code>int32</code> to <code>int64</code>), the new field can be added at the top while the old field is deprecated in place. </li></ul></div>
+</code></pre> the <code>name</code> field is considered &quot;first&quot; because it appears first in the declaration, even though its field number (2) is greater than <code>id</code>'s field number (1). <p>This approach provides several benefits: </p><ul><li>Easier to read and understand — developers do not need to mentally sort fields by their numbers. </li><li>Supports field deprecation scenarios — if an ID field needs to be replaced (e.g., upgrading from <code>int32</code> to <code>int64</code>), the new field can be added at the top while the old field is deprecated in place. </li></ul><p>API Note: This class is <code>@Internal</code> to the framework. It is not annotated as such so that it appears in the public documentation because it holds important information about the supported types, and the &quot;first message field&quot; convention referenced from other public types.</p></div>
 
                     <dl>
 
