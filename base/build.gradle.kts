@@ -75,6 +75,11 @@ configurations.all {
 
 tasks {
     excludeGoogleProtoFromArtifacts()
+
+    // KSP reads the test sources, which include the output of `generateTestProto`.
+    matching { it.name == "kspTestKotlin" }.configureEach {
+        dependsOn("generateTestProto")
+    }
 }
 
 // For generating test fixtures. See `src/test/proto`.
