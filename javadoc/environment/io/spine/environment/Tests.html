@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <!-- NewPage -->
 <html lang="en"><head>
-    <title>Tests 2.0.0-SNAPSHOT.460 API </title>
+    <title>Tests 2.0.0-SNAPSHOT.461 API </title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="dc.created" content="2020-03-25">
     <link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
@@ -382,7 +382,7 @@ extends StandardEnvironmentType&lt;<a href=Tests.html>Tests</a>&gt;
                                     <li class="blockList">
                                         <h4>enabled</h4>
                                         <pre class="methodSignature"> boolean <a href=Tests.html#enabled()>enabled</a>()</pre>
-                                        <div class="block"><p>Verifies if the code currently runs under a unit testing framework. </p><p>The method returns <code>true</code> if <a href=Tests.html#knownTestingFrameworks()>known testing framework packages</a> are discovered in the stacktrace.</p></div>
+                                        <div class="block"><p>Verifies if the code currently runs under a unit testing framework. </p><p>The method returns <code>true</code> if <a href=Tests.html#knownTestingFrameworks()>known testing framework packages</a> are discovered in the stacktrace.</p><p>Implementation Note: In addition to checking the stack trace, this method checks the environment variable value. If you wish to simulate not being in tests, the variable must be set to <code>false</code> explicitly. If your framework is not among the <a href=Tests.html#knownTestingFrameworks()>known ones</a>, make sure to set the system property explicitly.</p></div>
 
                                         <dl>
 

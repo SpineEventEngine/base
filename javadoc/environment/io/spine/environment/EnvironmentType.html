@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <!-- NewPage -->
 <html lang="en"><head>
-    <title>EnvironmentType 2.0.0-SNAPSHOT.460 API </title>
+    <title>EnvironmentType 2.0.0-SNAPSHOT.461 API </title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="dc.created" content="2020-03-25">
     <link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
@@ -117,7 +117,7 @@ var pathtoroot = "../../../";
 public abstract class <span class="typeNameLabel"><a href=EnvironmentType.html>EnvironmentType</a>&lt;T extends <a href=EnvironmentType.html>EnvironmentType</a>&lt;<a href=EnvironmentType.html>T</a>&gt;&gt;</span>
 
                     </pre>
-                    <div class="block"><p>A type of environment. </p><p>Some examples may be <code>Staging</code> or <code>Local</code> environments.</p></div>
+                    <div class="block"><p>A type of environment. </p><p>Some examples may be <code>Staging</code> or <code>Local</code> environments.</p><p>Implementation Note: Not an <code>interface</code> to limit the access level of <a href=CustomEnvironmentType.html#enabled()>enabled</a></p></div>
 
                     <dl>
 
@@ -415,7 +415,7 @@ public abstract class <span class="typeNameLabel"><a href=EnvironmentType.html>E
                                     <li class="blockList">
                                         <h4>equals</h4>
                                         <pre class="methodSignature"> final boolean <a href=CustomEnvironmentType.html#equals(Object)>equals</a>(<a href=https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html>Object</a> obj)</pre>
-                                        <div class="block"><p>Returns <code>true</code> if this and passed objects are of the same class, otherwise <code>false</code>.</p></div>
+                                        <div class="block"><p>Returns <code>true</code> if this and passed objects are of the same class, otherwise <code>false</code>.</p><p>Implementation Note: The derived classes are meant to emulate enums in the sense that all instances of them are interchangeable. Therefore, we are interested only in the class information for the comparison.</p></div>
 
                                         <dl>
 
