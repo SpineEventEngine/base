@@ -140,7 +140,7 @@ message Manufacturer {
                    .sortDescendingBy(isTraded)
                    .limit(10)
                    .build();
-</code></pre><p>This query selects all records of <code>Manufacturer</code> type, but tells to sort them by the values of <code>whenFounded</code> column ascending, then by <code>isTraded</code> column values descending. Finally, the query result is limited to the top ten records. </p><p>Please note, that <a href=RecordQueryBuilder.html#limit(int)>limit(..)</a> method may only be used in queries that sort their results. Otherwise, a runtime exception is thrown upon building the query. </p><p>Among all the stored Protobuf messages, there is a special case. If a message is declared as an Entity state, it triggers additional processing at build-time. The framework automatically extends the Java types generated for Entity states with more Entity-specific API. </p><p>Let's consider a message: </p><pre><code>message ProjectView {
+</code></pre><p>This query selects all records of <code>Manufacturer</code> type, but tells to sort them by the values of <code>whenFounded</code> column ascending, then by <code>isTraded</code> column values descending. Finally, the query result is limited to the top ten records. </p><p>Please note, that <a href=EntityQueryBuilder.html#limit(int)>limit(..)</a> method may only be used in queries that sort their results. Otherwise, a runtime exception is thrown upon building the query. </p><p>Among all the stored Protobuf messages, there is a special case. If a message is declared as an Entity state, it triggers additional processing at build-time. The framework automatically extends the Java types generated for Entity states with more Entity-specific API. </p><p>Let's consider a message: </p><pre><code>message ProjectView {
    option (entity).kind = PROJECTION;
 
    // The identifier of the project.
@@ -239,24 +239,18 @@ public enum Lifecycle {
     <div class="typeSummary">
 
 <table>
-<caption><span>Interface Summary</span><span class="tabEnd">&nbsp;</span></caption>
+<caption><span>Enum Summary</span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
-<th class="colFirst" scope="col">Interface</th>
+<th class="colFirst" scope="col">Enum</th>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tbody>
 
-    <tr class="altColor"><th class="colFirst" scope="row"><a href=Query.html>Query</a></th><td class="colLast">A query to fetch the records defined as Protobuf messages.</td></tr>
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=Direction.html>Direction</a></th><td class="colLast">The direction of sorting for the set of records by some field value.</td></tr>
 
-    <tr class="rowColor"><th class="colFirst" scope="row"><a href=Either.html>Either</a></th><td class="colLast">A lambda serving to fill the current predicate <a href=QueryBuilder.html>query builders</a> with the parameters joined in <a href=LogicalOperator.html#OR>disjunction</a>.</td></tr>
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=LogicalOperator.html>LogicalOperator</a></th><td class="colLast">Logical operators used in querying.</td></tr>
 
-    <tr class="altColor"><th class="colFirst" scope="row"><a href=RecordPredicates.html>RecordPredicates</a></th><td class="colLast">A lambda expression that groups additional query predicates to join to some existing <a href=RecordQuery.html>RecordQuery</a>.</td></tr>
-
-    <tr class="rowColor"><th class="colFirst" scope="row"><a href=QueryBuilder.html>QueryBuilder</a></th><td class="colLast">A builder for an instance of <a href=Query.html>Query</a>.</td></tr>
-
-    <tr class="altColor"><th class="colFirst" scope="row"><a href=Column.Getter.html>Getter</a></th><td class="colLast">A method object serving to obtain the value of the column for some particular record of the matching type.</td></tr>
-
-    <tr class="rowColor"><th class="colFirst" scope="row"><a href=Column.html>Column</a></th><td class="colLast">A column of a record residing in a storage.</td></tr>
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=ComparisonOperator.html>ComparisonOperator</a></th><td class="colLast">Defines how the queried records are compared against the desired parameter values.</td></tr>
 </tbody>
 </table>
 
@@ -280,73 +274,45 @@ public enum Lifecycle {
 </tr>
 <tbody>
 
-    <tr class="altColor"><th class="colFirst" scope="row"><a href=EntityQueryBuilder.html>EntityQueryBuilder</a></th><td class="colLast">Base type for builders of queries that are aimed to fetch the records of entity states.</td></tr>
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=EntityQuery.html>EntityQuery</a></th><td class="colLast">A query for the records being the stored Protobuf messages, each declared as a state of an Entity.</td></tr>
 
-    <tr class="rowColor"><th class="colFirst" scope="row"><a href=EntityStateField.html>EntityStateField</a></th><td class="colLast">A subscribable field of an <a href=../base/EntityState.html>entity state</a>.</td></tr>
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=Subject.html>Subject</a></th><td class="colLast">Set of criteria for the records obtained via querying.</td></tr>
 
-    <tr class="altColor"><th class="colFirst" scope="row"><a href=ColumnName.html>ColumnName</a></th><td class="colLast">The name of the column of the record.</td></tr>
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=EntityColumn.html>EntityColumn</a></th><td class="colLast">A queryable column of an entity that can be passed to the query filters.</td></tr>
 
-    <tr class="rowColor"><th class="colFirst" scope="row"><a href=CustomColumn.html>CustomColumn</a></th><td class="colLast">A column storing the data that is not directly declared as a field in the <code>Message</code> of an <a href=../base/EntityState.html>EntityState</a> or a plain record.</td></tr>
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=RecordSubjectParameter.html>RecordSubjectParameter</a></th><td class="colLast">A parameter of a <a href=RecordQuery.html>RecordQuery</a>.</td></tr>
 
-    <tr class="altColor"><th class="colFirst" scope="row"><a href=IdCriterion.html>IdCriterion</a></th><td class="colLast">An expression that sets the values of record identifiers to be used in a <a href=Query.html>query</a>.</td></tr>
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=RecordQueryBuilder.html>RecordQueryBuilder</a></th><td class="colLast">A builder for <a href=RecordQuery.html>RecordQuery</a>.</td></tr>
+
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=QueryPredicate.html>QueryPredicate</a></th><td class="colLast">Joins the <a href=SubjectParameter.html>query parameters</a> with a <a href=LogicalOperator.html>logical operator</a> when querying the records.</td></tr>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=EntityStateField.html>EntityStateField</a></th><td class="colLast">A subscribable field of an <a href=../base/EntityState.html>entity state</a>.</td></tr>
 
     <tr class="rowColor"><th class="colFirst" scope="row"><a href=EntityCriterion.html>EntityCriterion</a></th><td class="colLast">An expression that sets the value to compare for the <a href=EntityColumn.html>EntityColumn</a> in scope of an <a href=EntityQueryBuilder.html>EntityQueryBuilder</a> when building an <a href=EntityQuery.html>EntityQuery</a>.</td></tr>
 
     <tr class="altColor"><th class="colFirst" scope="row"><a href=RecordQuery.html>RecordQuery</a></th><td class="colLast">A query for the records each being a stored Protobuf message.</td></tr>
 
-    <tr class="rowColor"><th class="colFirst" scope="row"><a href=IdParameter.html>IdParameter</a></th><td class="colLast">Sets the identifiers of objects that a <a href=Query.html>Query</a> targets.</td></tr>
-
-    <tr class="altColor"><th class="colFirst" scope="row"><a href=EntityColumn.html>EntityColumn</a></th><td class="colLast">A queryable column of an entity that can be passed to the query filters.</td></tr>
-
-    <tr class="rowColor"><th class="colFirst" scope="row"><a href=Columns.html>Columns</a></th><td class="colLast">A list of <a href=RecordColumn.html>RecordColumn</a>s.</td></tr>
-
-    <tr class="altColor"><th class="colFirst" scope="row"><a href=SubjectParameter.html>SubjectParameter</a></th><td class="colLast">A parameter that defines the expected value for the <a href=RecordColumn.html>record column</a> in scope of a particular <a href=Query.html>query</a>.</td></tr>
-
-    <tr class="rowColor"><th class="colFirst" scope="row"><a href=Subject.html>Subject</a></th><td class="colLast">Set of criteria for the records obtained via querying.</td></tr>
-
-    <tr class="altColor"><th class="colFirst" scope="row"><a href=QueryPredicate.html>QueryPredicate</a></th><td class="colLast">Joins the <a href=SubjectParameter.html>query parameters</a> with a <a href=LogicalOperator.html>logical operator</a> when querying the records.</td></tr>
-
-    <tr class="rowColor"><th class="colFirst" scope="row"><a href=RecordSubjectParameter.html>RecordSubjectParameter</a></th><td class="colLast">A parameter of a <a href=RecordQuery.html>RecordQuery</a>.</td></tr>
-
-    <tr class="altColor"><th class="colFirst" scope="row"><a href=RecordColumn.html>RecordColumn</a></th><td class="colLast">A piece of data stored as a column along with some stored record.</td></tr>
-
-    <tr class="rowColor"><th class="colFirst" scope="row"><a href=EntityQuery.html>EntityQuery</a></th><td class="colLast">A query for the records being the stored Protobuf messages, each declared as a state of an Entity.</td></tr>
-
-    <tr class="altColor"><th class="colFirst" scope="row"><a href=RecordCriterion.html>RecordCriterion</a></th><td class="colLast">Sets a condition for a record column to be compared to some value.</td></tr>
-
-    <tr class="rowColor"><th class="colFirst" scope="row"><a href=SortBy.html>SortBy</a></th><td class="colLast">Defines the sorting order of the <a href=Query.html>query</a> results by the sorting order of values in a particular <a href=RecordColumn.html>column</a>.</td></tr>
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=RecordColumn.html>RecordColumn</a></th><td class="colLast">A piece of data stored as a column along with some stored record.</td></tr>
 
     <tr class="altColor"><th class="colFirst" scope="row"><a href=CustomSubjectParameter.html>CustomSubjectParameter</a></th><td class="colLast">A query parameter that defines a condition for a computed value stored along with the queried record.</td></tr>
 
-    <tr class="rowColor"><th class="colFirst" scope="row"><a href=RecordQueryBuilder.html>RecordQueryBuilder</a></th><td class="colLast">A builder for <a href=RecordQuery.html>RecordQuery</a>.</td></tr>
-</tbody>
-</table>
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=ColumnName.html>ColumnName</a></th><td class="colLast">The name of the column of the record.</td></tr>
 
-    </div>
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=SortBy.html>SortBy</a></th><td class="colLast">Defines the sorting order of the <a href=Query.html>query</a> results by the sorting order of values in a particular <a href=RecordColumn.html>column</a>.</td></tr>
 
-                </li>
-                
-                <li class="blockList">
-                    
-                    
-                    
-                    
-                    
-    <div class="typeSummary">
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=IdParameter.html>IdParameter</a></th><td class="colLast">Sets the identifiers of objects that a <a href=Query.html>Query</a> targets.</td></tr>
 
-<table>
-<caption><span>Enum Summary</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Enum</th>
-<th class="colLast" scope="col">Description</th>
-</tr>
-<tbody>
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=Columns.html>Columns</a></th><td class="colLast">A list of <a href=RecordColumn.html>RecordColumn</a>s.</td></tr>
 
-    <tr class="altColor"><th class="colFirst" scope="row"><a href=ComparisonOperator.html>ComparisonOperator</a></th><td class="colLast">Defines how the queried records are compared against the desired parameter values.</td></tr>
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=EntityQueryBuilder.html>EntityQueryBuilder</a></th><td class="colLast">Base type for builders of queries that are aimed to fetch the records of entity states.</td></tr>
 
-    <tr class="rowColor"><th class="colFirst" scope="row"><a href=LogicalOperator.html>LogicalOperator</a></th><td class="colLast">Logical operators used in querying.</td></tr>
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=IdCriterion.html>IdCriterion</a></th><td class="colLast">An expression that sets the values of record identifiers to be used in a <a href=Query.html>query</a>.</td></tr>
 
-    <tr class="altColor"><th class="colFirst" scope="row"><a href=Direction.html>Direction</a></th><td class="colLast">The direction of sorting for the set of records by some field value.</td></tr>
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=SubjectParameter.html>SubjectParameter</a></th><td class="colLast">A parameter that defines the expected value for the <a href=RecordColumn.html>record column</a> in scope of a particular <a href=Query.html>query</a>.</td></tr>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=RecordCriterion.html>RecordCriterion</a></th><td class="colLast">Sets a condition for a record column to be compared to some value.</td></tr>
+
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=CustomColumn.html>CustomColumn</a></th><td class="colLast">A column storing the data that is not directly declared as a field in the <code>Message</code> of an <a href=../base/EntityState.html>EntityState</a> or a plain record.</td></tr>
 </tbody>
 </table>
 
@@ -371,6 +337,40 @@ public enum Lifecycle {
 <tbody>
 
     <tr class="altColor"><th class="colFirst" scope="row"><a href=RecordColumns.html>RecordColumns</a></th><td class="colLast">Annotates the types that define the columns of the Protobuf messages stored as records in a storage.</td></tr>
+</tbody>
+</table>
+
+    </div>
+
+                </li>
+                
+                <li class="blockList">
+                    
+                    
+                    
+                    
+                    
+    <div class="typeSummary">
+
+<table>
+<caption><span>Interface Summary</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Interface</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=Column.Getter.html>Getter</a></th><td class="colLast">A method object serving to obtain the value of the column for some particular record of the matching type.</td></tr>
+
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=Column.html>Column</a></th><td class="colLast">A column of a record residing in a storage.</td></tr>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=QueryBuilder.html>QueryBuilder</a></th><td class="colLast">A builder for an instance of <a href=Query.html>Query</a>.</td></tr>
+
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=Query.html>Query</a></th><td class="colLast">A query to fetch the records defined as Protobuf messages.</td></tr>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=RecordPredicates.html>RecordPredicates</a></th><td class="colLast">A lambda expression that groups additional query predicates to join to some existing <a href=RecordQuery.html>RecordQuery</a>.</td></tr>
+
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=Either.html>Either</a></th><td class="colLast">A lambda serving to fill the current predicate <a href=QueryBuilder.html>query builders</a> with the parameters joined in <a href=LogicalOperator.html#OR>disjunction</a>.</td></tr>
 </tbody>
 </table>
 
