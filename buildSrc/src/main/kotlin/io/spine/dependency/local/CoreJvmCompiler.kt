@@ -22,7 +22,7 @@ package io.spine.dependency.local
 @Suppress(
     "MemberVisibilityCanBePrivate" /* The properties are used directly by other subprojects. */,
     "ConstPropertyName" /* We use a custom convention for artifact properties. */,
-    "unused"
+    "unused" /* Some subprojects do not use the CoreJvm Compiler directly. */,
 )
 object CoreJvmCompiler {
 

@@ -23,7 +23,7 @@ import io.spine.dependency.Dependency
  */
 @Suppress(
     "unused" /* Some subprojects do not use all Time artifacts. */,
-    "ConstPropertyName" /* We use custom convention for artifact properties. */,
+    "ConstPropertyName" /* We use a custom convention for artifact properties. */,
     "MemberVisibilityCanBePrivate" /* The properties are used directly by other subprojects. */,
 )
 object Time : Dependency() {
